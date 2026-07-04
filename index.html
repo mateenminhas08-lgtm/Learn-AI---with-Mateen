@@ -403,6 +403,9 @@ a{text-decoration:none;color:var(--primary-light)}
 .student-sync-row button{padding:10px 16px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;transition:var(--transition);white-space:nowrap}
 .student-sync-row button:hover{background:var(--primary)}
 .sync-chevron{transition:transform 0.3s ease}
+#syncHeaderToggle{cursor:pointer!important;user-select:none}
+#syncHeaderToggle:hover{opacity:0.9}
+#syncChevron{transition:transform 0.3s ease;pointer-events:none}
 
 /* Print */
 @media print{
@@ -1908,12 +1911,45 @@ function createTaskFromResponse(){
 // ═══════════════════════════
 // CLOUD SYNC PANEL
 // ═══════════════════════════
+function toggleSyncPanel(){
+  const body = document.getElementById('syncBody');
+  const chevron = document.getElementById('syncChevron');
+  if(!body) return;
+  const isHidden = body.style.display === 'none' || body.style.display === '';
+  body.style.display = isHidden ? 'block' : 'none';
+  if(chevron) chevron.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+}
+function handleSyncConnect(){
+  const keyInput = document.getElementById('jsonbinApiKey');
+  const key = keyInput?.value.trim();
+  if(!key){ showToast('Please enter your API key','error'); return; }
+  if(!key.startsWith('$2a$')){ showToast('Invalid key format. JSONBin keys start with $2a$','error'); return; }
+  const btn = document.getElementById('connectJsonbin');
+  btn.disabled=true; btn.textContent='Connecting...';
+  SyncManager.createBin(key).then(()=>{ SyncManager.startAutoSync(); }).catch(()=>{}).finally(()=>{
+    btn.disabled=false; btn.innerHTML='<i class="fas fa-plug"></i> Connect';
+  });
+}
+function handleSyncCopyBinId(){
+  const binId = SyncManager.getBinId();
+  navigator.clipboard.writeText(binId).then(()=>showToast('Bin ID copied! Share it with your students 📋','success'));
+}
+function handleSyncNow(){
+  const btn = document.getElementById('syncNowBtn');
+  if(btn) btn.disabled=true;
+  SyncManager.pullData().then(()=>SyncManager.pushData()).then(()=>{
+    showToast('Sync complete! ✅','success');
+    if(AppState.isTeacher) renderTeacherView(AppState.teacherSubView);
+    else if(AppState.currentUser) renderStudentView(AppState.studentSubView);
+  }).finally(()=>{ if(btn) btn.disabled=false; });
+}
+
 function renderSyncPanel(){
   const isConnected = SyncManager.isConnected();
   const binId = SyncManager.getBinId();
   return `
   <div class="sync-settings-card" id="syncSettingsCard">
-    <div class="sync-header" id="syncHeaderToggle">
+    <div class="sync-header" id="syncHeaderToggle" onclick="toggleSyncPanel()">
       <div class="sync-title">
         <i class="fas fa-cloud"></i>
         <span>Cloud Sync</span>
@@ -1937,8 +1973,8 @@ function renderSyncPanel(){
         <div class="sync-input-group">
           <label>JSONBin Master API Key:</label>
           <div class="sync-input-row">
-            <input type="password" id="jsonbinApiKey" placeholder="$2a$10$...your key...">
-            <button id="connectJsonbin" class="sync-btn-primary"><i class="fas fa-plug"></i> Connect</button>
+            <input type="password" id="jsonbinApiKey" placeholder="$2a$10$...your key..." onclick="event.stopPropagation()">
+            <button id="connectJsonbin" class="sync-btn-primary" onclick="event.stopPropagation();handleSyncConnect()"><i class="fas fa-plug"></i> Connect</button>
           </div>
         </div>
       </div>
@@ -1947,13 +1983,13 @@ function renderSyncPanel(){
           <label>Your Bin ID (Share with students):</label>
           <div class="bin-id-row">
             <code id="binIdDisplay">${binId||''}</code>
-            <button id="copyBinId"><i class="fas fa-copy"></i> Copy</button>
+            <button onclick="event.stopPropagation();handleSyncCopyBinId()"><i class="fas fa-copy"></i> Copy</button>
           </div>
           <p class="bin-id-hint">Students enter this ID on their device to connect to your class data.</p>
         </div>
         <div class="sync-actions">
-          <button id="syncNowBtn" class="sync-btn-primary"><i class="fas fa-rotate"></i> Sync Now</button>
-          <button id="disconnectSync" class="sync-btn-danger"><i class="fas fa-unlink"></i> Disconnect</button>
+          <button id="syncNowBtn" class="sync-btn-primary" onclick="event.stopPropagation();handleSyncNow()"><i class="fas fa-rotate"></i> Sync Now</button>
+          <button class="sync-btn-danger" onclick="event.stopPropagation();SyncManager.disconnect()"><i class="fas fa-unlink"></i> Disconnect</button>
         </div>
         <div class="last-sync-info"><small id="lastSyncTime">Never synced</small></div>
       </div>
@@ -2722,51 +2758,10 @@ const SyncManager = {
 
   init() {
     if (this.isConnected()) {
-      this.updateSyncUI('connected', 'Connected');
-      this.showConnectedUI(this.getBinId());
       this.pullData();
       this.startAutoSync();
     }
-    // Sync header toggle
-    document.getElementById('syncHeaderToggle')?.addEventListener('click', () => {
-      const body = document.getElementById('syncBody');
-      const chevron = document.getElementById('syncChevron');
-      if (body) {
-        const isHidden = body.style.display === 'none';
-        body.style.display = isHidden ? 'block' : 'none';
-        if (chevron) chevron.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
-      }
-    });
-    // Connect button (teacher)
-    document.getElementById('connectJsonbin')?.addEventListener('click', async () => {
-      const keyInput = document.getElementById('jsonbinApiKey');
-      const key = keyInput?.value.trim();
-      if (!key) { showToast('Please enter your API key', 'error'); return; }
-      if (!key.startsWith('$2a$')) { showToast('Invalid key format. JSONBin keys start with $2a$', 'error'); return; }
-      const btn = document.getElementById('connectJsonbin');
-      btn.disabled = true; btn.textContent = 'Connecting...';
-      try { await SyncManager.createBin(key); SyncManager.startAutoSync(); }
-      finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-plug"></i> Connect'; }
-    });
-    // Copy Bin ID button
-    document.getElementById('copyBinId')?.addEventListener('click', () => {
-      const binId = this.getBinId();
-      navigator.clipboard.writeText(binId).then(() => showToast('Bin ID copied! Share it with your students 📋', 'success'));
-    });
-    // Sync Now button
-    document.getElementById('syncNowBtn')?.addEventListener('click', async () => {
-      const btn = document.getElementById('syncNowBtn');
-      btn.disabled = true;
-      await SyncManager.pullData();
-      await SyncManager.pushData();
-      btn.disabled = false;
-      showToast('Sync complete! ✅', 'success');
-      if(AppState.isTeacher) renderTeacherView(AppState.teacherSubView);
-      else if(AppState.currentUser) renderStudentView(AppState.studentSubView);
-    });
-    // Disconnect button
-    document.getElementById('disconnectSync')?.addEventListener('click', () => { SyncManager.disconnect(); });
-    // Student connect button
+    // Student connect button (this element exists in static HTML)
     document.getElementById('connectStudentSync')?.addEventListener('click', () => {
       const binIdInput = document.getElementById('studentBinId');
       const binId = binIdInput?.value.trim();

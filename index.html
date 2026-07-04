@@ -1,0 +1,2906 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>🤖 Learn AI - with Mateen</title>
+<link rel="icon" href="data:image/svg+xml,<svg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 100 100'><text y='.9em' font-size='90'>🤖</text></svg>">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
+<style>
+:root{--primary:#1E3A8A;--primary-light:#3B82F6;--accent:#7C3AED;--accent-light:#A78BFA;--success:#10B981;--danger:#EF4444;--warning:#F59E0B;--bg-main:#F8FAFC;--bg-card:#FFFFFF;--text-dark:#1E293B;--text-mid:#64748B;--text-light:#94A3B8;--border:#E2E8F0;--shadow-sm:0 1px 3px rgba(0,0,0,0.08);--shadow-md:0 4px 16px rgba(0,0,0,0.10);--shadow-lg:0 8px 32px rgba(0,0,0,0.14);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--radius-full:9999px;--transition:all 0.25s ease}
+*{margin:0;padding:0;box-sizing:border-box}
+body{font-family:'Inter',sans-serif;font-size:16px;line-height:1.6;color:var(--text-dark);background:var(--bg-main);overflow-x:hidden}
+h1,h2,h3,h4,h5,h6{font-family:'Poppins',sans-serif}
+button{cursor:pointer;font-family:'Inter',sans-serif;border:none;outline:none;transition:var(--transition)}
+button:active{transform:scale(0.97)}
+input,textarea,select{font-family:'Inter',sans-serif;font-size:14px;border:1.5px solid var(--border);border-radius:var(--radius-sm);padding:10px 14px;outline:none;transition:var(--transition);width:100%}
+input:focus,textarea:focus,select:focus{border-color:var(--primary-light);box-shadow:0 0 0 3px rgba(59,130,246,0.15)}
+a{text-decoration:none;color:var(--primary-light)}
+.view{display:none;animation:fadeIn .3s ease}
+.view.active{display:block}
+@keyframes fadeIn{from{opacity:0}to{opacity:1}}
+@keyframes slideUp{from{opacity:0;transform:translateY(20px)}to{opacity:1;transform:translateY(0)}}
+@keyframes slideInRight{from{transform:translateX(110%)}to{transform:translateX(0)}}
+@keyframes scaleIn{from{opacity:0;transform:scale(0.9)}to{opacity:1;transform:scale(1)}}
+@keyframes bounce{0%,100%{transform:scale(1)}50%{transform:scale(1.2)}}
+@keyframes shake{0%,100%{transform:translateX(0)}25%{transform:translateX(-8px)}75%{transform:translateX(8px)}}
+@keyframes pulse{0%,100%{opacity:1}50%{opacity:.5}}
+@keyframes float{0%,100%{transform:translateY(0)}50%{transform:translateY(-15px)}}
+@keyframes gradientBG{0%{background-position:0% 50%}50%{background-position:100% 50%}100%{background-position:0% 50%}}
+@keyframes confettiDrop{0%{transform:translateY(-100vh) rotate(0deg);opacity:1}100%{transform:translateY(100vh) rotate(720deg);opacity:0}}
+
+/* Landing */
+.landing-bg{min-height:100vh;background:linear-gradient(135deg,#1E3A8A,#7C3AED,#1E3A8A);background-size:300% 300%;animation:gradientBG 8s ease infinite;display:flex;align-items:center;justify-content:center;flex-direction:column;position:relative;overflow:hidden;padding:20px}
+.landing-bg .particle{position:absolute;border-radius:50%;background:rgba(255,255,255,.12);pointer-events:none;animation:float 6s ease-in-out infinite}
+.landing-logo{font-size:80px;color:#fff;margin-bottom:10px}
+.landing-title{font-family:'Poppins',sans-serif;font-size:48px;font-weight:700;color:#fff}
+.landing-sub{font-family:'Poppins',sans-serif;font-size:22px;color:var(--accent-light);margin-bottom:6px}
+.landing-tag{color:rgba(255,255,255,.75);margin-bottom:40px;font-size:15px}
+.landing-cards{display:flex;gap:24px;flex-wrap:wrap;justify-content:center}
+.landing-card{background:#fff;border-radius:var(--radius-lg);padding:40px 36px;text-align:center;width:260px;cursor:pointer;transition:var(--transition);box-shadow:var(--shadow-lg)}
+.landing-card:hover{transform:translateY(-6px);box-shadow:0 12px 40px rgba(0,0,0,.2)}
+.landing-card i{font-size:48px;margin-bottom:14px}
+.landing-card h3{font-size:20px;margin-bottom:4px}
+.landing-card p{color:var(--text-mid);font-size:14px}
+.lc-teacher i{color:var(--primary)}
+.lc-student i{color:var(--accent)}
+
+/* Auth screens */
+.auth-screen{min-height:100vh;background:linear-gradient(135deg,#1E3A8A,#7C3AED);display:flex;align-items:center;justify-content:center;padding:20px}
+.auth-card{background:#fff;border-radius:var(--radius-lg);padding:40px;max-width:420px;width:100%;text-align:center;box-shadow:var(--shadow-lg);animation:scaleIn .3s ease}
+.auth-card.shake-it{animation:shake .4s ease}
+.auth-card i.auth-icon{font-size:48px;color:var(--primary);margin-bottom:12px}
+.auth-card h2{margin-bottom:4px}
+.auth-card p{color:var(--text-mid);margin-bottom:24px;font-size:14px}
+.auth-card .input-group{position:relative;margin-bottom:16px;text-align:left}
+.auth-card .input-group label{display:block;font-weight:500;margin-bottom:4px;font-size:13px}
+.auth-card .input-group .toggle-pw{position:absolute;right:12px;top:36px;background:none;color:var(--text-mid);font-size:16px}
+.auth-card .error-msg{color:var(--danger);font-size:13px;margin-bottom:10px;display:none}
+.btn{padding:12px 24px;border-radius:var(--radius-sm);font-weight:600;font-size:15px;transition:var(--transition);display:inline-flex;align-items:center;gap:8px}
+.btn-primary{background:var(--primary);color:#fff}.btn-primary:hover{background:var(--primary-light)}
+.btn-accent{background:var(--accent);color:#fff}.btn-accent:hover{background:var(--accent-light)}
+.btn-success{background:var(--success);color:#fff}.btn-success:hover{background:#059669}
+.btn-danger{background:var(--danger);color:#fff}.btn-danger:hover{background:#DC2626}
+.btn-warning{background:var(--warning);color:#fff}.btn-warning:hover{background:#D97706}
+.btn-outline{background:transparent;border:1.5px solid var(--border);color:var(--text-dark)}.btn-outline:hover{border-color:var(--primary-light);color:var(--primary-light)}
+.btn-ghost{background:transparent;color:var(--text-mid)}.btn-ghost:hover{color:var(--primary)}
+.btn-full{width:100%;justify-content:center}
+.btn-sm{padding:8px 16px;font-size:13px}
+.student-chips{display:flex;flex-wrap:wrap;gap:8px;margin-top:16px;justify-content:center}
+.student-chip{background:var(--bg-main);border:1.5px solid var(--border);border-radius:var(--radius-full);padding:6px 16px;font-size:13px;cursor:pointer;transition:var(--transition)}
+.student-chip:hover{border-color:var(--accent);color:var(--accent)}
+.back-link{color:rgba(255,255,255,.8);margin-top:20px;display:inline-flex;align-items:center;gap:6px;font-size:14px;cursor:pointer}
+.back-link:hover{color:#fff}
+
+/* Layout - Sidebar + Main */
+.app-layout{display:flex;min-height:100vh}
+.sidebar{width:260px;background:var(--primary);color:#fff;position:fixed;top:0;left:0;height:100vh;overflow-y:auto;z-index:100;display:flex;flex-direction:column;transition:var(--transition)}
+.sidebar-header{padding:20px;border-bottom:1px solid rgba(255,255,255,.1)}
+.sidebar-header .logo-row{display:flex;align-items:center;gap:10px;margin-bottom:12px}
+.sidebar-header .logo-row i{font-size:28px;color:var(--accent-light)}
+.sidebar-header .logo-row span{font-family:'Poppins',sans-serif;font-weight:700;font-size:18px}
+.sidebar-user{display:flex;align-items:center;gap:10px}
+.sidebar-user .avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px}
+.sidebar-user .user-info{font-size:13px}.sidebar-user .user-info .user-role{font-size:11px;opacity:.7}
+.sidebar-nav{flex:1;padding:12px 0}
+.sidebar-nav a{display:flex;align-items:center;gap:12px;padding:11px 20px;color:rgba(255,255,255,.75);font-size:14px;transition:var(--transition);cursor:pointer;border-left:3px solid transparent}
+.sidebar-nav a:hover,.sidebar-nav a.active{background:rgba(255,255,255,.1);color:#fff;border-left-color:var(--accent-light)}
+.sidebar-nav a i{width:20px;text-align:center}
+.main-content{margin-left:260px;flex:1;padding:28px;min-height:100vh}
+.mobile-header{display:none;position:fixed;top:0;left:0;right:0;background:var(--primary);color:#fff;padding:12px 16px;z-index:99;align-items:center;justify-content:space-between}
+.mobile-header .hamburger{font-size:22px;background:none;color:#fff}
+.mobile-header .logo-sm{font-family:'Poppins',sans-serif;font-weight:700;font-size:16px}
+.bottom-nav{display:none;position:fixed;bottom:0;left:0;right:0;background:#fff;border-top:1px solid var(--border);z-index:99;padding:6px 0 max(6px,env(safe-area-inset-bottom))}
+.bottom-nav-inner{display:flex;justify-content:space-around}
+.bottom-nav a{display:flex;flex-direction:column;align-items:center;font-size:10px;color:var(--text-mid);padding:4px 8px;cursor:pointer;transition:var(--transition)}
+.bottom-nav a.active{color:var(--primary)}
+.bottom-nav a i{font-size:20px;margin-bottom:2px}
+.sidebar-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:99}
+
+/* Profile Avatar */
+.profile-avatar-wrapper{position:relative;width:60px;height:60px;margin:0 auto 8px;cursor:pointer}
+.profile-avatar{width:60px;height:60px;border-radius:50%;background:var(--accent);display:flex;align-items:center;justify-content:center;font-family:'Poppins',sans-serif;font-weight:700;font-size:22px;color:white;overflow:hidden;border:3px solid rgba(255,255,255,0.3)}
+.profile-avatar img{width:100%;height:100%;object-fit:cover}
+.avatar-edit-btn{position:absolute;bottom:0;right:0;width:22px;height:22px;background:var(--primary);border-radius:50%;display:flex;align-items:center;justify-content:center;color:white;font-size:10px;border:2px solid white;cursor:pointer;transition:var(--transition)}
+.avatar-edit-btn:hover{background:var(--accent);transform:scale(1.1)}
+
+@media(max-width:768px){
+.sidebar{transform:translateX(-100%)}
+.sidebar.open{transform:translateX(0)}
+.sidebar-overlay.open{display:block}
+.main-content{margin-left:0;padding:70px 14px 80px}
+.mobile-header{display:flex}
+.bottom-nav{display:block}
+.landing-title{font-size:32px}
+.landing-card{width:100%;max-width:300px;padding:28px 24px}
+.stats-grid{grid-template-columns:1fr 1fr!important}
+.task-grid{grid-template-columns:1fr!important}
+.tool-grid{grid-template-columns:1fr 1fr!important}
+.badge-grid{grid-template-columns:1fr 1fr!important}
+.podium{flex-direction:column-reverse;align-items:center}
+.podium .pod{width:160px!important}
+.quick-btn-grid{grid-template-columns:1fr!important}
+}
+@media(max-width:480px){
+.stats-grid{grid-template-columns:1fr!important}
+.tool-grid{grid-template-columns:1fr!important}
+.badge-grid{grid-template-columns:1fr!important}
+.landing-title{font-size:26px}
+.landing-sub{font-size:18px}
+}
+
+/* Cards & Components */
+.page-title{font-size:24px;font-weight:700;margin-bottom:20px;display:flex;align-items:center;gap:10px}
+.stats-grid{display:grid;grid-template-columns:repeat(4,1fr);gap:16px;margin-bottom:28px}
+.stat-card{background:var(--bg-card);border-radius:var(--radius-md);padding:20px;box-shadow:var(--shadow-sm);animation:slideUp .4s ease both;position:relative;overflow:hidden}
+.stat-card .stat-icon{width:44px;height:44px;border-radius:var(--radius-sm);display:flex;align-items:center;justify-content:center;font-size:20px;color:#fff;margin-bottom:12px}
+.stat-card .stat-num{font-family:'Poppins',sans-serif;font-size:28px;font-weight:700}
+.stat-card .stat-label{font-size:13px;color:var(--text-mid)}
+.stat-card .pulse-dot{position:absolute;top:16px;right:16px;width:10px;height:10px;border-radius:50%;background:var(--warning);animation:pulse 1.5s infinite}
+.card{background:var(--bg-card);border-radius:var(--radius-md);padding:20px;box-shadow:var(--shadow-sm);transition:var(--transition);animation:slideUp .4s ease both}
+.card:hover{box-shadow:var(--shadow-md)}
+.section-title{font-size:18px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:var(--radius-full);font-size:11px;font-weight:600}
+.badge-beginner{background:#D1FAE5;color:#065F46}
+.badge-medium{background:#FEF3C7;color:#92400E}
+.badge-challenge{background:#FEE2E2;color:#991B1B}
+.badge-pending{background:#FEF3C7;color:#92400E}
+.badge-submitted{background:#DBEAFE;color:#1E40AF}
+.badge-accepted{background:#D1FAE5;color:#065F46}
+.badge-rejected{background:#FEE2E2;color:#991B1B}
+.badge-info{background:#DBEAFE;color:#1E40AF}
+.badge-tip{background:#D1FAE5;color:#065F46}
+.badge-warning{background:#FEF3C7;color:#92400E}
+.badge-celebration{background:#EDE9FE;color:#5B21B6}
+
+/* Task cards */
+.task-grid{display:grid;grid-template-columns:repeat(2,1fr);gap:16px}
+.task-card{border-left:4px solid var(--primary-light)}
+.task-card .task-header{display:flex;justify-content:space-between;align-items:flex-start;margin-bottom:8px}
+.task-card .task-order{font-family:'Poppins',sans-serif;font-size:13px;font-weight:600;color:var(--text-mid)}
+.task-card .task-title{font-family:'Poppins',sans-serif;font-size:16px;font-weight:600;margin-bottom:6px}
+.task-card .task-desc{font-size:13px;color:var(--text-mid);display:-webkit-box;-webkit-line-clamp:2;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:10px}
+.task-card .task-tags{display:flex;flex-wrap:wrap;gap:6px;margin-bottom:12px}
+.task-card .task-actions{display:flex;gap:8px;flex-wrap:wrap}
+
+/* Submission cards */
+.sub-card{border-left:4px solid var(--warning)}
+.sub-card.accepted{border-left-color:var(--success)}
+.sub-card.rejected{border-left-color:var(--danger)}
+.sub-card .sub-header{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.sub-card .sub-avatar{width:36px;height:36px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:14px;color:#fff;flex-shrink:0}
+.sub-card .sub-info h4{font-size:14px;font-weight:600}
+.sub-card .sub-info p{font-size:12px;color:var(--text-mid)}
+
+/* Modal */
+.modal-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.5);z-index:200;align-items:center;justify-content:center;padding:20px}
+.modal-overlay.active{display:flex}
+.modal{background:#fff;border-radius:var(--radius-lg);max-width:600px;width:100%;max-height:90vh;overflow-y:auto;animation:scaleIn .25s ease;padding:28px}
+.modal-header{display:flex;justify-content:space-between;align-items:center;margin-bottom:20px}
+.modal-header h3{font-size:20px;font-weight:600}
+.modal-close{background:none;font-size:22px;color:var(--text-mid);padding:4px}
+.modal-close:hover{color:var(--text-dark)}
+.form-group{margin-bottom:16px}
+.form-group label{display:block;font-weight:500;font-size:13px;margin-bottom:4px;color:var(--text-dark)}
+.form-group .error{color:var(--danger);font-size:12px;margin-top:2px;display:none}
+.form-row{display:flex;gap:12px}
+.form-row .form-group{flex:1}
+.toggle-group{display:flex;gap:0;border:1.5px solid var(--border);border-radius:var(--radius-sm);overflow:hidden}
+.toggle-group label{flex:1;text-align:center;padding:9px 14px;font-size:13px;font-weight:500;cursor:pointer;transition:var(--transition)}
+.toggle-group input{display:none}
+.toggle-group input:checked+label{background:var(--primary);color:#fff}
+.difficulty-toggle input:checked+label.lbl-beginner{background:var(--success)}
+.difficulty-toggle input:checked+label.lbl-medium{background:var(--warning)}
+.difficulty-toggle input:checked+label.lbl-challenge{background:var(--danger)}
+
+/* Toast */
+.toast-container{position:fixed;top:20px;right:20px;z-index:999;display:flex;flex-direction:column;gap:10px;max-width:360px}
+.toast{padding:14px 20px;border-radius:var(--radius-sm);color:#fff;font-size:14px;font-weight:500;animation:slideInRight .3s ease;display:flex;align-items:center;gap:10px;box-shadow:var(--shadow-md);cursor:pointer}
+.toast-success{background:var(--success)}
+.toast-error{background:var(--danger)}
+.toast-info{background:var(--primary-light)}
+.toast-warning{background:var(--warning)}
+
+/* Filter bar */
+.filter-bar{display:flex;gap:10px;margin-bottom:20px;flex-wrap:wrap;align-items:center}
+.filter-bar input,.filter-bar select{max-width:200px;font-size:13px;padding:8px 12px}
+.tab-bar{display:flex;gap:0;margin-bottom:20px;border-bottom:2px solid var(--border)}
+.tab-bar button{padding:10px 20px;font-size:14px;font-weight:500;color:var(--text-mid);background:none;border-bottom:2px solid transparent;margin-bottom:-2px;transition:var(--transition)}
+.tab-bar button.active{color:var(--primary);border-bottom-color:var(--primary)}
+
+/* Save cards */
+.save-grid{display:grid;grid-template-columns:repeat(auto-fill,minmax(280px,1fr));gap:16px}
+.save-card{position:relative}
+.save-card .save-type{font-size:11px;font-weight:600;text-transform:uppercase;margin-bottom:6px}
+.save-card .save-title{font-weight:600;margin-bottom:4px}
+.save-card .save-content{font-size:13px;color:var(--text-mid);display:-webkit-box;-webkit-line-clamp:3;-webkit-box-orient:vertical;overflow:hidden;margin-bottom:8px}
+.save-card .save-meta{font-size:11px;color:var(--text-light)}
+
+/* Tool grid */
+.tool-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.tool-card{text-align:center;padding:28px 20px;cursor:pointer;position:relative}
+.tool-card .tool-icon{width:56px;height:56px;border-radius:var(--radius-md);display:flex;align-items:center;justify-content:center;font-size:24px;color:#fff;margin:0 auto 12px}
+.tool-card .tool-name{font-family:'Poppins',sans-serif;font-weight:600;font-size:16px;margin-bottom:4px}
+.tool-card .tool-desc{font-size:13px;color:var(--text-mid);margin-bottom:14px}
+.tool-remove-btn{position:absolute;top:8px;right:8px;width:28px;height:28px;border-radius:50%;background:rgba(239,68,68,0.1);border:1px solid rgba(239,68,68,0.3);color:#EF4444;font-size:12px;display:flex;align-items:center;justify-content:center;cursor:pointer;transition:var(--transition);opacity:0}
+.tool-card:hover .tool-remove-btn{opacity:1}
+.tool-remove-btn:hover{background:#EF4444;color:white;transform:scale(1.1)}
+
+/* Badge grid */
+.badge-grid{display:grid;grid-template-columns:repeat(3,1fr);gap:16px}
+.badge-card{text-align:center;padding:24px 16px}
+.badge-card .badge-emoji{font-size:48px;margin-bottom:8px;display:block}
+.badge-card .badge-name{font-family:'Poppins',sans-serif;font-weight:600;margin-bottom:4px}
+.badge-card .badge-desc{font-size:12px;color:var(--text-mid);margin-bottom:4px}
+.badge-card .badge-how{font-size:11px;color:var(--text-light)}
+.badge-card.locked{opacity:.45;filter:grayscale(1)}
+.badge-card.locked .badge-emoji{position:relative}
+.badge-card.earned .badge-earned-date{font-size:11px;color:var(--success);margin-top:6px}
+
+/* Leaderboard */
+.podium{display:flex;justify-content:center;align-items:flex-end;gap:16px;margin-bottom:36px}
+.pod{text-align:center;border-radius:var(--radius-md) var(--radius-md) 0 0;padding:20px 16px;min-width:120px}
+.pod .pod-avatar{width:50px;height:50px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-weight:700;font-size:18px;color:#fff;margin:0 auto 8px;border:3px solid #fff;overflow:hidden}
+.pod .pod-avatar img{width:100%;height:100%;object-fit:cover}
+.pod .pod-name{font-weight:600;font-size:14px}
+.pod .pod-xp{font-size:13px;opacity:.8}
+.pod-1{background:linear-gradient(135deg,#F59E0B,#D97706);color:#fff;min-height:180px}
+.pod-2{background:linear-gradient(135deg,#94A3B8,#64748B);color:#fff;min-height:140px}
+.pod-3{background:linear-gradient(135deg,#D97706,#B45309);color:#fff;min-height:110px}
+
+/* Reports */
+.chart-bar-container{margin-bottom:20px}
+.chart-bar{display:flex;align-items:center;gap:10px;margin-bottom:8px}
+.chart-bar .bar-label{width:100px;font-size:12px;text-align:right;flex-shrink:0}
+.chart-bar .bar-track{flex:1;height:24px;background:var(--bg-main);border-radius:var(--radius-full);overflow:hidden}
+.chart-bar .bar-fill{height:100%;border-radius:var(--radius-full);transition:width .6s ease;display:flex;align-items:center;justify-content:flex-end;padding-right:8px;font-size:11px;font-weight:600;color:#fff;min-width:fit-content}
+.chart-bar .bar-val{font-size:12px;width:40px;font-weight:600}
+.calendar-grid{display:grid;grid-template-columns:repeat(7,1fr);gap:4px;max-width:320px}
+.calendar-grid .cal-day{width:100%;aspect-ratio:1;border-radius:4px;display:flex;align-items:center;justify-content:center;font-size:11px;background:var(--bg-main)}
+.calendar-grid .cal-day.attended{background:var(--success);color:#fff}
+.calendar-grid .cal-day.today{border:2px solid var(--primary)}
+.calendar-grid .cal-header{font-size:10px;font-weight:600;color:var(--text-mid);background:transparent}
+.weak-area-card{border-left:4px solid var(--warning);margin-bottom:16px}
+
+/* Announcements */
+.ann-card{border-left:4px solid var(--primary-light);margin-bottom:12px}
+.ann-card.ann-info{border-left-color:var(--primary-light)}
+.ann-card.ann-tip{border-left-color:var(--success)}
+.ann-card.ann-warning{border-left-color:var(--warning)}
+.ann-card.ann-celebration{border-left-color:var(--accent)}
+.ann-banner{padding:14px 20px;border-radius:var(--radius-sm);margin-bottom:20px;display:flex;align-items:center;gap:10px;font-size:14px}
+.ann-banner.ann-info{background:#DBEAFE;color:#1E40AF}
+.ann-banner.ann-tip{background:#D1FAE5;color:#065F46}
+.ann-banner.ann-warning{background:#FEF3C7;color:#92400E}
+.ann-banner.ann-celebration{background:#EDE9FE;color:#5B21B6}
+
+/* Image upload */
+.upload-area{border:2px dashed var(--border);border-radius:var(--radius-md);padding:30px;text-align:center;cursor:pointer;transition:var(--transition)}
+.upload-area:hover{border-color:var(--primary-light);background:rgba(59,130,246,.03)}
+.upload-area i{font-size:36px;color:var(--text-light);margin-bottom:8px}
+.upload-area p{color:var(--text-mid);font-size:13px}
+.upload-preview{max-width:100%;max-height:200px;border-radius:var(--radius-sm);margin-top:10px}
+
+/* Badge Unlock Overlay */
+.badge-unlock-overlay{display:none;position:fixed;inset:0;background:rgba(0,0,0,.7);z-index:300;align-items:center;justify-content:center}
+.badge-unlock-overlay.active{display:flex}
+.badge-unlock-content{text-align:center;color:#fff;animation:scaleIn .4s ease}
+.badge-unlock-content .badge-big{font-size:80px;animation:bounce .6s ease;display:block;margin-bottom:12px}
+.badge-unlock-content h2{font-size:28px;margin-bottom:6px}
+.badge-unlock-content p{font-size:16px;opacity:.8}
+.badge-unlock-content .xp-bonus{margin-top:10px;font-size:20px;color:var(--success);font-weight:700}
+
+/* Confetti */
+.confetti-piece{position:fixed;width:10px;height:10px;top:-10px;z-index:250;animation:confettiDrop 2s ease-in forwards;pointer-events:none}
+
+/* Table */
+.data-table{width:100%;border-collapse:separate;border-spacing:0;font-size:13px}
+.data-table thead th{background:var(--bg-main);padding:10px 12px;text-align:left;font-weight:600;font-size:12px;text-transform:uppercase;color:var(--text-mid);border-bottom:2px solid var(--border)}
+.data-table tbody td{padding:10px 12px;border-bottom:1px solid var(--border)}
+.data-table tbody tr:hover{background:rgba(59,130,246,.03)}
+.table-wrap{overflow-x:auto;border-radius:var(--radius-md);border:1px solid var(--border)}
+
+/* Quick Actions */
+.quick-actions{display:flex;gap:10px;margin-bottom:28px;flex-wrap:wrap}
+
+/* XP progress */
+.xp-progress{background:var(--bg-main);border-radius:var(--radius-full);height:10px;overflow:hidden;margin-top:6px}
+.xp-progress .xp-fill{height:100%;background:linear-gradient(90deg,var(--accent),var(--primary-light));border-radius:var(--radius-full);transition:width .6s ease}
+
+/* Student activity */
+.activity-item{display:flex;align-items:flex-start;gap:10px;padding:8px 0;border-bottom:1px solid var(--border)}
+.activity-item:last-child{border-bottom:none}
+.activity-item .act-icon{width:32px;height:32px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:14px;flex-shrink:0}
+.activity-item .act-text{font-size:13px}
+.activity-item .act-time{font-size:11px;color:var(--text-light)}
+
+/* Star rating */
+.star-rating{display:flex;gap:4px;font-size:22px;cursor:pointer}
+.star-rating .star{color:var(--border);transition:var(--transition)}
+.star-rating .star.active{color:var(--warning)}
+
+/* Toggle switch */
+.toggle-switch{position:relative;width:44px;height:24px;cursor:pointer;display:inline-block}
+.toggle-switch input{display:none}
+.toggle-switch .slider{position:absolute;inset:0;background:var(--border);border-radius:var(--radius-full);transition:var(--transition)}
+.toggle-switch .slider:before{content:'';position:absolute;width:18px;height:18px;border-radius:50%;background:#fff;top:3px;left:3px;transition:var(--transition)}
+.toggle-switch input:checked+.slider{background:var(--success)}
+.toggle-switch input:checked+.slider:before{transform:translateX(20px)}
+
+/* AI Assistant */
+.ai-assistant-card{background:var(--bg-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);border:1px solid var(--border);overflow:hidden;margin-bottom:24px}
+.assistant-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:linear-gradient(135deg,#1E3A8A,#7C3AED);color:white;cursor:pointer}
+.assistant-title{display:flex;align-items:center;gap:10px;font-family:'Poppins',sans-serif;font-weight:600;font-size:15px}
+.assistant-badge{font-size:10px;background:rgba(255,255,255,0.2);padding:2px 8px;border-radius:99px;font-weight:400}
+.assistant-toggle{background:none;color:#fff;font-size:14px}
+.assistant-body{padding:20px}
+.api-key-input-row{display:flex;gap:8px;margin-top:10px}
+.api-key-input-row input{flex:1;padding:8px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:13px}
+.api-key-input-row button{padding:8px 16px;background:var(--accent);color:#fff;border-radius:var(--radius-sm);font-size:13px}
+.quick-prompts-label{font-size:13px;font-weight:500;color:var(--text-mid);margin-bottom:6px}
+.quick-btn-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:8px}
+.quick-btn{padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);background:var(--bg-main);font-size:12px;font-family:'Inter',sans-serif;cursor:pointer;text-align:left;transition:var(--transition);color:var(--text-dark)}
+.quick-btn:hover{border-color:var(--accent);background:rgba(124,58,237,0.05);color:var(--accent)}
+.chat-messages{max-height:350px;overflow-y:auto;padding:12px;background:var(--bg-main);border-radius:var(--radius-sm);margin:12px 0;display:flex;flex-direction:column;gap:12px}
+.chat-message{padding:12px 16px;border-radius:var(--radius-md);font-size:14px;line-height:1.6;font-family:'Inter',sans-serif;animation:slideUp 0.3s ease;white-space:pre-wrap}
+.chat-message.user{background:var(--primary);color:white;align-self:flex-end;max-width:85%;border-bottom-right-radius:4px}
+.chat-message.assistant{background:white;color:var(--text-dark);border:1px solid var(--border);align-self:flex-start;max-width:95%;border-bottom-left-radius:4px}
+.chat-message.loading{background:white;border:1px solid var(--border);color:var(--text-mid);font-style:italic}
+.chat-input-area textarea{width:100%;padding:12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:14px;resize:vertical;box-sizing:border-box;transition:var(--transition)}
+.chat-input-area textarea:focus{outline:none;border-color:var(--accent);box-shadow:0 0 0 3px rgba(124,58,237,0.1)}
+.chat-actions{display:flex;gap:8px;margin-top:8px;justify-content:flex-end}
+.send-btn{background:var(--accent);color:white;border:none;padding:10px 20px;border-radius:var(--radius-sm);cursor:pointer;font-family:'Inter',sans-serif;font-size:14px;display:flex;align-items:center;gap:6px;transition:var(--transition)}
+.send-btn:hover{background:var(--primary);transform:translateY(-1px)}
+.send-btn:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.clear-btn{background:transparent;color:var(--text-mid);border:1px solid var(--border);padding:10px 16px;border-radius:var(--radius-sm);cursor:pointer;font-size:14px;display:flex;align-items:center;gap:6px;transition:var(--transition)}
+.clear-btn:hover{border-color:var(--danger);color:var(--danger)}
+.response-actions{display:flex;gap:8px;margin-top:8px;flex-wrap:wrap}
+.response-actions button{padding:8px 14px;border-radius:var(--radius-sm);border:1px solid var(--border);background:white;font-size:13px;cursor:pointer;display:flex;align-items:center;gap:6px;transition:var(--transition);font-family:'Inter',sans-serif}
+.response-actions button:hover{border-color:var(--accent);color:var(--accent)}
+
+/* Cloud Sync */
+.sync-settings-card{background:var(--bg-card);border-radius:var(--radius-lg);box-shadow:var(--shadow-md);border:1px solid var(--border);overflow:hidden;margin-bottom:24px}
+.sync-header{display:flex;align-items:center;justify-content:space-between;padding:16px 20px;background:linear-gradient(135deg,#0F172A,#1E3A8A);color:white;cursor:pointer}
+.sync-title{display:flex;align-items:center;gap:10px;font-family:'Poppins',sans-serif;font-weight:600;font-size:15px}
+.sync-status-dot{width:8px;height:8px;border-radius:50%;background:#64748B;transition:var(--transition)}
+.sync-status-dot.connected{background:#10B981;box-shadow:0 0 6px #10B981;animation:pulse 2s infinite}
+.sync-status-dot.syncing{background:#F59E0B;animation:pulse 0.5s infinite}
+.sync-status-dot.error{background:#EF4444}
+.sync-status-text{font-size:12px;font-weight:400;opacity:0.8}
+.sync-body{padding:20px}
+.sync-description{color:var(--text-mid);font-size:14px;margin-bottom:16px;line-height:1.6}
+.sync-steps{background:var(--bg-main);border-radius:var(--radius-sm);padding:14px 16px;margin-bottom:16px;font-size:13px;color:var(--text-dark);line-height:1.8}
+.sync-steps ol{margin-left:18px}
+.sync-steps a{color:var(--accent);text-decoration:none;font-weight:600}
+.sync-input-group{margin-bottom:16px}
+.sync-input-group label{display:block;font-size:13px;font-weight:500;color:var(--text-dark);margin-bottom:6px}
+.sync-input-row{display:flex;gap:8px}
+.sync-input-row input{flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:13px;transition:var(--transition)}
+.sync-input-row input:focus{outline:none;border-color:var(--primary);box-shadow:0 0 0 3px rgba(30,58,138,0.1)}
+.sync-btn-primary{background:var(--primary);color:white;border:none;padding:10px 16px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px;transition:var(--transition);white-space:nowrap}
+.sync-btn-primary:hover{background:var(--accent);transform:translateY(-1px)}
+.sync-btn-primary:disabled{opacity:0.6;cursor:not-allowed;transform:none}
+.sync-btn-danger{background:transparent;color:var(--danger);border:1px solid var(--danger);padding:10px 16px;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;font-family:'Inter',sans-serif;display:flex;align-items:center;gap:6px;transition:var(--transition)}
+.sync-btn-danger:hover{background:var(--danger);color:white}
+.bin-id-display{background:var(--bg-main);border-radius:var(--radius-sm);padding:14px;margin-bottom:16px}
+.bin-id-display label{display:block;font-size:12px;color:var(--text-mid);margin-bottom:8px}
+.bin-id-row{display:flex;align-items:center;gap:8px}
+.bin-id-row code{flex:1;background:white;border:1px solid var(--border);border-radius:var(--radius-sm);padding:8px 12px;font-size:13px;color:var(--primary);font-weight:600;letter-spacing:1px}
+.bin-id-row button{padding:8px 14px;border:1px solid var(--border);border-radius:var(--radius-sm);background:white;cursor:pointer;font-size:13px;color:var(--text-mid);display:flex;align-items:center;gap:6px;transition:var(--transition)}
+.bin-id-row button:hover{border-color:var(--accent);color:var(--accent)}
+.bin-id-hint{font-size:12px;color:var(--text-mid);margin-top:8px}
+.sync-actions{display:flex;gap:8px;margin-bottom:12px;flex-wrap:wrap}
+.last-sync-info{color:var(--text-light);font-size:12px}
+.student-sync-section{margin-top:20px}
+.sync-divider{text-align:center;position:relative;margin:16px 0}
+.sync-divider::before{content:'';position:absolute;top:50%;left:0;right:0;height:1px;background:var(--border)}
+.sync-divider span{background:white;padding:0 12px;position:relative;font-size:12px;color:var(--text-mid)}
+.student-sync-hint{font-size:13px;color:var(--text-mid);margin-bottom:10px;text-align:center}
+.student-sync-row{display:flex;gap:8px}
+.student-sync-row input{flex:1;padding:10px 12px;border:1px solid var(--border);border-radius:var(--radius-sm);font-family:'Inter',sans-serif;font-size:13px}
+.student-sync-row button{padding:10px 16px;background:var(--accent);color:white;border:none;border-radius:var(--radius-sm);cursor:pointer;font-size:13px;display:flex;align-items:center;gap:6px;transition:var(--transition);white-space:nowrap}
+.student-sync-row button:hover{background:var(--primary)}
+.sync-chevron{transition:transform 0.3s ease}
+
+/* Print */
+@media print{
+.sidebar,.mobile-header,.bottom-nav,.sidebar-overlay,.modal-overlay,.toast-container,.badge-unlock-overlay,.btn,.filter-bar,.tab-bar,.quick-actions,.task-actions,.no-print{display:none!important}
+.main-content{margin-left:0!important;padding:0!important}
+.view{display:block!important;page-break-inside:avoid}
+.view:not(.print-target){display:none!important}
+.print-target{display:block!important}
+body{background:#fff;font-size:12px}
+.card{box-shadow:none;border:1px solid #ddd}
+.print-header{display:block!important;text-align:center;margin-bottom:20px;padding:20px;border-bottom:2px solid var(--primary)}
+.print-header h1{font-size:24px;color:var(--primary)}
+.print-header p{color:var(--text-mid)}
+}
+.print-header{display:none}
+
+/* Misc */
+.empty-state{text-align:center;padding:40px 20px;color:var(--text-mid)}
+.empty-state i{font-size:48px;margin-bottom:12px;color:var(--text-light)}
+.empty-state h3{margin-bottom:6px;color:var(--text-dark)}
+.count-badge{background:var(--danger);color:#fff;font-size:11px;font-weight:700;border-radius:var(--radius-full);padding:1px 7px;margin-left:6px}
+.text-success{color:var(--success)}.text-danger{color:var(--danger)}.text-warning{color:var(--warning)}.text-primary{color:var(--primary-light)}
+.mt-1{margin-top:8px}.mt-2{margin-top:16px}.mt-3{margin-top:24px}.mb-1{margin-bottom:8px}.mb-2{margin-bottom:16px}.mb-3{margin-bottom:24px}
+.flex{display:flex}.flex-between{display:flex;justify-content:space-between;align-items:center}.flex-center{display:flex;align-items:center}.gap-1{gap:8px}.gap-2{gap:16px}
+.grid-2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+.img-full{width:100%;border-radius:var(--radius-sm);cursor:pointer}
+</style>
+</head>
+<body>
+
+<!-- Toast Container -->
+<div class="toast-container" id="toastContainer"></div>
+
+<!-- Badge Unlock Overlay -->
+<div class="badge-unlock-overlay" id="badgeUnlockOverlay">
+<div class="badge-unlock-content">
+<span class="badge-big" id="badgeUnlockEmoji"></span>
+<h2>🎉 New Badge Unlocked!</h2>
+<p id="badgeUnlockName"></p>
+<div class="xp-bonus">+20 XP</div>
+</div>
+</div>
+
+<!-- ══════════ LANDING ══════════ -->
+<div class="view active" id="view-landing">
+<div class="landing-bg" id="landingBg">
+<i class="fas fa-robot landing-logo"></i>
+<h1 class="landing-title">Learn AI</h1>
+<p class="landing-sub">with Mateen</p>
+<p class="landing-tag">Your Personal AI Learning Journey, Guided by Mateen</p>
+<div class="landing-cards">
+<div class="landing-card lc-teacher" onclick="showView('view-teacher-login')">
+<i class="fas fa-chalkboard-teacher"></i>
+<h3>I'm the Teacher</h3>
+<p>Mateen's Dashboard</p>
+</div>
+<div class="landing-card lc-student" onclick="showView('view-student-entry')">
+<i class="fas fa-user-graduate"></i>
+<h3>I'm a Student</h3>
+<p>Start Learning!</p>
+</div>
+</div>
+</div>
+</div>
+
+<!-- ══════════ TEACHER LOGIN ══════════ -->
+<div class="view" id="view-teacher-login">
+<div class="auth-screen">
+<div style="text-align:center">
+<div class="auth-card" id="teacherLoginCard">
+<i class="fas fa-lock auth-icon"></i>
+<h2>Teacher Access</h2>
+<p>Enter your password to continue</p>
+<div class="input-group">
+<label>Password</label>
+<input type="password" id="teacherPwInput" placeholder="Enter password...">
+<button class="toggle-pw" onclick="togglePw()"><i class="fas fa-eye"></i></button>
+</div>
+<div class="error-msg" id="teacherLoginError">Wrong password. Try again.</div>
+<button class="btn btn-primary btn-full" onclick="teacherLogin()"><i class="fas fa-sign-in-alt"></i> Enter Dashboard</button>
+</div>
+<div class="back-link" onclick="showView('view-landing')"><i class="fas fa-arrow-left"></i> Back to Home</div>
+</div>
+</div>
+</div>
+
+<!-- ══════════ STUDENT ENTRY ══════════ -->
+<div class="view" id="view-student-entry">
+<div class="auth-screen">
+<div style="text-align:center">
+<div class="auth-card" id="studentEntryCard">
+<i class="fas fa-graduation-cap auth-icon" style="color:var(--accent)"></i>
+<h2>Welcome, Learner!</h2>
+<p>Enter your name to start</p>
+<div class="input-group">
+<label>Your Name</label>
+<input type="text" id="studentNameInput" placeholder="Type your name...">
+</div>
+<div class="error-msg" id="studentEntryError"></div>
+<button class="btn btn-accent btn-full" onclick="studentLogin()"><i class="fas fa-rocket"></i> Start Learning →</button>
+<div id="existingStudents"></div>
+<div class="student-sync-section">
+<div class="sync-divider"><span>Optional: Connect to Class</span></div>
+<p class="student-sync-hint">Have a Bin ID from your teacher? Enter it to sync with class data.</p>
+<div class="student-sync-row">
+<input type="text" id="studentBinId" placeholder="Enter Bin ID from teacher...">
+<button id="connectStudentSync"><i class="fas fa-link"></i> Connect</button>
+</div>
+<div id="studentSyncStatus" style="display:none;margin-top:8px;text-align:center"></div>
+</div>
+</div>
+<div class="back-link" onclick="showView('view-landing')"><i class="fas fa-arrow-left"></i> Back to Home</div>
+</div>
+</div>
+</div>
+
+<!-- ══════════ TEACHER DASHBOARD LAYOUT ══════════ -->
+<div class="view" id="view-teacher-dash">
+<div class="mobile-header">
+<button class="hamburger" onclick="toggleSidebar()"><i class="fas fa-bars"></i></button>
+<span class="logo-sm">🤖 Learn AI</span>
+<button class="hamburger" onclick="teacherLogout()"><i class="fas fa-sign-out-alt"></i></button>
+</div>
+<div class="sidebar-overlay" id="sidebarOverlay" onclick="toggleSidebar()"></div>
+<div class="sidebar" id="teacherSidebar">
+<div class="sidebar-header">
+<div class="logo-row"><i class="fas fa-robot"></i><span>Learn AI</span></div>
+<div class="profile-avatar-wrapper" id="teacherAvatarWrapper" onclick="document.getElementById('teacherImageInput').click()">
+<div class="profile-avatar" id="teacherAvatar">M</div>
+<div class="avatar-edit-btn" title="Change profile photo"><i class="fas fa-camera"></i></div>
+</div>
+<input type="file" id="teacherImageInput" accept="image/*" style="display:none">
+<div style="text-align:center"><strong>Mateen</strong><div style="font-size:11px;opacity:.7">👨‍🏫 Teacher</div></div>
+</div>
+<nav class="sidebar-nav">
+<a class="active" onclick="teacherNav('dashboard')"><i class="fas fa-chart-pie"></i> Dashboard</a>
+<a onclick="teacherNav('tasks')"><i class="fas fa-tasks"></i> Manage Tasks</a>
+<a onclick="teacherNav('submissions')"><i class="fas fa-inbox"></i> Review Submissions <span class="count-badge" id="pendingCountBadge" style="display:none">0</span></a>
+<a onclick="teacherNav('saves')"><i class="fas fa-bookmark"></i> Save Area</a>
+<a onclick="teacherNav('tools')"><i class="fas fa-robot"></i> AI Tools</a>
+<a onclick="teacherNav('announcements')"><i class="fas fa-bullhorn"></i> Announcements</a>
+<a onclick="teacherNav('reports')"><i class="fas fa-chart-bar"></i> Reports</a>
+<a onclick="teacherNav('leaderboard')"><i class="fas fa-trophy"></i> Leaderboard</a>
+<a onclick="teacherLogout()"><i class="fas fa-sign-out-alt"></i> Logout</a>
+</nav>
+</div>
+<div class="bottom-nav" id="teacherBottomNav">
+<div class="bottom-nav-inner">
+<a class="active" onclick="teacherNav('dashboard')"><i class="fas fa-chart-pie"></i>Home</a>
+<a onclick="teacherNav('tasks')"><i class="fas fa-tasks"></i>Tasks</a>
+<a onclick="teacherNav('submissions')"><i class="fas fa-inbox"></i>Review</a>
+<a onclick="teacherNav('reports')"><i class="fas fa-chart-bar"></i>Reports</a>
+<a onclick="teacherNav('leaderboard')"><i class="fas fa-trophy"></i>Board</a>
+</div>
+</div>
+<div class="main-content" id="teacherMainContent">
+<!-- Teacher sub-views rendered here by JS -->
+</div>
+</div>
+
+<!-- ══════════ STUDENT DASHBOARD LAYOUT ══════════ -->
+<div class="view" id="view-student-dash">
+<div class="mobile-header">
+<button class="hamburger" onclick="toggleStudentSidebar()"><i class="fas fa-bars"></i></button>
+<span class="logo-sm">🤖 Learn AI</span>
+<button class="hamburger" onclick="studentLogout()"><i class="fas fa-sign-out-alt"></i></button>
+</div>
+<div class="sidebar-overlay" id="studentSidebarOverlay" onclick="toggleStudentSidebar()"></div>
+<div class="sidebar" id="studentSidebar" style="background:var(--accent)">
+<div class="sidebar-header">
+<div class="logo-row"><i class="fas fa-robot"></i><span>Learn AI</span></div>
+<div class="profile-avatar-wrapper" id="studentAvatarWrapper" onclick="document.getElementById('studentImageInput').click()">
+<div class="profile-avatar" id="studentAvatar">S</div>
+<div class="avatar-edit-btn" title="Change profile photo"><i class="fas fa-camera"></i></div>
+</div>
+<input type="file" id="studentImageInput" accept="image/*" style="display:none">
+<div style="text-align:center"><strong id="studentSidebarName">Student</strong><div id="studentSidebarLevel" style="font-size:11px;opacity:.7">🌱 Beginner</div></div>
+<div class="xp-progress mt-1"><div class="xp-fill" id="studentSidebarXpBar" style="width:0%"></div></div>
+</div>
+<nav class="sidebar-nav">
+<a class="active" onclick="studentNav('dashboard')"><i class="fas fa-home"></i> My Dashboard</a>
+<a onclick="studentNav('tasks')"><i class="fas fa-clipboard-list"></i> My Tasks</a>
+<a onclick="studentNav('saves')"><i class="fas fa-bookmark"></i> Save Area</a>
+<a onclick="studentNav('tools')"><i class="fas fa-robot"></i> AI Tools</a>
+<a onclick="studentNav('reports')"><i class="fas fa-chart-line"></i> My Report</a>
+<a onclick="studentNav('badges')"><i class="fas fa-trophy"></i> My Badges</a>
+<a onclick="studentNav('leaderboard')"><i class="fas fa-medal"></i> Leaderboard</a>
+<a onclick="studentLogout()"><i class="fas fa-sign-out-alt"></i> Exit</a>
+</nav>
+</div>
+<div class="bottom-nav" id="studentBottomNav">
+<div class="bottom-nav-inner">
+<a class="active" onclick="studentNav('dashboard')"><i class="fas fa-home"></i>Home</a>
+<a onclick="studentNav('tasks')"><i class="fas fa-clipboard-list"></i>Tasks</a>
+<a onclick="studentNav('badges')"><i class="fas fa-trophy"></i>Badges</a>
+<a onclick="studentNav('tools')"><i class="fas fa-robot"></i>Tools</a>
+<a onclick="studentNav('leaderboard')"><i class="fas fa-medal"></i>Board</a>
+</div>
+</div>
+<div class="main-content" id="studentMainContent">
+<!-- Student sub-views rendered here by JS -->
+</div>
+</div>
+
+<!-- ══════════ MODALS ══════════ -->
+<!-- Task Form Modal -->
+<div class="modal-overlay" id="taskFormModal">
+<div class="modal">
+<div class="modal-header"><h3 id="taskFormTitle">Add New Task</h3><button class="modal-close" onclick="closeModal('taskFormModal')"><i class="fas fa-times"></i></button></div>
+<div id="taskFormBody">
+<div class="form-group">
+<label>Task Type</label>
+<div class="toggle-group"><input type="radio" name="taskType" value="assigned" id="taskTypeAssigned" checked><label for="taskTypeAssigned">📋 Assigned</label><input type="radio" name="taskType" value="daily" id="taskTypeDaily"><label for="taskTypeDaily">🔄 Daily</label></div>
+</div>
+<div class="form-group"><label>Title *</label><input type="text" id="taskTitleInput" placeholder="Task title..."><div class="error" id="taskTitleError">Title is required</div></div>
+<div class="form-group"><label>Description *</label><textarea id="taskDescInput" rows="4" placeholder="Describe the task..."></textarea><div class="error" id="taskDescError">Description is required</div></div>
+<div class="form-row">
+<div class="form-group"><label>AI Tool</label><input type="text" id="taskToolInput" list="toolSuggestions" placeholder="e.g. ChatGPT"><datalist id="toolSuggestions"><option value="ChatGPT"><option value="Claude"><option value="Gemini"><option value="DALL-E"><option value="Canva"><option value="Perplexity"><option value="Midjourney"><option value="Suno AI"><option value="Runway ML"><option value="Gamma"><option value="Multiple"><option value="Other"></datalist></div>
+<div class="form-group"><label>Category</label><select id="taskCatInput"><option value="Text AI">Text AI</option><option value="Image AI">Image AI</option><option value="Productivity">Productivity</option><option value="Account Setup">Account Setup</option><option value="Prompting">Prompting</option><option value="Video AI">Video AI</option><option value="Music AI">Music AI</option><option value="Research AI">Research AI</option><option value="Design AI">Design AI</option><option value="Other">Other</option></select></div>
+</div>
+<div class="form-group">
+<label>Difficulty</label>
+<div class="toggle-group difficulty-toggle"><input type="radio" name="taskDiff" value="Beginner" id="diffBeginner" checked><label for="diffBeginner" class="lbl-beginner">🟢 Beginner</label><input type="radio" name="taskDiff" value="Medium" id="diffMedium"><label for="diffMedium" class="lbl-medium">🟡 Medium</label><input type="radio" name="taskDiff" value="Challenge" id="diffChallenge"><label for="diffChallenge" class="lbl-challenge">🔴 Challenge</label></div>
+</div>
+<div class="form-row">
+<div class="form-group"><label>Due Date (optional)</label><input type="date" id="taskDueInput"></div>
+<div class="form-group"><label>Order #</label><input type="number" id="taskOrderInput" placeholder="#" min="1"></div>
+</div>
+<input type="hidden" id="editingTaskId" value="">
+<button class="btn btn-primary btn-full mt-2" onclick="saveTask()"><i class="fas fa-save"></i> <span id="taskFormBtn">Add Task</span></button>
+</div>
+</div>
+</div>
+
+<!-- Review Modal -->
+<div class="modal-overlay" id="reviewModal">
+<div class="modal">
+<div class="modal-header"><h3>Review Submission</h3><button class="modal-close" onclick="closeModal('reviewModal')"><i class="fas fa-times"></i></button></div>
+<div id="reviewModalBody"></div>
+</div>
+</div>
+
+<!-- Task Detail Modal (Student) -->
+<div class="modal-overlay" id="taskDetailModal">
+<div class="modal">
+<div class="modal-header"><h3 id="taskDetailTitle">Task Detail</h3><button class="modal-close" onclick="closeModal('taskDetailModal')"><i class="fas fa-times"></i></button></div>
+<div id="taskDetailBody"></div>
+</div>
+</div>
+
+<!-- Save Form Modal -->
+<div class="modal-overlay" id="saveFormModal">
+<div class="modal">
+<div class="modal-header"><h3>Add to Save Area</h3><button class="modal-close" onclick="closeModal('saveFormModal')"><i class="fas fa-times"></i></button></div>
+<div id="saveFormBody">
+<div class="form-group">
+<label>Type</label>
+<div class="toggle-group"><input type="radio" name="saveType" value="link" id="saveTypeLink" checked><label for="saveTypeLink">🔗 Link</label><input type="radio" name="saveType" value="note" id="saveTypeNote"><label for="saveTypeNote">📝 Note</label><input type="radio" name="saveType" value="image" id="saveTypeImage"><label for="saveTypeImage">🖼️ Image</label><input type="radio" name="saveType" value="tip" id="saveTypeTip"><label for="saveTypeTip">💡 Tip</label><input type="radio" name="saveType" value="tool-review" id="saveTypeReview"><label for="saveTypeReview">🤖 Review</label></div>
+</div>
+<div class="form-group"><label>Title *</label><input type="text" id="saveTitleInput" placeholder="Title..."></div>
+<div id="saveDynamicFields"></div>
+<button class="btn btn-primary btn-full mt-2" onclick="saveItem()"><i class="fas fa-save"></i> Save It!</button>
+</div>
+</div>
+</div>
+
+<!-- Announcement Modal -->
+<div class="modal-overlay" id="annFormModal">
+<div class="modal">
+<div class="modal-header"><h3 id="annFormTitle">Post Announcement</h3><button class="modal-close" onclick="closeModal('annFormModal')"><i class="fas fa-times"></i></button></div>
+<div>
+<div class="form-group"><label>Message *</label><textarea id="annMsgInput" rows="4" placeholder="Write your announcement..."></textarea></div>
+<div class="form-group">
+<label>Type</label>
+<div class="toggle-group"><input type="radio" name="annType" value="info" id="annTypeInfo" checked><label for="annTypeInfo">📘 Info</label><input type="radio" name="annType" value="tip" id="annTypeTip"><label for="annTypeTip">💡 Tip</label><input type="radio" name="annType" value="warning" id="annTypeWarning"><label for="annTypeWarning">⚠️ Warning</label><input type="radio" name="annType" value="celebration" id="annTypeCeleb"><label for="annTypeCeleb">🎉 Celebration</label></div>
+</div>
+<input type="hidden" id="editingAnnId" value="">
+<button class="btn btn-primary btn-full mt-2" onclick="saveAnnouncement()"><i class="fas fa-bullhorn"></i> <span id="annFormBtn">Post Announcement</span></button>
+</div>
+</div>
+</div>
+
+<!-- Tool Form Modal -->
+<div class="modal-overlay" id="toolFormModal">
+<div class="modal">
+<div class="modal-header"><h3>Add Custom AI Tool</h3><button class="modal-close" onclick="closeModal('toolFormModal')"><i class="fas fa-times"></i></button></div>
+<div>
+<div class="form-group"><label>Tool Name *</label><input type="text" id="toolNameInput" placeholder="e.g. MyAI Tool"></div>
+<div class="form-group"><label>URL *</label><input type="url" id="toolUrlInput" placeholder="https://..."></div>
+<div class="form-group"><label>Description</label><textarea id="toolDescInput" rows="2" placeholder="Short description..."></textarea></div>
+<div class="form-row">
+<div class="form-group"><label>Icon (FA class)</label><input type="text" id="toolIconInput" placeholder="fa-wand-magic" value="fa-wand-magic"></div>
+<div class="form-group"><label>Color</label><input type="color" id="toolColorInput" value="#7C3AED"></div>
+</div>
+<button class="btn btn-primary btn-full mt-2" onclick="saveCustomTool()"><i class="fas fa-plus"></i> Add Tool</button>
+</div>
+</div>
+</div>
+
+<!-- Save Detail Modal -->
+<div class="modal-overlay" id="saveDetailModal">
+<div class="modal">
+<div class="modal-header"><h3 id="saveDetailTitle">Detail</h3><button class="modal-close" onclick="closeModal('saveDetailModal')"><i class="fas fa-times"></i></button></div>
+<div id="saveDetailBody"></div>
+</div>
+</div>
+
+<!-- Image Lightbox -->
+<div class="modal-overlay" id="imageLightbox" style="background:rgba(0,0,0,.85)">
+<div style="text-align:center;padding:20px"><button class="modal-close" onclick="closeModal('imageLightbox')" style="position:fixed;top:20px;right:20px;color:#fff;font-size:28px;background:none"><i class="fas fa-times"></i></button><img id="lightboxImg" style="max-width:90vw;max-height:85vh;border-radius:8px"></div>
+</div>
+
+<!-- Confirm Dialog -->
+<div class="modal-overlay" id="confirmDialog">
+<div class="modal" style="max-width:400px;text-align:center">
+<p id="confirmMsg" style="font-size:16px;margin-bottom:20px"></p>
+<div style="display:flex;gap:10px;justify-content:center">
+<button class="btn btn-outline" onclick="closeModal('confirmDialog')">Cancel</button>
+<button class="btn btn-danger" id="confirmBtn" onclick="">Confirm</button>
+</div>
+</div>
+</div>
+
+<!-- Import Data Input -->
+<input type="file" id="importDataInput" accept=".json" style="display:none">
+
+<script>
+// ═══════════════════════════
+// 1. CONSTANTS & STATE
+// ═══════════════════════════
+const KEYS = {
+  students: 'learnaiwm_students',
+  tasks: 'learnaiwm_tasks',
+  submissions: 'learnaiwm_submissions',
+  saves: 'learnaiwm_saves',
+  tools: 'learnaiwm_tools',
+  announcements: 'learnaiwm_announcements',
+  attendance: 'learnaiwm_attendance',
+  dailySubs: 'learnaiwm_daily_submissions',
+  teacherLoggedIn: 'learnaiwm_teacher_logged_in',
+  currentStudent: 'learnaiwm_current_student',
+  teacherAvatar: 'learnaiwm_teacher_avatar',
+  groqKey: 'learnaiwm_groq_key'
+};
+const AppState = { currentView:'landing', currentUser:null, isTeacher:false, teacherSubView:'dashboard', studentSubView:'dashboard' };
+
+const BADGES = [
+  {id:'first_step',icon:'🥇',name:'First Step!',description:'Submitted your first task',condition:'Submit 1 task'},
+  {id:'on_fire',icon:'🔥',name:'On Fire!',description:'Maintained a 7-day streak',condition:'7 consecutive login days'},
+  {id:'clean_sheet',icon:'💯',name:'Clean Sheet',description:'5 accepted with 0 rejections',condition:'5 accepted, 0 rejected'},
+  {id:'bot_whisperer',icon:'🤖',name:'Bot Whisperer',description:'Completed 5 ChatGPT tasks',condition:'5 ChatGPT tasks accepted'},
+  {id:'creative_ai',icon:'🎨',name:'Creative AI',description:'Mastered AI image creation',condition:'3 Image AI tasks accepted'},
+  {id:'perfect_week',icon:'⭐',name:'Perfect Week',description:'All tasks done in one week',condition:'All tasks in a week done'},
+  {id:'level_up',icon:'🚀',name:'Level Up!',description:'Reached Explorer level',condition:'Reach Explorer level'},
+  {id:'knowledge_saver',icon:'📚',name:'Knowledge Saver',description:'Saved 10+ items',condition:'Save 10 or more items'},
+  {id:'ai_pro',icon:'🌟',name:'AI Pro',description:'Reached the maximum level',condition:'Reach AI Pro level'}
+];
+const LEVELS = [{name:'Beginner',icon:'🌱',min:0,max:100},{name:'Learner',icon:'📖',min:101,max:300},{name:'Explorer',icon:'🔭',min:301,max:600},{name:'Specialist',icon:'⚡',min:601,max:1000},{name:'AI Pro',icon:'🌟',min:1001,max:Infinity}];
+const QUOTES = [
+  {text:"AI is not a replacement for human intelligence; it's a tool that amplifies human potential.",author:"Fei-Fei Li"},
+  {text:"The beautiful thing about learning is that no one can take it away from you.",author:"B.B. King"},
+  {text:"The future belongs to those who learn more skills and combine them in creative ways.",author:"Robert Greene"},
+  {text:"Every expert was once a beginner. Keep going!",author:"Anonymous"},
+  {text:"The best way to predict the future is to create it.",author:"Peter Drucker"},
+  {text:"Artificial intelligence is the new electricity.",author:"Andrew Ng"},
+  {text:"Technology is best when it brings people together.",author:"Matt Mullenweg"},
+  {text:"The only way to do great work is to love what you do.",author:"Steve Jobs"},
+  {text:"Innovation distinguishes between a leader and a follower.",author:"Steve Jobs"},
+  {text:"The advance of technology is based on making it fit in so that you don't really even notice it.",author:"Bill Gates"},
+  {text:"Learning never exhausts the mind.",author:"Leonardo da Vinci"},
+  {text:"The capacity to learn is a gift; the ability to learn is a skill; the willingness to learn is a choice.",author:"Brian Herbert"},
+  {text:"In a world of change, the learners shall inherit the earth.",author:"Eric Hoffer"},
+  {text:"Curiosity is the engine of achievement.",author:"Ken Robinson"},
+  {text:"Success is not final, failure is not fatal: it is the courage to continue that counts.",author:"Winston Churchill"},
+  {text:"The more that you read, the more things you will know.",author:"Dr. Seuss"},
+  {text:"Education is the passport to the future.",author:"Malcolm X"},
+  {text:"It does not matter how slowly you go as long as you do not stop.",author:"Confucius"},
+  {text:"The expert in anything was once a beginner.",author:"Helen Hayes"},
+  {text:"AI will transform every industry. The question is how fast.",author:"Satya Nadella"},
+  {text:"Machine intelligence is the last invention that humanity will ever need to make.",author:"Nick Bostrom"},
+  {text:"Stay hungry, stay foolish.",author:"Steve Jobs"},
+  {text:"The biggest risk is not taking any risk.",author:"Mark Zuckerberg"},
+  {text:"Tell me and I forget, teach me and I may remember, involve me and I learn.",author:"Benjamin Franklin"},
+  {text:"Your limitation—it's only your imagination.",author:"Anonymous"},
+  {text:"Dream big and dare to fail.",author:"Norman Vaughan"},
+  {text:"What we know is a drop, what we don't know is an ocean.",author:"Isaac Newton"},
+  {text:"The only impossible journey is the one you never begin.",author:"Tony Robbins"},
+  {text:"Do something today that your future self will thank you for.",author:"Sean Patrick Flanery"},
+  {text:"With AI, the possibilities are limitless. The only limit is your creativity.",author:"Anonymous"},
+  {text:"Knowledge is power. Information is liberating.",author:"Kofi Annan"},
+  {text:"The future is already here — it's just not evenly distributed.",author:"William Gibson"}
+];
+
+// ═══════════════════════════
+// 2. DATA LAYER
+// ═══════════════════════════
+const DB = {
+  get(key){ try{ return JSON.parse(localStorage.getItem(key)) } catch(e){ return null } },
+  set(key, data){ localStorage.setItem(key, JSON.stringify(data)) },
+  getStudents(){ return this.get(KEYS.students) || [] },
+  getTasks(){ return this.get(KEYS.tasks) || [] },
+  getSubmissions(){ return this.get(KEYS.submissions) || [] },
+  getSaves(){ return this.get(KEYS.saves) || [] },
+  getTools(){ return this.get(KEYS.tools) || [] },
+  getAnnouncements(){ return this.get(KEYS.announcements) || [] },
+  getAttendance(){ return this.get(KEYS.attendance) || {} },
+  getDailySubs(){ return this.get(KEYS.dailySubs) || {} }
+};
+
+// ═══════════════════════════
+// 3. PRE-LOADED DATA
+// ═══════════════════════════
+const PRELOADED_TASKS = [
+  {order:1,title:"Create Your Google Gmail Account",description:"Your first step! Create a fresh Google Gmail account. This will be used for all AI tools we explore. Screenshot your new inbox as proof.",aiTool:"Google",difficulty:"Beginner",category:"Account Setup",type:"assigned"},
+  {order:2,title:"Set Up a Free ChatGPT Account",description:"Go to chat.openai.com and create a free account using your new Gmail. Explore the interface. Screenshot your ChatGPT dashboard as proof.",aiTool:"ChatGPT",difficulty:"Beginner",category:"Account Setup",type:"assigned"},
+  {order:3,title:"Send Your First ChatGPT Message",description:"Open ChatGPT and send your very first message. Ask it anything — introduce yourself or ask a simple question. Screenshot the conversation.",aiTool:"ChatGPT",difficulty:"Beginner",category:"Text AI",type:"assigned"},
+  {order:4,title:"Create a Canva Account",description:"Go to canva.com and sign up with your Gmail. Explore the dashboard and templates. Screenshot your Canva home screen.",aiTool:"Canva",difficulty:"Beginner",category:"Account Setup",type:"assigned"},
+  {order:5,title:"Set Up Microsoft Account & Try Copilot",description:"Create a Microsoft account and try Microsoft Copilot AI. Ask it one question and screenshot the result. Compare it mentally to ChatGPT.",aiTool:"Microsoft Copilot",difficulty:"Beginner",category:"Account Setup",type:"assigned"},
+  {order:6,title:"Write About Yourself Using ChatGPT",description:"Ask ChatGPT to write a short introduction about you. Tell it your name, age, and interests and let it write a paragraph. Screenshot the result.",aiTool:"ChatGPT",difficulty:"Beginner",category:"Text AI",type:"assigned"},
+  {order:7,title:"Translate Text Using ChatGPT",description:"Find any paragraph in another language (or write in Urdu/your language) and ask ChatGPT to translate it to English. Screenshot the translation.",aiTool:"ChatGPT",difficulty:"Beginner",category:"Text AI",type:"assigned"},
+  {order:8,title:"Create Your First Canva Design",description:"Use Canva to create a simple social media post. Use any template you like. Add your name to it. Download it and upload it here as proof.",aiTool:"Canva",difficulty:"Beginner",category:"Design AI",type:"assigned"},
+  {order:9,title:"Explore Google Gemini",description:"Go to gemini.google.com and ask Gemini 3 different questions. Note how it differs from ChatGPT. Screenshot your conversation.",aiTool:"Gemini",difficulty:"Beginner",category:"Text AI",type:"assigned"},
+  {order:10,title:"Sign Up for Perplexity AI & Research",description:"Create an account on perplexity.ai and research any topic you are curious about. Notice how it shows sources. Screenshot your research results.",aiTool:"Perplexity",difficulty:"Beginner",category:"Research AI",type:"assigned"},
+  {order:11,title:"Learn Basic Prompt Engineering",description:"Write a detailed, specific prompt for ChatGPT to get a much better answer than a simple question. Example: Instead of 'write a story' say 'write a 200-word story about a robot learning to paint, in a friendly tone'. Compare both results. Screenshot both.",aiTool:"ChatGPT",difficulty:"Medium",category:"Prompting",type:"assigned"},
+  {order:12,title:"Create a Study Plan With ChatGPT",description:"Ask ChatGPT to create a complete 4-week study plan for any subject you want to learn. The plan should include daily tasks. Screenshot the full plan.",aiTool:"ChatGPT",difficulty:"Medium",category:"Text AI",type:"assigned"},
+  {order:13,title:"Generate Your First AI Image",description:"Use DALL-E (through ChatGPT Plus or bing.com/create) to generate an image using a creative prompt you write. Screenshot the generated image and write what prompt you used.",aiTool:"DALL-E",difficulty:"Medium",category:"Image AI",type:"assigned"},
+  {order:14,title:"Build a Canva Presentation",description:"Create a Canva presentation with minimum 5 slides on any topic you choose. Use different layouts for each slide. Download as PDF or screenshot all slides.",aiTool:"Canva",difficulty:"Medium",category:"Design AI",type:"assigned"},
+  {order:15,title:"Write a Creative Story With Claude",description:"Go to claude.ai, create an account, and ask Claude to help you write a creative short story (minimum 200 words). Give it a theme and characters. Screenshot the story.",aiTool:"Claude",difficulty:"Medium",category:"Text AI",type:"assigned"},
+  {order:16,title:"Research & Summarize With Perplexity",description:"Use Perplexity AI to deeply research any topic for 15 minutes. Then write a 5-sentence summary IN YOUR OWN WORDS of what you learned. Submit the screenshot + your summary text.",aiTool:"Perplexity",difficulty:"Medium",category:"Research AI",type:"assigned"},
+  {order:17,title:"Create a Professional CV Using AI",description:"Use ChatGPT to generate professional CV content (even a fictional one). Then paste it into a Canva CV template and design it beautifully. Screenshot the final CV.",aiTool:"ChatGPT + Canva",difficulty:"Medium",category:"Productivity",type:"assigned"},
+  {order:18,title:"Generate 3 Images With Different Styles",description:"Create 3 AI-generated images using DALL-E or Bing Image Creator. Each image must use a DIFFERENT style: 1) Realistic, 2) Cartoon, 3) Abstract. Screenshot all 3 with the prompts used.",aiTool:"DALL-E",difficulty:"Medium",category:"Image AI",type:"assigned"},
+  {order:19,title:"Create an AI Presentation With Gamma",description:"Go to gamma.app, create an account, and use AI to generate a presentation on any topic. Let the AI create the slides. Screenshot the result.",aiTool:"Gamma",difficulty:"Medium",category:"Productivity",type:"assigned"},
+  {order:20,title:"Master Role Prompting",description:"Use 'role prompting' — tell ChatGPT to act as a specific expert (doctor, lawyer, chef, teacher, etc.) and ask it 5 professional questions. Example: 'Act as a nutritionist. I am 16 years old...' Screenshot the full conversation.",aiTool:"ChatGPT",difficulty:"Medium",category:"Prompting",type:"assigned"},
+  {order:21,title:"Create a Social Media Post With 2 AI Tools",description:"Use ChatGPT to write the caption and hashtags for a post. Then use Canva to design the visual. Combine both into one complete, professional social media post. Upload the final design.",aiTool:"ChatGPT + Canva",difficulty:"Challenge",category:"Design AI",type:"assigned"},
+  {order:22,title:"Generate a Song With Suno AI",description:"Go to suno.ai and create an account. Write custom lyrics about anything you like, then generate a song from them using Suno AI. Screenshot the generated song page.",aiTool:"Suno AI",difficulty:"Challenge",category:"Music AI",type:"assigned"},
+  {order:23,title:"Create or Edit a Video With Runway ML",description:"Go to runwayml.com and try the free AI video generation or editing tools. Create a short AI video clip. Screenshot your result and describe what you made.",aiTool:"Runway ML",difficulty:"Challenge",category:"Video AI",type:"assigned"},
+  {order:24,title:"Write a Complete Business Idea With ChatGPT",description:"Ask ChatGPT to help you develop a complete business idea. Include: business name, what it sells, target customers, how it makes money, and 3 marketing ideas. Screenshot the full business plan.",aiTool:"ChatGPT",difficulty:"Challenge",category:"Text AI",type:"assigned"},
+  {order:25,title:"Create an AI Prompt Chain",description:"Advanced task! Step 1: Use ChatGPT to write a detailed scene description. Step 2: Use that EXACT text as an image prompt in DALL-E. Step 3: Screenshot both the text AND the generated image. Explain the process in your submission.",aiTool:"ChatGPT + DALL-E",difficulty:"Challenge",category:"Prompting",type:"assigned"},
+  {order:26,title:"Compare 3 AI Tools on the Same Task",description:"Choose ONE task (e.g. 'write a poem about rain'). Ask ChatGPT, Claude, AND Gemini the exact same prompt. Compare all 3 responses. Write which one was best and why. Screenshot all 3 results.",aiTool:"ChatGPT + Claude + Gemini",difficulty:"Challenge",category:"Research AI",type:"assigned"},
+  {order:27,title:"Create a Consistent AI Character",description:"Use DALL-E or Midjourney to create the same character in 3 different scenes/situations. The character must look the same in all 3 images. This requires careful prompt writing. Submit all 3 images.",aiTool:"DALL-E / Midjourney",difficulty:"Challenge",category:"Image AI",type:"assigned"},
+  {order:28,title:"Build a Complete Brand Kit With AI",description:"Use ChatGPT to create a brand for an imaginary business: name, colors, fonts, and tagline. Then use Canva to create a brand kit (logo concept, color palette card, and one branded post). Screenshot everything.",aiTool:"ChatGPT + Canva",difficulty:"Challenge",category:"Design AI",type:"assigned"},
+  {order:29,title:"Build a 7-Day Content Calendar",description:"Use ChatGPT to create a complete 7-day social media content calendar. For each day include: topic, caption (100+ words), 10 hashtags, and best posting time. Screenshot the complete calendar.",aiTool:"ChatGPT",difficulty:"Challenge",category:"Productivity",type:"assigned"},
+  {order:30,title:"Write Your Own AI Tools Guide",description:"Your ultimate test! Write a guide explaining 5 AI tools in YOUR OWN WORDS — as if teaching someone else. Include: what it does, how to use it, best features, and one tip. Use screenshots from each tool. This should be 400+ words.",aiTool:"All Tools",difficulty:"Challenge",category:"Research AI",type:"assigned"},
+  {order:31,title:"Plan a Complete Event Using AI",description:"Use ChatGPT to plan a complete event (birthday, wedding, school function — your choice). Include: invitation text, schedule, task list, budget overview, and decoration ideas. Use Canva to design the invitation. Submit both.",aiTool:"ChatGPT + Canva",difficulty:"Challenge",category:"Productivity",type:"assigned"},
+  {order:32,title:"Create a Full YouTube Video Package",description:"For any topic, use: ChatGPT (write script + title options), Canva (design thumbnail), Perplexity (research the topic). Submit: the script, thumbnail design, and 3 title options with explanation of which is best.",aiTool:"ChatGPT + Canva + Perplexity",difficulty:"Challenge",category:"Productivity",type:"assigned"},
+  {order:33,title:"🏆 MASTER CHALLENGE: 3-Tool Project",description:"The ultimate challenge! Create any real project using MINIMUM 3 different AI tools working together. Examples: A mini magazine (ChatGPT + Canva + DALL-E), A research report (Perplexity + ChatGPT + Gamma), A music video concept (Suno + Runway + Canva). Document every step with screenshots and explain your process.",aiTool:"Multiple AI Tools",difficulty:"Challenge",category:"Other",type:"assigned"}
+];
+
+const DEFAULT_TOOLS = [
+  {name:"ChatGPT",url:"https://chat.openai.com",description:"Most popular AI chatbot for text, code, and creativity",icon:"fa-robot",color:"#10B981",isCustom:false,isVisible:true},
+  {name:"Midjourney",url:"https://www.midjourney.com",description:"Create stunning AI art and images from text descriptions",icon:"fa-paint-brush",color:"#7C3AED",isCustom:false,isVisible:true},
+  {name:"DALL-E",url:"https://openai.com/dall-e-3",description:"OpenAI's image generator. Create images from detailed prompts",icon:"fa-image",color:"#F59E0B",isCustom:false,isVisible:true},
+  {name:"Claude",url:"https://claude.ai",description:"Anthropic's AI — great for writing, analysis & long documents",icon:"fa-brain",color:"#EF4444",isCustom:false,isVisible:true},
+  {name:"Perplexity",url:"https://www.perplexity.ai",description:"AI-powered search engine that shows real sources and citations",icon:"fa-search",color:"#3B82F6",isCustom:false,isVisible:true},
+  {name:"Runway ML",url:"https://runwayml.com",description:"AI video generation and editing — create videos from text",icon:"fa-film",color:"#EC4899",isCustom:false,isVisible:true},
+  {name:"Suno AI",url:"https://suno.ai",description:"Generate complete songs with vocals from your lyrics/prompt",icon:"fa-music",color:"#8B5CF6",isCustom:false,isVisible:true},
+  {name:"Gamma",url:"https://gamma.app",description:"AI presentation maker — creates beautiful slides instantly",icon:"fa-desktop",color:"#06B6D4",isCustom:false,isVisible:true},
+  {name:"Cursor",url:"https://cursor.sh",description:"AI code editor — write and edit code with AI assistance",icon:"fa-code",color:"#1E293B",isCustom:false,isVisible:true},
+  {name:"Gemini",url:"https://gemini.google.com",description:"Google's AI — integrated with Google services and real-time data",icon:"fa-star",color:"#1E3A8A",isCustom:false,isVisible:true}
+];
+
+// ═══════════════════════════
+// 4. UTILITY FUNCTIONS
+// ═══════════════════════════
+function formatDate(d){ if(!d) return ''; const dt=new Date(d); return dt.toLocaleDateString('en-US',{month:'short',day:'numeric',year:'numeric'}) }
+function todayStr(){ return new Date().toISOString().split('T')[0] }
+function timeAgo(d){
+  const now=Date.now(), t=new Date(d).getTime(), diff=now-t;
+  const mins=Math.floor(diff/60000), hrs=Math.floor(diff/3600000), days=Math.floor(diff/86400000);
+  if(mins<1) return 'Just now'; if(mins<60) return mins+'m ago'; if(hrs<24) return hrs+'h ago'; if(days<7) return days+'d ago';
+  return formatDate(d);
+}
+function getInitials(name){ return name.split(' ').map(w=>w[0]).join('').toUpperCase().slice(0,2) }
+function getAvatarColor(name){ const colors=['#3B82F6','#7C3AED','#10B981','#EF4444','#F59E0B','#EC4899','#06B6D4','#8B5CF6']; let h=0; for(let i=0;i<name.length;i++) h=name.charCodeAt(i)+((h<<5)-h); return colors[Math.abs(h)%colors.length] }
+function greetTime(){ const h=new Date().getHours(); return h<12?'morning':h<17?'afternoon':'evening' }
+function getLevel(xp){ for(let i=LEVELS.length-1;i>=0;i--){ if(xp>=LEVELS[i].min) return LEVELS[i] } return LEVELS[0] }
+function getNextLevel(xp){ const cur=getLevel(xp); const idx=LEVELS.indexOf(cur); return idx<LEVELS.length-1?LEVELS[idx+1]:null }
+function getLevelProgress(xp){ const cur=getLevel(xp); const next=getNextLevel(xp); if(!next) return 100; return Math.min(100,((xp-cur.min)/(next.min-cur.min))*100) }
+function getDailyQuote(){ const day=Math.floor(Date.now()/86400000); return QUOTES[day%QUOTES.length] }
+function escHtml(s){ if(!s) return ''; const d=document.createElement('div'); d.textContent=s; return d.innerHTML }
+function diffBadgeClass(d){ return d==='Beginner'?'badge-beginner':d==='Medium'?'badge-medium':'badge-challenge' }
+function statusBadgeClass(s){ return s==='submitted'?'badge-submitted':s==='accepted'?'badge-accepted':s==='rejected'?'badge-rejected':'badge-pending' }
+function catColor(c){const m={'Text AI':'#3B82F6','Image AI':'#F59E0B','Productivity':'#10B981','Account Setup':'#64748B','Prompting':'#7C3AED','Video AI':'#EC4899','Music AI':'#8B5CF6','Research AI':'#06B6D4','Design AI':'#EF4444','Other':'#94A3B8'};return m[c]||'#64748B'}
+
+// Avatar HTML helper with photo support
+function getAvatarHTML(username, size=40){
+  const key = 'learnaiwm_avatar_' + username;
+  const saved = localStorage.getItem(key);
+  const initials = getInitials(username);
+  const color = getAvatarColor(username);
+  if(saved){
+    return `<div style="width:${size}px;height:${size}px;border-radius:50%;overflow:hidden;display:inline-flex;align-items:center;justify-content:center;flex-shrink:0"><img src="${saved}" style="width:100%;height:100%;object-fit:cover" alt="${escHtml(username)}"></div>`;
+  }
+  return `<div style="width:${size}px;height:${size}px;border-radius:50%;background:${color};display:inline-flex;align-items:center;justify-content:center;font-weight:700;color:white;font-size:${size*0.35}px;flex-shrink:0">${initials}</div>`;
+}
+
+// ═══════════════════════════
+// 5. TOAST SYSTEM
+// ═══════════════════════════
+function showToast(msg, type='info'){
+  const c=document.getElementById('toastContainer');
+  if(c.children.length>=3) c.removeChild(c.firstChild);
+  const t=document.createElement('div');
+  t.className='toast toast-'+type;
+  const icons={success:'fa-check-circle',error:'fa-exclamation-circle',info:'fa-info-circle',warning:'fa-exclamation-triangle'};
+  t.innerHTML=`<i class="fas ${icons[type]||icons.info}"></i> ${msg}`;
+  t.onclick=()=>t.remove();
+  c.appendChild(t);
+  setTimeout(()=>{ if(t.parentNode) t.remove() },3500);
+}
+
+// ═══════════════════════════
+// 6. MODAL SYSTEM
+// ═══════════════════════════
+function openModal(id){ document.getElementById(id).classList.add('active') }
+function closeModal(id){ document.getElementById(id).classList.remove('active') }
+document.addEventListener('keydown',e=>{ if(e.key==='Escape') document.querySelectorAll('.modal-overlay.active').forEach(m=>m.classList.remove('active')) });
+document.querySelectorAll('.modal-overlay').forEach(m=>{ m.addEventListener('click',e=>{ if(e.target===m) m.classList.remove('active') }) });
+
+function showConfirm(msg, onConfirm){
+  document.getElementById('confirmMsg').textContent=msg;
+  document.getElementById('confirmBtn').onclick=()=>{ closeModal('confirmDialog'); onConfirm() };
+  openModal('confirmDialog');
+}
+function showLightbox(src){ document.getElementById('lightboxImg').src=src; openModal('imageLightbox') }
+
+// ═══════════════════════════
+// 7. VIEW MANAGEMENT
+// ═══════════════════════════
+function showView(id){
+  document.querySelectorAll('.view').forEach(v=>v.classList.remove('active'));
+  const v=document.getElementById(id);
+  if(v){v.classList.add('active'); AppState.currentView=id; window.scrollTo(0,0)}
+}
+
+// Sidebar toggles
+function toggleSidebar(){ document.getElementById('teacherSidebar').classList.toggle('open'); document.getElementById('sidebarOverlay').classList.toggle('open') }
+function toggleStudentSidebar(){ document.getElementById('studentSidebar').classList.toggle('open'); document.getElementById('studentSidebarOverlay').classList.toggle('open') }
+
+function teacherNav(sub){
+  AppState.teacherSubView=sub;
+  document.querySelectorAll('#teacherSidebar .sidebar-nav a, #teacherBottomNav a').forEach(a=>a.classList.remove('active'));
+  const map={dashboard:0,tasks:1,submissions:2,saves:3,tools:4,announcements:5,reports:6,leaderboard:7};
+  const idx=map[sub]; if(idx!==undefined){
+    const sideLinks=document.querySelectorAll('#teacherSidebar .sidebar-nav a');
+    const botLinks=document.querySelectorAll('#teacherBottomNav a');
+    if(sideLinks[idx]) sideLinks[idx].classList.add('active');
+    const botMap={dashboard:0,tasks:1,submissions:2,reports:3,leaderboard:4};
+    if(botMap[sub]!==undefined && botLinks[botMap[sub]]) botLinks[botMap[sub]].classList.add('active');
+  }
+  renderTeacherView(sub);
+  if(document.getElementById('teacherSidebar').classList.contains('open')) toggleSidebar();
+  window.scrollTo(0,0);
+}
+
+function studentNav(sub){
+  AppState.studentSubView=sub;
+  document.querySelectorAll('#studentSidebar .sidebar-nav a, #studentBottomNav a').forEach(a=>a.classList.remove('active'));
+  const map={dashboard:0,tasks:1,saves:2,tools:3,reports:4,badges:5,leaderboard:6};
+  const idx=map[sub]; if(idx!==undefined){
+    const sideLinks=document.querySelectorAll('#studentSidebar .sidebar-nav a');
+    if(sideLinks[idx]) sideLinks[idx].classList.add('active');
+    const botMap={dashboard:0,tasks:1,badges:2,tools:3,leaderboard:4};
+    if(botMap[sub]!==undefined) { const botLinks=document.querySelectorAll('#studentBottomNav a'); if(botLinks[botMap[sub]]) botLinks[botMap[sub]].classList.add('active') }
+  }
+  renderStudentView(sub);
+  if(document.getElementById('studentSidebar').classList.contains('open')) toggleStudentSidebar();
+  window.scrollTo(0,0);
+}
+
+// ═══════════════════════════
+// 8. AUTH & PROFILE FUNCTIONS
+// ═══════════════════════════
+function togglePw(){
+  const i=document.getElementById('teacherPwInput');
+  i.type=i.type==='password'?'text':'password';
+}
+function teacherLogin(){
+  const pw=document.getElementById('teacherPwInput').value;
+  if(pw==='mateen2024'){
+    DB.set(KEYS.teacherLoggedIn, true);
+    AppState.isTeacher=true;
+    showView('view-teacher-dash');
+    loadTeacherAvatar();
+    teacherNav('dashboard');
+    updatePendingBadge();
+    showToast('Welcome back, Mateen! 👋','success');
+  } else {
+    const card=document.getElementById('teacherLoginCard');
+    card.classList.add('shake-it');
+    setTimeout(()=>card.classList.remove('shake-it'),500);
+    document.getElementById('teacherLoginError').style.display='block';
+    document.getElementById('teacherPwInput').value='';
+  }
+}
+function teacherLogout(){
+  DB.set(KEYS.teacherLoggedIn, false);
+  AppState.isTeacher=false;
+  showView('view-landing');
+}
+
+// Teacher Avatar
+function loadTeacherAvatar(){
+  const saved = localStorage.getItem(KEYS.teacherAvatar);
+  const el = document.getElementById('teacherAvatar');
+  if(el){ el.innerHTML = saved ? `<img src="${saved}" alt="Mateen">` : 'M'; }
+}
+
+// Student login
+function studentLogin(){
+  const name=document.getElementById('studentNameInput').value.trim();
+  const errEl=document.getElementById('studentEntryError');
+  if(!name){ errEl.textContent='Please enter your name'; errEl.style.display='block'; return }
+  if(name.toLowerCase()==='teacher'||name.toLowerCase()==='mateen'){ errEl.textContent='This name is reserved'; errEl.style.display='block'; return }
+  errEl.style.display='none';
+  let students=DB.getStudents();
+  let student=students.find(s=>s.username.toLowerCase()===name.toLowerCase());
+  if(student){
+    updateStreak(student.id);
+    DB.set(KEYS.currentStudent, student.username);
+    AppState.currentUser=student;
+    AppState.isTeacher=false;
+    showView('view-student-dash');
+    updateStudentSidebar();
+    loadStudentAvatar(student.username);
+    studentNav('dashboard');
+    showToast(`Welcome back, ${student.username}! 🎉`,'success');
+  } else {
+    student={id:'student_'+Date.now(),username:name,joinDate:new Date().toISOString(),xp:0,level:'Beginner',streak:0,bestStreak:0,lastLoginDate:todayStr(),attendanceDates:[],badges:[],toolsExplored:[]};
+    students.push(student);
+    DB.set(KEYS.students, students);
+    DB.set(KEYS.currentStudent, student.username);
+    AppState.currentUser=student;
+    AppState.isTeacher=false;
+    showView('view-student-dash');
+    updateStudentSidebar();
+    loadStudentAvatar(student.username);
+    studentNav('dashboard');
+    showToast(`Welcome to Learn AI, ${name}! Let's begin! 🚀`,'success');
+  }
+}
+function studentLoginAs(name){
+  document.getElementById('studentNameInput').value=name;
+  studentLogin();
+}
+function studentLogout(){
+  DB.set(KEYS.currentStudent, '');
+  AppState.currentUser=null;
+  showView('view-student-entry');
+  renderExistingStudents();
+}
+function renderExistingStudents(){
+  const students=DB.getStudents();
+  const el=document.getElementById('existingStudents');
+  if(!students.length){el.innerHTML='';return}
+  el.innerHTML=`<p style="margin-top:16px;font-size:13px;color:var(--text-mid)">Or continue as:</p><div class="student-chips">${students.map(s=>`<span class="student-chip" onclick="studentLoginAs('${escHtml(s.username)}')">${escHtml(s.username)}</span>`).join('')}</div>`;
+}
+
+// Student Avatar
+function loadStudentAvatar(username){
+  const key = 'learnaiwm_avatar_' + username;
+  const saved = localStorage.getItem(key);
+  const el = document.getElementById('studentAvatar');
+  if(!el) return;
+  if(saved){ el.innerHTML = `<img src="${saved}" alt="${escHtml(username)}">`; }
+  else { el.innerHTML = getInitials(username); }
+}
+
+// ═══════════════════════════
+// 9. STUDENT FUNCTIONS
+// ═══════════════════════════
+function getCurrentStudent(){
+  const name=DB.get(KEYS.currentStudent);
+  if(!name) return null;
+  const students=DB.getStudents();
+  return students.find(s=>s.username===name)||null;
+}
+function updateStudentData(id, updates){
+  let students=DB.getStudents();
+  const idx=students.findIndex(s=>s.id===id);
+  if(idx===-1) return;
+  Object.assign(students[idx], updates);
+  DB.set(KEYS.students, students);
+  if(AppState.currentUser && AppState.currentUser.id===id) AppState.currentUser=students[idx];
+}
+function addXP(studentId, amount, reason){
+  const students=DB.getStudents();
+  const s=students.find(st=>st.id===studentId);
+  if(!s) return;
+  s.xp=(s.xp||0)+amount;
+  const newLevel=getLevel(s.xp);
+  s.level=newLevel.name;
+  DB.set(KEYS.students, students);
+  if(AppState.currentUser && AppState.currentUser.id===studentId) AppState.currentUser=s;
+  checkAndAwardBadges(studentId);
+}
+function updateStreak(studentId){
+  let students=DB.getStudents();
+  const s=students.find(st=>st.id===studentId);
+  if(!s) return;
+  const today=todayStr();
+  if(s.lastLoginDate===today) return;
+  const yesterday=new Date(); yesterday.setDate(yesterday.getDate()-1);
+  const yStr=yesterday.toISOString().split('T')[0];
+  if(s.lastLoginDate===yStr){ s.streak=(s.streak||0)+1 } else { s.streak=1 }
+  if(s.streak>(s.bestStreak||0)) s.bestStreak=s.streak;
+  s.lastLoginDate=today;
+  DB.set(KEYS.students, students);
+  if(AppState.currentUser && AppState.currentUser.id===studentId) AppState.currentUser=s;
+}
+function checkIn(studentId){
+  const today=todayStr();
+  let attendance=DB.getAttendance();
+  if(!attendance[studentId]) attendance[studentId]={};
+  if(attendance[studentId][today]) return false;
+  attendance[studentId][today]=true;
+  DB.set(KEYS.attendance, attendance);
+  let students=DB.getStudents();
+  const s=students.find(st=>st.id===studentId);
+  if(s){
+    if(!s.attendanceDates) s.attendanceDates=[];
+    if(!s.attendanceDates.includes(today)) s.attendanceDates.push(today);
+    DB.set(KEYS.students, students);
+    if(AppState.currentUser && AppState.currentUser.id===studentId) AppState.currentUser=s;
+  }
+  addXP(studentId, 5, 'Daily check-in');
+  const str=s?s.streak||0:0;
+  if(str>1) addXP(studentId, 5, 'Streak bonus');
+  showConfetti();
+  checkAndAwardBadges(studentId);
+  return true;
+}
+function isCheckedInToday(studentId){
+  const attendance=DB.getAttendance();
+  return !!(attendance[studentId] && attendance[studentId][todayStr()]);
+}
+function updateStudentSidebar(){
+  const s=getCurrentStudent();
+  if(!s) return;
+  document.getElementById('studentSidebarName').textContent=s.username;
+  loadStudentAvatar(s.username);
+  const lvl=getLevel(s.xp||0);
+  document.getElementById('studentSidebarLevel').textContent=lvl.icon+' '+lvl.name;
+  document.getElementById('studentSidebarXpBar').style.width=getLevelProgress(s.xp||0)+'%';
+}
+
+// ═══════════════════════════
+// 10. BADGE SYSTEM
+// ═══════════════════════════
+function checkAndAwardBadges(studentId){
+  let students=DB.getStudents();
+  const s=students.find(st=>st.id===studentId);
+  if(!s) return;
+  if(!s.badges) s.badges=[];
+  const subs=DB.getSubmissions().filter(sub=>sub.studentId===studentId);
+  const accepted=subs.filter(sub=>sub.status==='accepted');
+  const rejected=subs.filter(sub=>sub.status==='rejected');
+  const tasks=DB.getTasks();
+  const saves=DB.getSaves().filter(sv=>sv.addedBy===s.username);
+  const newBadges=[];
+  if(!s.badges.includes('first_step') && subs.length>=1) newBadges.push('first_step');
+  if(!s.badges.includes('on_fire') && (s.streak||0)>=7) newBadges.push('on_fire');
+  if(!s.badges.includes('clean_sheet') && accepted.length>=5 && rejected.length===0) newBadges.push('clean_sheet');
+  if(!s.badges.includes('bot_whisperer')){
+    const chatgptTasks=tasks.filter(t=>t.aiTool&&t.aiTool.toLowerCase().includes('chatgpt'));
+    const chatgptAccepted=accepted.filter(a=>chatgptTasks.some(t=>t.id===a.taskId));
+    if(chatgptAccepted.length>=5) newBadges.push('bot_whisperer');
+  }
+  if(!s.badges.includes('creative_ai')){
+    const imgTasks=tasks.filter(t=>t.category==='Image AI');
+    const imgAccepted=accepted.filter(a=>imgTasks.some(t=>t.id===a.taskId));
+    if(imgAccepted.length>=3) newBadges.push('creative_ai');
+  }
+  if(!s.badges.includes('perfect_week')){
+    const subDates=[...new Set(subs.map(sb=>sb.submittedAt.split('T')[0]))].sort();
+    let consecutive=1;
+    for(let i=1;i<subDates.length;i++){
+      const prev=new Date(subDates[i-1]), cur=new Date(subDates[i]);
+      if((cur-prev)===86400000) consecutive++; else consecutive=1;
+      if(consecutive>=7){newBadges.push('perfect_week');break}
+    }
+  }
+  if(!s.badges.includes('level_up') && (s.xp||0)>=301) newBadges.push('level_up');
+  if(!s.badges.includes('knowledge_saver') && saves.length>=10) newBadges.push('knowledge_saver');
+  if(!s.badges.includes('ai_pro') && (s.xp||0)>=1001) newBadges.push('ai_pro');
+
+  if(newBadges.length){
+    newBadges.forEach(bId=>{
+      s.badges.push(bId);
+      s.xp=(s.xp||0)+20;
+      const badge=BADGES.find(b=>b.id===bId);
+      if(badge) showBadgeUnlock(badge);
+    });
+    s.level=getLevel(s.xp).name;
+    DB.set(KEYS.students, students);
+    if(AppState.currentUser && AppState.currentUser.id===studentId) AppState.currentUser=s;
+  }
+}
+function showBadgeUnlock(badge){
+  document.getElementById('badgeUnlockEmoji').textContent=badge.icon;
+  document.getElementById('badgeUnlockName').textContent=badge.name+' — '+badge.description;
+  document.getElementById('badgeUnlockOverlay').classList.add('active');
+  showConfetti();
+  setTimeout(()=>document.getElementById('badgeUnlockOverlay').classList.remove('active'),3500);
+}
+function showConfetti(){
+  const colors=['#EF4444','#3B82F6','#10B981','#F59E0B','#7C3AED','#EC4899'];
+  for(let i=0;i<30;i++){
+    const c=document.createElement('div');
+    c.className='confetti-piece';
+    c.style.left=Math.random()*100+'vw';
+    c.style.background=colors[Math.floor(Math.random()*colors.length)];
+    c.style.animationDuration=(1.5+Math.random()*1.5)+'s';
+    c.style.animationDelay=(Math.random()*0.5)+'s';
+    c.style.width=(6+Math.random()*8)+'px';
+    c.style.height=(6+Math.random()*8)+'px';
+    c.style.borderRadius=Math.random()>0.5?'50%':'0';
+    document.body.appendChild(c);
+    setTimeout(()=>c.remove(),3500);
+  }
+}
+
+// ═══════════════════════════
+// 11. TASK FUNCTIONS
+// ═══════════════════════════
+function openTaskForm(taskId){
+  const form=document.getElementById('taskFormModal');
+  document.getElementById('editingTaskId').value=taskId||'';
+  if(taskId){
+    const task=DB.getTasks().find(t=>t.id===taskId);
+    if(!task) return;
+    document.getElementById('taskFormTitle').textContent='Edit Task';
+    document.getElementById('taskFormBtn').textContent='Save Changes';
+    document.getElementById('taskTitleInput').value=task.title;
+    document.getElementById('taskDescInput').value=task.description;
+    document.getElementById('taskToolInput').value=task.aiTool||'';
+    document.getElementById('taskCatInput').value=task.category;
+    document.getElementById('taskDueInput').value=task.dueDate||'';
+    document.getElementById('taskOrderInput').value=task.order||'';
+    document.querySelector(`input[name="taskType"][value="${task.type}"]`).checked=true;
+    document.querySelector(`input[name="taskDiff"][value="${task.difficulty}"]`).checked=true;
+  } else {
+    document.getElementById('taskFormTitle').textContent='Add New Task';
+    document.getElementById('taskFormBtn').textContent='Add Task';
+    document.getElementById('taskTitleInput').value='';
+    document.getElementById('taskDescInput').value='';
+    document.getElementById('taskToolInput').value='';
+    document.getElementById('taskCatInput').value='Text AI';
+    document.getElementById('taskDueInput').value='';
+    document.getElementById('taskOrderInput').value=DB.getTasks().length+1;
+    document.getElementById('taskTypeAssigned').checked=true;
+    document.getElementById('diffBeginner').checked=true;
+  }
+  openModal('taskFormModal');
+}
+function saveTask(){
+  const title=document.getElementById('taskTitleInput').value.trim();
+  const desc=document.getElementById('taskDescInput').value.trim();
+  let valid=true;
+  if(!title){document.getElementById('taskTitleError').style.display='block';valid=false}else{document.getElementById('taskTitleError').style.display='none'}
+  if(!desc){document.getElementById('taskDescError').style.display='block';valid=false}else{document.getElementById('taskDescError').style.display='none'}
+  if(!valid) return;
+  const type=document.querySelector('input[name="taskType"]:checked').value;
+  const diff=document.querySelector('input[name="taskDiff"]:checked').value;
+  const editId=document.getElementById('editingTaskId').value;
+  let tasks=DB.getTasks();
+  const taskData={
+    type, title, description:desc,
+    aiTool:document.getElementById('taskToolInput').value.trim(),
+    difficulty:diff,
+    dueDate:document.getElementById('taskDueInput').value||null,
+    category:document.getElementById('taskCatInput').value,
+    order:parseInt(document.getElementById('taskOrderInput').value)||tasks.length+1,
+    createdBy:'teacher'
+  };
+  if(editId){
+    const idx=tasks.findIndex(t=>t.id===editId);
+    if(idx>-1) Object.assign(tasks[idx], taskData);
+    showToast('Task updated!','success');
+  } else {
+    taskData.id='task_'+Date.now();
+    taskData.createdAt=new Date().toISOString();
+    taskData.isPreloaded=false;
+    tasks.push(taskData);
+    showToast('Task created!','success');
+  }
+  DB.set(KEYS.tasks, tasks);
+  SyncManager.syncOnChange();
+  closeModal('taskFormModal');
+  if(AppState.isTeacher) renderTeacherView('tasks');
+}
+function deleteTask(id){
+  showConfirm('Delete this task? This cannot be undone.',()=>{
+    let tasks=DB.getTasks().filter(t=>t.id!==id);
+    DB.set(KEYS.tasks, tasks);
+    SyncManager.syncOnChange();
+    showToast('Task deleted','info');
+    if(AppState.isTeacher) renderTeacherView('tasks');
+  });
+}
+
+// ═══════════════════════════
+// 12. SUBMISSION FUNCTIONS
+// ═══════════════════════════
+let pendingImageData=null;
+function handleImageUpload(e){
+  const file=e.target.files[0];
+  if(!file) return;
+  if(file.size>5*1024*1024){showToast('Image too large (max 5MB)','error');return}
+  const reader=new FileReader();
+  reader.onload=function(ev){
+    pendingImageData=ev.target.result;
+    const preview=document.getElementById('uploadPreview');
+    if(preview){preview.src=pendingImageData;preview.style.display='block'}
+  };
+  reader.readAsDataURL(file);
+}
+function submitStudentTask(taskId){
+  const s=getCurrentStudent();
+  if(!s) return;
+  const textEl=document.getElementById('submissionText');
+  const text=textEl?textEl.value.trim():'';
+  if(!pendingImageData && !text){showToast('Please upload an image or write an explanation','warning');return}
+  const subs=DB.getSubmissions();
+  const existing=subs.find(sub=>sub.taskId===taskId && sub.studentId===s.id && sub.status==='submitted');
+  if(existing){showToast('Already submitted and awaiting review','warning');return}
+  const resubCount=subs.filter(sub=>sub.taskId===taskId && sub.studentId===s.id).length;
+  const submission={
+    id:'sub_'+Date.now(), taskId, studentId:s.id, studentName:s.username,
+    submittedAt:new Date().toISOString(),
+    imageData:pendingImageData||null,
+    textExplanation:text,
+    status:'submitted', teacherNote:null, rejectionReason:null,
+    resubmission:resubCount>0, resubmissionCount:resubCount
+  };
+  subs.push(submission);
+  DB.set(KEYS.submissions, subs);
+  SyncManager.syncOnChange();
+  addXP(s.id, 10, 'Task submitted');
+  pendingImageData=null;
+  showToast('Task submitted! ✅','success');
+  checkAndAwardBadges(s.id);
+  closeModal('taskDetailModal');
+  if(AppState.studentSubView==='tasks') renderStudentView('tasks');
+  else renderStudentView('dashboard');
+}
+function reviewAction(subId, decision){
+  const subs=DB.getSubmissions();
+  const sub=subs.find(s=>s.id===subId);
+  if(!sub) return;
+  if(decision==='accepted'){
+    const note=document.getElementById('reviewAcceptNote')?.value?.trim()||'';
+    sub.status='accepted';
+    sub.teacherNote=note||null;
+    addXP(sub.studentId, 30, 'Task accepted');
+    showToast(`${sub.studentName}'s task accepted! +30 XP added`,'success');
+    checkAndAwardBadges(sub.studentId);
+  } else {
+    const reason=document.getElementById('reviewRejectReason')?.value?.trim()||'';
+    if(!reason){showToast('Please provide a rejection reason','warning');return}
+    sub.status='rejected';
+    sub.rejectionReason=reason;
+    showToast('Task rejected. Student notified.','info');
+  }
+  DB.set(KEYS.submissions, subs);
+  SyncManager.syncOnChange();
+  closeModal('reviewModal');
+  updatePendingBadge();
+  if(AppState.isTeacher) renderTeacherView(AppState.teacherSubView);
+}
+function updatePendingBadge(){
+  const count=DB.getSubmissions().filter(s=>s.status==='submitted').length;
+  const badge=document.getElementById('pendingCountBadge');
+  if(badge){badge.textContent=count;badge.style.display=count>0?'inline':'none'}
+}
+
+// ═══════════════════════════
+// 13. SAVE FUNCTIONS
+// ═══════════════════════════
+function openSaveForm(){
+  pendingImageData=null;
+  document.getElementById('saveTitleInput').value='';
+  updateSaveDynamicFields();
+  document.querySelectorAll('input[name="saveType"]').forEach(r=>r.addEventListener('change',updateSaveDynamicFields));
+  openModal('saveFormModal');
+}
+function updateSaveDynamicFields(){
+  const type=document.querySelector('input[name="saveType"]:checked').value;
+  const el=document.getElementById('saveDynamicFields');
+  pendingImageData=null;
+  let html='';
+  if(type==='link') html=`<div class="form-group"><label>URL *</label><input type="url" id="saveUrlInput" placeholder="https://..."></div><div class="form-group"><label>Description</label><textarea id="saveDescInput" rows="2" placeholder="Optional description..."></textarea></div>`;
+  else if(type==='note') html=`<div class="form-group"><label>Note *</label><textarea id="saveNoteInput" rows="4" placeholder="Write your note..."></textarea></div>`;
+  else if(type==='image') html=`<div class="form-group"><label>Image *</label><div class="upload-area" onclick="document.getElementById('saveImageFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload image</p><input type="file" id="saveImageFile" accept="image/*" style="display:none" onchange="handleSaveImage(event)"><img class="upload-preview" id="saveImgPreview" style="display:none"></div></div><div class="form-group"><label>Caption</label><input type="text" id="saveCaptionInput" placeholder="Optional caption..."></div>`;
+  else if(type==='tip') html=`<div class="form-group"><label>Tip Content *</label><textarea id="saveTipInput" rows="4" placeholder="Share your tip..."></textarea></div>`;
+  else if(type==='tool-review') html=`<div class="form-group"><label>AI Tool Name *</label><input type="text" id="saveToolNameInput" placeholder="e.g. ChatGPT"></div><div class="form-group"><label>Rating</label><div class="star-rating" id="starRating">${[1,2,3,4,5].map(i=>`<span class="star" data-val="${i}" onclick="setStarRating(${i})">★</span>`).join('')}</div></div><div class="form-group"><label>Your Review *</label><textarea id="saveReviewInput" rows="3" placeholder="What did you think?"></textarea></div><div class="form-group"><label>Tool URL</label><input type="url" id="saveToolUrlInput" placeholder="https://..."></div>`;
+  el.innerHTML=html;
+}
+function handleSaveImage(e){
+  const file=e.target.files[0];if(!file) return;
+  const reader=new FileReader();
+  reader.onload=ev=>{pendingImageData=ev.target.result;const p=document.getElementById('saveImgPreview');if(p){p.src=pendingImageData;p.style.display='block'}};
+  reader.readAsDataURL(file);
+}
+let currentStarRating=0;
+function setStarRating(val){
+  currentStarRating=val;
+  document.querySelectorAll('#starRating .star').forEach(s=>{s.classList.toggle('active',parseInt(s.dataset.val)<=val)});
+}
+function saveItem(){
+  const title=document.getElementById('saveTitleInput').value.trim();
+  if(!title){showToast('Title is required','warning');return}
+  const type=document.querySelector('input[name="saveType"]:checked').value;
+  const addedBy=AppState.isTeacher?'teacher':(AppState.currentUser?AppState.currentUser.username:'unknown');
+  const item={id:'save_'+Date.now(),type,title,createdAt:new Date().toISOString(),addedBy,imageData:null,content:'',category:'Notes',rating:null,toolName:null};
+  if(type==='link'){
+    const url=document.getElementById('saveUrlInput')?.value?.trim();
+    if(!url){showToast('URL is required','warning');return}
+    item.content=url;item.category='Links';
+    const desc=document.getElementById('saveDescInput')?.value?.trim();
+    if(desc) item.content+='\n'+desc;
+  } else if(type==='note'){
+    const note=document.getElementById('saveNoteInput')?.value?.trim();
+    if(!note){showToast('Note is required','warning');return}
+    item.content=note;item.category='Notes';
+  } else if(type==='image'){
+    if(!pendingImageData){showToast('Image is required','warning');return}
+    item.imageData=pendingImageData;item.category='Screenshots';
+    item.content=document.getElementById('saveCaptionInput')?.value?.trim()||'';
+  } else if(type==='tip'){
+    const tip=document.getElementById('saveTipInput')?.value?.trim();
+    if(!tip){showToast('Tip content is required','warning');return}
+    item.content=tip;item.category='Tips';
+  } else if(type==='tool-review'){
+    const toolName=document.getElementById('saveToolNameInput')?.value?.trim();
+    const review=document.getElementById('saveReviewInput')?.value?.trim();
+    if(!toolName||!review){showToast('Tool name and review required','warning');return}
+    item.toolName=toolName;item.content=review;item.rating=currentStarRating||null;item.category='Tool Reviews';
+    const url=document.getElementById('saveToolUrlInput')?.value?.trim();
+    if(url) item.content+='\n'+url;
+  }
+  let saves=DB.getSaves();saves.push(item);DB.set(KEYS.saves,saves);
+  SyncManager.syncOnChange();
+  pendingImageData=null;currentStarRating=0;
+  closeModal('saveFormModal');
+  showToast('Saved! ✅','success');
+  if(!AppState.isTeacher && AppState.currentUser) addXP(AppState.currentUser.id, 2, 'Saved item');
+  if(AppState.isTeacher) renderTeacherView('saves'); else renderStudentView('saves');
+}
+function deleteSave(id){
+  showConfirm('Delete this saved item?',()=>{
+    let saves=DB.getSaves().filter(s=>s.id!==id);
+    DB.set(KEYS.saves, saves);
+    SyncManager.syncOnChange();
+    showToast('Deleted','info');
+    if(AppState.isTeacher) renderTeacherView('saves'); else renderStudentView('saves');
+  });
+}
+function viewSaveDetail(id){
+  const save=DB.getSaves().find(s=>s.id===id);if(!save) return;
+  document.getElementById('saveDetailTitle').textContent=save.title;
+  let html=`<p class="badge badge-info mb-2">${save.type.toUpperCase()}</p>`;
+  if(save.imageData) html+=`<img src="${save.imageData}" class="img-full mb-2" onclick="showLightbox('${save.imageData}')">`;
+  if(save.rating) html+=`<p style="color:var(--warning);font-size:20px">${'★'.repeat(save.rating)}${'☆'.repeat(5-save.rating)}</p>`;
+  if(save.toolName) html+=`<p><strong>Tool:</strong> ${escHtml(save.toolName)}</p>`;
+  html+=`<div style="white-space:pre-wrap;margin-top:10px">${escHtml(save.content)}</div>`;
+  html+=`<p class="mt-2" style="font-size:12px;color:var(--text-light)">Added by: ${escHtml(save.addedBy)} · ${formatDate(save.createdAt)}</p>`;
+  document.getElementById('saveDetailBody').innerHTML=html;
+  openModal('saveDetailModal');
+}
+
+// ═══════════════════════════
+// 14. ANNOUNCEMENT FUNCTIONS
+// ═══════════════════════════
+function openAnnForm(annId){
+  document.getElementById('editingAnnId').value=annId||'';
+  if(annId){
+    const ann=DB.getAnnouncements().find(a=>a.id===annId);
+    if(!ann) return;
+    document.getElementById('annFormTitle').textContent='Edit Announcement';
+    document.getElementById('annFormBtn').textContent='Save Changes';
+    document.getElementById('annMsgInput').value=ann.message;
+    document.querySelector(`input[name="annType"][value="${ann.type}"]`).checked=true;
+  } else {
+    document.getElementById('annFormTitle').textContent='Post Announcement';
+    document.getElementById('annFormBtn').textContent='Post Announcement';
+    document.getElementById('annMsgInput').value='';
+    document.getElementById('annTypeInfo').checked=true;
+  }
+  openModal('annFormModal');
+}
+function saveAnnouncement(){
+  const msg=document.getElementById('annMsgInput').value.trim();
+  if(!msg){showToast('Message is required','warning');return}
+  const type=document.querySelector('input[name="annType"]:checked').value;
+  const editId=document.getElementById('editingAnnId').value;
+  let anns=DB.getAnnouncements();
+  if(editId){
+    const idx=anns.findIndex(a=>a.id===editId);
+    if(idx>-1){anns[idx].message=msg;anns[idx].type=type}
+    showToast('Announcement updated','success');
+  } else {
+    anns.push({id:'ann_'+Date.now(),message:msg,type,createdAt:new Date().toISOString(),isActive:true});
+    showToast('Announcement posted! 📢','success');
+  }
+  DB.set(KEYS.announcements, anns);
+  SyncManager.syncOnChange();
+  closeModal('annFormModal');
+  renderTeacherView('announcements');
+}
+function toggleAnn(id){
+  let anns=DB.getAnnouncements();
+  const a=anns.find(an=>an.id===id);
+  if(a) a.isActive=!a.isActive;
+  DB.set(KEYS.announcements, anns);
+  SyncManager.syncOnChange();
+  renderTeacherView('announcements');
+}
+function deleteAnn(id){
+  showConfirm('Delete this announcement?',()=>{
+    DB.set(KEYS.announcements, DB.getAnnouncements().filter(a=>a.id!==id));
+    SyncManager.syncOnChange();
+    showToast('Deleted','info');
+    renderTeacherView('announcements');
+  });
+}
+
+// ═══════════════════════════
+// 15. TOOL FUNCTIONS
+// ═══════════════════════════
+function saveCustomTool(){
+  const name=document.getElementById('toolNameInput').value.trim();
+  const url=document.getElementById('toolUrlInput').value.trim();
+  if(!name||!url){showToast('Name and URL required','warning');return}
+  let tools=DB.getTools();
+  tools.push({id:'tool_'+Date.now(),name,url,description:document.getElementById('toolDescInput').value.trim(),icon:document.getElementById('toolIconInput').value.trim()||'fa-wand-magic',color:document.getElementById('toolColorInput').value,isCustom:true,isVisible:true,addedBy:'teacher'});
+  DB.set(KEYS.tools, tools);
+  closeModal('toolFormModal');
+  showToast('Tool added!','success');
+  renderTeacherView('tools');
+}
+function openTool(url, toolName){
+  window.open(url,'_blank');
+  if(!AppState.isTeacher && AppState.currentUser){
+    let students=DB.getStudents();
+    const s=students.find(st=>st.id===AppState.currentUser.id);
+    if(s){
+      if(!s.toolsExplored) s.toolsExplored=[];
+      if(!s.toolsExplored.includes(toolName)){
+        s.toolsExplored.push(toolName);
+        DB.set(KEYS.students, students);
+        AppState.currentUser=s;
+        checkAndAwardBadges(s.id);
+      }
+    }
+  }
+}
+function removeTool(toolId, toolName){
+  showConfirm(`Remove ${toolName} from the hub? You can restore it later.`,()=>{
+    let tools=DB.getTools();
+    const t=tools.find(tool=>tool.id===toolId);
+    if(t) t.isVisible=false;
+    DB.set(KEYS.tools, tools);
+    showToast(`${toolName} removed from hub`,'info');
+    renderTeacherView('tools');
+  });
+}
+function restoreDefaultTools(){
+  showConfirm('This will restore all 10 original AI tools. Your custom tools will remain. Continue?',()=>{
+    let tools=DB.getTools();
+    tools.forEach(t=>{ if(!t.isCustom) t.isVisible=true });
+    DB.set(KEYS.tools, tools);
+    showToast('All default tools restored!','success');
+    renderTeacherView('tools');
+  });
+}
+
+// ═══════════════════════════
+// 16. EXPORT / IMPORT DATA
+// ═══════════════════════════
+function exportAllData(){
+  const exportData = {
+    exportDate: new Date().toISOString(),
+    exportedBy: "teacher",
+    appVersion: "1.0",
+    data: {
+      students: DB.getStudents(),
+      tasks: DB.getTasks(),
+      submissions: DB.getSubmissions(),
+      saves: DB.getSaves(),
+      tools: DB.getTools(),
+      announcements: DB.getAnnouncements(),
+      attendance: DB.getAttendance()
+    }
+  };
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `LearnAI_Backup_${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Data exported successfully! 📥','success');
+}
+
+function exportStudentData(){
+  const s = getCurrentStudent();
+  if(!s) return;
+  const subs = DB.getSubmissions().filter(sub=>sub.studentId===s.id);
+  const saves = DB.getSaves().filter(sv=>sv.addedBy===s.username);
+  const att = DB.getAttendance()[s.id] || {};
+  const exportData = {
+    exportDate: new Date().toISOString(),
+    exportedBy: s.username,
+    appVersion: "1.0",
+    data: {
+      students: [s],
+      submissions: subs,
+      saves: saves,
+      attendance: { [s.id]: att }
+    }
+  };
+  const blob = new Blob([JSON.stringify(exportData, null, 2)], { type: 'application/json' });
+  const url = URL.createObjectURL(blob);
+  const a = document.createElement('a');
+  a.href = url;
+  a.download = `${s.username}_Data_${todayStr()}.json`;
+  a.click();
+  URL.revokeObjectURL(url);
+  showToast('Your data exported! 📥','success');
+}
+
+function triggerImport(){
+  document.getElementById('importDataInput').click();
+}
+
+function importData(file){
+  const reader = new FileReader();
+  reader.onload = (e) => {
+    try {
+      const imported = JSON.parse(e.target.result);
+      if (!imported.data) {
+        showToast('Invalid backup file!', 'error');
+        return;
+      }
+      if (!confirm('⚠️ Import this backup?\n\nExported: ' + imported.exportDate + '\n\nNew records will be added. Existing data stays safe.')) {
+        return;
+      }
+      let added = 0;
+      const mergeArray = (key, newItems) => {
+        if (!Array.isArray(newItems)) return;
+        const existing = JSON.parse(localStorage.getItem(key) || '[]');
+        const existingIds = new Set(existing.map(i => i.id));
+        const toAdd = newItems.filter(i => !existingIds.has(i.id));
+        added += toAdd.length;
+        localStorage.setItem(key, JSON.stringify([...existing, ...toAdd]));
+      };
+      mergeArray(KEYS.students, imported.data.students);
+      mergeArray(KEYS.tasks, imported.data.tasks);
+      mergeArray(KEYS.submissions, imported.data.submissions);
+      mergeArray(KEYS.saves, imported.data.saves);
+      mergeArray(KEYS.tools, imported.data.tools);
+      mergeArray(KEYS.announcements, imported.data.announcements);
+      showToast(`Import complete! ${added} new records added. ✅`, 'success');
+      if(AppState.isTeacher) renderTeacherView(AppState.teacherSubView);
+    } catch(err) {
+      showToast('Error reading file. Make sure it is a valid backup file.', 'error');
+    }
+  };
+  reader.readAsText(file);
+}
+
+// ═══════════════════════════
+// 17. AI TEACHING ASSISTANT
+// ═══════════════════════════
+const GROQ_API_URL = 'https://api.groq.com/openai/v1/chat/completions';
+let chatHistory = [];
+let lastAssistantResponse = '';
+
+function buildSystemContext(){
+  const students = DB.getStudents();
+  const tasks = DB.getTasks();
+  const submissions = DB.getSubmissions();
+  const studentSummaries = students.map(s => {
+    const subs = submissions.filter(sub => sub.studentId === s.id);
+    const accepted = subs.filter(sub => sub.status === 'accepted').length;
+    const rejected = subs.filter(sub => sub.status === 'rejected').length;
+    return `- ${s.username}: Level ${s.level}, ${s.xp} XP, Streak: ${s.streak} days, Accepted: ${accepted}, Rejected: ${rejected}`;
+  }).join('\n');
+  const taskSummary = tasks.slice(0, 10).map(t => `- ${t.title} (${t.difficulty}, ${t.category})`).join('\n');
+  return `You are an AI Teaching Assistant for "Learn AI - with Mateen" — a personal AI learning platform where Mateen (the teacher) teaches students how to use AI tools.
+
+YOUR ROLE:
+- Help Mateen manage his students
+- Suggest tasks, teaching strategies
+- Analyze student performance
+- Write feedback and encouragement
+- Create new task content when asked
+- Answer questions about teaching AI to beginners
+- Respond in a helpful, professional tone
+- Keep responses clear and actionable
+- TEXT ONLY — no image generation
+
+CURRENT APP DATA:
+Total Students: ${students.length}
+Total Tasks: ${tasks.length}
+
+STUDENT PROGRESS:
+${studentSummaries || 'No students yet'}
+
+SAMPLE TASKS IN APP:
+${taskSummary || 'No tasks yet'}
+
+IMPORTANT: 
+- Always address the teacher as "Mateen"
+- Keep responses concise but complete
+- When creating tasks, use this format:
+  TASK TITLE: [title]
+  DESCRIPTION: [full description]
+  AI TOOL: [tool name]
+  DIFFICULTY: [Beginner/Medium/Challenge]
+  CATEGORY: [category name]
+- Be encouraging about teaching beginners`;
+}
+
+function renderAIAssistant(){
+  const apiKey = localStorage.getItem(KEYS.groqKey);
+  const hasKey = !!apiKey;
+  return `
+  <div class="ai-assistant-card" id="aiAssistantPanel">
+    <div class="assistant-header" onclick="toggleAssistantBody()">
+      <div class="assistant-title">
+        <i class="fas fa-robot"></i>
+        <span>AI Teaching Assistant</span>
+        <span class="assistant-badge">Powered by Groq</span>
+      </div>
+      <button class="assistant-toggle"><i class="fas fa-chevron-down"></i></button>
+    </div>
+    <div class="assistant-body" id="assistantBody">
+      ${!hasKey ? `
+      <div class="api-key-setup" id="apiKeySetup">
+        <p style="font-size:13px;color:var(--text-mid);margin-bottom:8px">Enter your free Groq API key to activate the assistant.</p>
+        <p style="font-size:12px;color:var(--text-light);margin-bottom:10px">Get free key at: <a href="https://console.groq.com" target="_blank">console.groq.com</a></p>
+        <div class="api-key-input-row">
+          <input type="password" id="groqApiKeyInput" placeholder="gsk_...your key...">
+          <button onclick="saveGroqKey()">Save Key</button>
+        </div>
+      </div>
+      ` : ''}
+      <div class="quick-prompts" id="quickPrompts" style="${hasKey?'':'display:none'}">
+        <p class="quick-prompts-label">Quick Actions:</p>
+        <div class="quick-btn-grid">
+          <button class="quick-btn" onclick="sendQuickPrompt('Analyze my students progress and tell me who needs the most help and why.')">📊 Analyze Students</button>
+          <button class="quick-btn" onclick="sendQuickPrompt('Create a new beginner task about ChatGPT prompting with title, description, difficulty, and category.')">✏️ Generate a Task</button>
+          <button class="quick-btn" onclick="sendQuickPrompt('What topics should I focus on teaching next based on student performance?')">🎯 What to Teach Next</button>
+          <button class="quick-btn" onclick="sendQuickPrompt('Write encouraging feedback messages I can send to students who had tasks rejected.')">💬 Write Feedback</button>
+        </div>
+      </div>
+      <div class="chat-messages" id="chatMessages" style="${hasKey?'':'display:none'}"></div>
+      <div class="chat-input-area" id="chatInputArea" style="${hasKey?'':'display:none'}">
+        <textarea id="assistantInput" placeholder="Ask anything about your students, teaching, or creating tasks..." rows="3"></textarea>
+        <div class="chat-actions">
+          <button onclick="sendToAssistant()" class="send-btn" id="sendToAssistant"><i class="fas fa-paper-plane"></i> Ask Assistant</button>
+          <button onclick="clearChat()" class="clear-btn"><i class="fas fa-trash"></i> Clear</button>
+        </div>
+      </div>
+      <div class="response-actions" id="responseActions" style="display:none">
+        <button onclick="copyLastResponse()"><i class="fas fa-copy"></i> Copy Response</button>
+        <button onclick="createTaskFromResponse()"><i class="fas fa-plus"></i> Create Task from This</button>
+      </div>
+    </div>
+  </div>`;
+}
+
+function toggleAssistantBody(){
+  const body = document.getElementById('assistantBody');
+  body.style.display = body.style.display === 'none' ? 'block' : 'none';
+}
+
+function saveGroqKey(){
+  const key = document.getElementById('groqApiKeyInput')?.value?.trim();
+  if(!key || !key.startsWith('gsk_')){
+    showToast('Invalid key format. Groq keys start with gsk_', 'error');
+    return;
+  }
+  localStorage.setItem(KEYS.groqKey, key);
+  showToast('AI Assistant activated! 🤖', 'success');
+  renderTeacherView('dashboard');
+}
+
+function sendQuickPrompt(prompt){
+  const input = document.getElementById('assistantInput');
+  if(input) input.value = prompt;
+  sendToAssistant();
+}
+
+function addChatMessage(role, content){
+  const container = document.getElementById('chatMessages');
+  const msg = document.createElement('div');
+  msg.className = `chat-message ${role}`;
+  msg.textContent = content;
+  container.appendChild(msg);
+  container.scrollTop = container.scrollHeight;
+  return msg;
+}
+
+async function sendToAssistant(){
+  const input = document.getElementById('assistantInput');
+  const userMessage = input?.value?.trim();
+  if(!userMessage) return;
+  const apiKey = localStorage.getItem(KEYS.groqKey);
+  if(!apiKey){
+    showToast('Please add your Groq API key first', 'error');
+    return;
+  }
+  addChatMessage('user', userMessage);
+  input.value = '';
+  chatHistory.push({ role: 'user', content: userMessage });
+  const loadingMsg = addChatMessage('loading', '🤖 Thinking...');
+  const sendBtn = document.getElementById('sendToAssistant');
+  if(sendBtn) sendBtn.disabled = true;
+  try {
+    const response = await fetch(GROQ_API_URL, {
+      method: 'POST',
+      headers: {
+        'Content-Type': 'application/json',
+        'Authorization': `Bearer ${apiKey}`
+      },
+      body: JSON.stringify({
+        model: 'llama-3.3-70b-versatile',
+        messages: [
+          { role: 'system', content: buildSystemContext() },
+          ...chatHistory
+        ],
+        max_tokens: 1024,
+        temperature: 0.7
+      })
+    });
+    if(!response.ok){
+      const err = await response.json();
+      throw new Error(err.error?.message || 'API request failed');
+    }
+    const data = await response.json();
+    const assistantMessage = data.choices[0].message.content;
+    loadingMsg.remove();
+    addChatMessage('assistant', assistantMessage);
+    chatHistory.push({ role: 'assistant', content: assistantMessage });
+    lastAssistantResponse = assistantMessage;
+    document.getElementById('responseActions').style.display = 'flex';
+    if(chatHistory.length > 10) chatHistory = chatHistory.slice(-10);
+  } catch(error) {
+    loadingMsg.remove();
+    addChatMessage('assistant', '❌ Error: ' + error.message + '\n\nCheck your API key or try again.');
+    showToast('Assistant error: ' + error.message, 'error');
+  } finally {
+    if(sendBtn) sendBtn.disabled = false;
+    input?.focus();
+  }
+}
+
+function clearChat(){
+  chatHistory = [];
+  lastAssistantResponse = '';
+  const container = document.getElementById('chatMessages');
+  if(container) container.innerHTML = '';
+  document.getElementById('responseActions').style.display = 'none';
+}
+
+function copyLastResponse(){
+  navigator.clipboard.writeText(lastAssistantResponse).then(() => showToast('Copied to clipboard! 📋', 'success'));
+}
+
+function createTaskFromResponse(){
+  const titleMatch = lastAssistantResponse.match(/TASK TITLE:\s*(.+)/i);
+  const descMatch = lastAssistantResponse.match(/DESCRIPTION:\s*([\s\S]+?)(?=AI TOOL:|$)/i);
+  const toolMatch = lastAssistantResponse.match(/AI TOOL:\s*(.+)/i);
+  const diffMatch = lastAssistantResponse.match(/DIFFICULTY:\s*(.+)/i);
+  const catMatch = lastAssistantResponse.match(/CATEGORY:\s*(.+)/i);
+  if(titleMatch){
+    openTaskForm();
+    setTimeout(()=>{
+      if(titleMatch[1]) document.getElementById('taskTitleInput').value = titleMatch[1].trim();
+      if(descMatch && descMatch[1]) document.getElementById('taskDescInput').value = descMatch[1].trim();
+      if(toolMatch && toolMatch[1]) document.getElementById('taskToolInput').value = toolMatch[1].trim();
+      if(catMatch && catMatch[1]){
+        const cat = catMatch[1].trim();
+        const select = document.getElementById('taskCatInput');
+        for(let opt of select.options){ if(opt.value.toLowerCase()===cat.toLowerCase()) { select.value=opt.value; break; } }
+      }
+      if(diffMatch && diffMatch[1]){
+        const diff = diffMatch[1].trim().toLowerCase();
+        if(diff.includes('beginner')) document.getElementById('diffBeginner').checked=true;
+        else if(diff.includes('medium')) document.getElementById('diffMedium').checked=true;
+        else if(diff.includes('challenge')) document.getElementById('diffChallenge').checked=true;
+      }
+      showToast('Task form pre-filled from AI! ✏️','success');
+    },100);
+  } else {
+    showToast('No task format found in response. Ask assistant to create a task first.', 'info');
+  }
+}
+
+// ═══════════════════════════
+// CLOUD SYNC PANEL
+// ═══════════════════════════
+function renderSyncPanel(){
+  const isConnected = SyncManager.isConnected();
+  const binId = SyncManager.getBinId();
+  return `
+  <div class="sync-settings-card" id="syncSettingsCard">
+    <div class="sync-header" id="syncHeaderToggle">
+      <div class="sync-title">
+        <i class="fas fa-cloud"></i>
+        <span>Cloud Sync</span>
+        <span class="sync-status-dot ${isConnected?'connected':''}" id="syncStatusDot"></span>
+        <span class="sync-status-text" id="syncStatusText">${isConnected?'Connected':'Not Connected'}</span>
+      </div>
+      <i class="fas fa-chevron-down sync-chevron" id="syncChevron"></i>
+    </div>
+    <div class="sync-body" id="syncBody" style="display:none">
+      <div id="syncSetupSection" style="${isConnected?'display:none':''}">
+        <p class="sync-description">Connect to JSONBin.io to sync data across all devices — student's phone and your laptop stay automatically updated.</p>
+        <div class="sync-steps">
+          <p><strong>Setup Steps:</strong></p>
+          <ol>
+            <li>Go to <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> → Sign up free</li>
+            <li>Click "API Keys" → copy your Master Key</li>
+            <li>Paste it below → Click "Connect"</li>
+            <li>Share the Bin ID shown with students</li>
+          </ol>
+        </div>
+        <div class="sync-input-group">
+          <label>JSONBin Master API Key:</label>
+          <div class="sync-input-row">
+            <input type="password" id="jsonbinApiKey" placeholder="$2a$10$...your key...">
+            <button id="connectJsonbin" class="sync-btn-primary"><i class="fas fa-plug"></i> Connect</button>
+          </div>
+        </div>
+      </div>
+      <div id="syncConnectedSection" style="${isConnected?'':'display:none'}">
+        <div class="bin-id-display">
+          <label>Your Bin ID (Share with students):</label>
+          <div class="bin-id-row">
+            <code id="binIdDisplay">${binId||''}</code>
+            <button id="copyBinId"><i class="fas fa-copy"></i> Copy</button>
+          </div>
+          <p class="bin-id-hint">Students enter this ID on their device to connect to your class data.</p>
+        </div>
+        <div class="sync-actions">
+          <button id="syncNowBtn" class="sync-btn-primary"><i class="fas fa-rotate"></i> Sync Now</button>
+          <button id="disconnectSync" class="sync-btn-danger"><i class="fas fa-unlink"></i> Disconnect</button>
+        </div>
+        <div class="last-sync-info"><small id="lastSyncTime">Never synced</small></div>
+      </div>
+    </div>
+  </div>`;
+}
+
+// ═══════════════════════════
+// 18. RENDER — TEACHER VIEWS
+// ═══════════════════════════
+function renderTeacherView(sub){
+  const el=document.getElementById('teacherMainContent');
+  updatePendingBadge();
+  loadTeacherAvatar();
+  if(sub==='dashboard') el.innerHTML=renderTeacherDashboard();
+  else if(sub==='tasks') el.innerHTML=renderTeacherTasks();
+  else if(sub==='submissions') el.innerHTML=renderTeacherSubmissions();
+  else if(sub==='saves') el.innerHTML=renderSaveArea(true);
+  else if(sub==='tools') el.innerHTML=renderToolsHub(true);
+  else if(sub==='announcements') el.innerHTML=renderTeacherAnnouncements();
+  else if(sub==='reports') el.innerHTML=renderTeacherReports();
+  else if(sub==='leaderboard') el.innerHTML=renderLeaderboard();
+}
+
+function renderTeacherDashboard(){
+  const students=DB.getStudents(), tasks=DB.getTasks(), subs=DB.getSubmissions();
+  const pending=subs.filter(s=>s.status==='submitted');
+  const accepted=subs.filter(s=>s.status==='accepted');
+  const reviewed=subs.filter(s=>s.status!=='submitted');
+  const rate=reviewed.length?Math.round(accepted.length/reviewed.length*100):0;
+  const activeAnns=DB.getAnnouncements().filter(a=>a.isActive);
+  let html=`<div class="print-header"><h1>Learn AI - with Mateen</h1><p>Teacher Report · ${formatDate(new Date())}</p></div>`;
+  // Cloud Sync Panel
+  html+=renderSyncPanel();
+  // AI Assistant
+  html+=renderAIAssistant();
+  html+=`<h2 class="page-title" style="font-size:22px">Good ${greetTime()}, Mateen! 👋</h2>`;
+  html+=`<p style="color:var(--text-mid);margin-bottom:24px">${formatDate(new Date())} — Here's your class overview</p>`;
+  html+=`<div class="stats-grid">
+    <div class="stat-card" style="animation-delay:.05s"><div class="stat-icon" style="background:var(--primary-light)"><i class="fas fa-users"></i></div><div class="stat-num">${students.length}</div><div class="stat-label">Active Students</div></div>
+    <div class="stat-card" style="animation-delay:.1s"><div class="stat-icon" style="background:var(--warning)"><i class="fas fa-clock"></i></div><div class="stat-num">${pending.length}</div><div class="stat-label">Awaiting Review</div>${pending.length?'<div class="pulse-dot"></div>':''}</div>
+    <div class="stat-card" style="animation-delay:.15s"><div class="stat-icon" style="background:var(--accent)"><i class="fas fa-tasks"></i></div><div class="stat-num">${tasks.length}</div><div class="stat-label">Total Tasks</div></div>
+    <div class="stat-card" style="animation-delay:.2s"><div class="stat-icon" style="background:var(--success)"><i class="fas fa-check-circle"></i></div><div class="stat-num">${rate}%</div><div class="stat-label">Acceptance Rate</div></div>
+  </div>`;
+  html+=`<div class="quick-actions no-print">
+    <button class="btn btn-primary" onclick="openTaskForm()"><i class="fas fa-plus"></i> Add New Task</button>
+    <button class="btn btn-accent" onclick="openAnnForm()"><i class="fas fa-bullhorn"></i> Post Announcement</button>
+    <button class="btn btn-outline" onclick="openModal('toolFormModal')"><i class="fas fa-wrench"></i> Add AI Tool</button>
+    <button class="btn btn-outline" onclick="exportAllData()"><i class="fas fa-download"></i> Export Data</button>
+    <button class="btn btn-outline" onclick="triggerImport()"><i class="fas fa-upload"></i> Import Data</button>
+  </div>`;
+  if(pending.length){
+    html+=`<div class="section-title">⏳ Pending Reviews <span class="count-badge">${pending.length}</span></div>`;
+    html+=`<div class="task-grid mb-3">`;
+    pending.slice(0,4).forEach(sub=>{
+      const task=DB.getTasks().find(t=>t.id===sub.taskId);
+      html+=`<div class="card sub-card"><div class="sub-header">${getAvatarHTML(sub.studentName,36)}<div class="sub-info"><h4>${escHtml(sub.studentName)}</h4><p>${task?escHtml(task.title):'Unknown Task'}</p></div></div><p style="font-size:12px;color:var(--text-light)">${timeAgo(sub.submittedAt)}</p><button class="btn btn-sm btn-primary mt-1" onclick="openReviewModal('${sub.id}')">Review Now →</button></div>`;
+    });
+    html+=`</div><p class="no-print"><a href="#" onclick="teacherNav('submissions');return false">View All →</a></p>`;
+  }
+  if(students.length){
+    html+=`<div class="section-title mt-3">👥 Student Overview</div><div class="table-wrap"><table class="data-table"><thead><tr><th>Student</th><th>Level</th><th>XP</th><th>Tasks Done</th><th>Streak 🔥</th><th>Last Active</th></tr></thead><tbody>`;
+    students.forEach(s=>{
+      const done=subs.filter(sub=>sub.studentId===s.id && sub.status==='accepted').length;
+      html+=`<tr><td><div class="flex-center gap-1">${getAvatarHTML(s.username,28)}${escHtml(s.username)}</div></td><td><span class="badge ${diffBadgeClass(s.level==='Beginner'?'Beginner':s.level==='AI Pro'?'Challenge':'Medium')}">${getLevel(s.xp||0).icon} ${s.level}</span></td><td>${s.xp||0}</td><td>${done}</td><td>${s.streak||0} 🔥</td><td>${s.lastLoginDate||'Never'}</td></tr>`;
+    });
+    html+=`</tbody></table></div>`;
+  }
+  if(activeAnns.length){
+    html+=`<div class="section-title mt-3">📢 Active Announcement</div>`;
+    const a=activeAnns[0];
+    html+=`<div class="card ann-card ann-${a.type}"><p>${escHtml(a.message)}</p><p style="font-size:11px;color:var(--text-light);margin-top:6px">${formatDate(a.createdAt)}</p></div>`;
+  }
+  return html;
+}
+
+function renderTeacherTasks(){
+  let html=`<div class="flex-between mb-2"><h2 class="page-title" style="margin:0">Task Management</h2><button class="btn btn-primary no-print" onclick="openTaskForm()"><i class="fas fa-plus"></i> Add Task</button></div>`;
+  html+=`<div class="tab-bar no-print"><button class="active" onclick="filterTeacherTasks('assigned',this)">📋 Assigned Tasks</button><button onclick="filterTeacherTasks('daily',this)">🔄 Daily Tasks</button></div>`;
+  html+=`<div class="filter-bar no-print"><input type="text" placeholder="🔍 Search tasks..." oninput="filterTaskSearch(this.value)"><select onchange="filterTaskCat(this.value)"><option value="">All Categories</option><option>Text AI</option><option>Image AI</option><option>Productivity</option><option>Account Setup</option><option>Prompting</option><option>Video AI</option><option>Music AI</option><option>Research AI</option><option>Design AI</option><option>Other</option></select><select onchange="filterTaskDiff(this.value)"><option value="">All Difficulties</option><option>Beginner</option><option>Medium</option><option>Challenge</option></select></div>`;
+  html+=`<div class="task-grid" id="teacherTaskGrid">`;
+  html+=renderTaskCards(DB.getTasks().filter(t=>t.type==='assigned').sort((a,b)=>(a.order||0)-(b.order||0)),true);
+  html+=`</div>`;
+  return html;
+}
+window._taskTypeFilter='assigned';window._taskSearchFilter='';window._taskCatFilter='';window._taskDiffFilter='';
+function filterTeacherTasks(type,btn){
+  window._taskTypeFilter=type;
+  document.querySelectorAll('.tab-bar button').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  applyTaskFilters();
+}
+function filterTaskSearch(v){window._taskSearchFilter=v.toLowerCase();applyTaskFilters()}
+function filterTaskCat(v){window._taskCatFilter=v;applyTaskFilters()}
+function filterTaskDiff(v){window._taskDiffFilter=v;applyTaskFilters()}
+function applyTaskFilters(){
+  let tasks=DB.getTasks().filter(t=>t.type===window._taskTypeFilter);
+  if(window._taskSearchFilter) tasks=tasks.filter(t=>t.title.toLowerCase().includes(window._taskSearchFilter));
+  if(window._taskCatFilter) tasks=tasks.filter(t=>t.category===window._taskCatFilter);
+  if(window._taskDiffFilter) tasks=tasks.filter(t=>t.difficulty===window._taskDiffFilter);
+  tasks.sort((a,b)=>(a.order||0)-(b.order||0));
+  document.getElementById('teacherTaskGrid').innerHTML=renderTaskCards(tasks,true);
+}
+function renderTaskCards(tasks,isTeacher){
+  if(!tasks.length) return `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-clipboard-list"></i><h3>No tasks found</h3><p>Create your first task to get started</p></div>`;
+  const subs=DB.getSubmissions();
+  return tasks.map(t=>{
+    const tSubs=subs.filter(s=>s.taskId===t.id);
+    const submitted=tSubs.filter(s=>s.status==='submitted').length;
+    const accepted=tSubs.filter(s=>s.status==='accepted').length;
+    const rejected=tSubs.filter(s=>s.status==='rejected').length;
+    return `<div class="card task-card">
+      <div class="task-header"><span class="task-order">#${t.order||'?'}</span><span class="badge ${diffBadgeClass(t.difficulty)}">${t.difficulty}</span></div>
+      <div class="task-title">${escHtml(t.title)}</div>
+      <div class="task-tags"><span class="badge" style="background:${catColor(t.category)}22;color:${catColor(t.category)}">${t.category}</span>${t.aiTool?`<span class="badge badge-info">${escHtml(t.aiTool)}</span>`:''}</div>
+      <div class="task-desc">${escHtml(t.description)}</div>
+      ${t.dueDate?`<p style="font-size:12px;color:var(--text-mid)">📅 Due: ${formatDate(t.dueDate)}</p>`:''}
+      <p style="font-size:11px;color:var(--text-light);margin:6px 0">${submitted} submitted · ${accepted} accepted · ${rejected} rejected</p>
+      ${isTeacher?`<div class="task-actions no-print"><button class="btn btn-sm btn-outline" onclick="openTaskForm('${t.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-outline" style="color:var(--danger)" onclick="deleteTask('${t.id}')"><i class="fas fa-trash"></i></button><button class="btn btn-sm btn-primary" onclick="teacherNav('submissions')">Submissions</button></div>`:''}
+    </div>`;
+  }).join('');
+}
+
+function renderTeacherSubmissions(){
+  let html=`<h2 class="page-title">Submission Reviews</h2>`;
+  html+=`<div class="tab-bar no-print" id="subTabBar"><button class="active" onclick="filterSubs('submitted',this)">⏳ Pending <span class="count-badge">${DB.getSubmissions().filter(s=>s.status==='submitted').length}</span></button><button onclick="filterSubs('accepted',this)">✅ Accepted</button><button onclick="filterSubs('rejected',this)">❌ Rejected</button><button onclick="filterSubs('all',this)">All</button></div>`;
+  html+=`<div class="filter-bar no-print"><input type="text" placeholder="🔍 Search student..." oninput="filterSubSearch(this.value)"></div>`;
+  html+=`<div id="subGrid" class="task-grid">`;
+  html+=renderSubCards(DB.getSubmissions().filter(s=>s.status==='submitted'));
+  html+=`</div>`;
+  return html;
+}
+window._subStatusFilter='submitted';window._subSearchFilter='';
+function filterSubs(status,btn){
+  window._subStatusFilter=status;
+  document.querySelectorAll('#subTabBar button').forEach(b=>b.classList.remove('active'));
+  if(btn) btn.classList.add('active');
+  applySubFilters();
+}
+function filterSubSearch(v){window._subSearchFilter=v.toLowerCase();applySubFilters()}
+function applySubFilters(){
+  let subs=DB.getSubmissions();
+  if(window._subStatusFilter!=='all') subs=subs.filter(s=>s.status===window._subStatusFilter);
+  if(window._subSearchFilter) subs=subs.filter(s=>s.studentName.toLowerCase().includes(window._subSearchFilter));
+  subs.sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt));
+  document.getElementById('subGrid').innerHTML=renderSubCards(subs);
+}
+function renderSubCards(subs){
+  if(!subs.length) return `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-inbox"></i><h3>No submissions here</h3></div>`;
+  return subs.map(sub=>{
+    const task=DB.getTasks().find(t=>t.id===sub.taskId);
+    return `<div class="card sub-card ${sub.status}">
+      <div class="sub-header">${getAvatarHTML(sub.studentName,36)}<div class="sub-info"><h4>${escHtml(sub.studentName)}</h4><p>${task?escHtml(task.title):'Unknown Task'}</p></div></div>
+      <p style="font-size:12px;color:var(--text-light)">${timeAgo(sub.submittedAt)} ${sub.resubmission?'· Attempt #'+(sub.resubmissionCount+1):''}</p>
+      ${sub.textExplanation?`<p style="font-size:13px;color:var(--text-mid);margin-top:6px">${escHtml(sub.textExplanation.slice(0,100))}${sub.textExplanation.length>100?'...':''}</p>`:''}
+      <div class="flex-between mt-1"><span class="badge ${statusBadgeClass(sub.status)}">${sub.status}</span>
+      ${sub.status==='submitted'?`<button class="btn btn-sm btn-primary no-print" onclick="openReviewModal('${sub.id}')">Review →</button>`:''}
+      </div>
+    </div>`;
+  }).join('');
+}
+function openReviewModal(subId){
+  const sub=DB.getSubmissions().find(s=>s.id===subId);if(!sub) return;
+  const task=DB.getTasks().find(t=>t.id===sub.taskId);
+  let html=`<p><strong>📋 Task:</strong> ${task?escHtml(task.title):'Unknown'}</p>
+    <p><strong>👤 Student:</strong> ${escHtml(sub.studentName)}</p>
+    <p><strong>📅 Submitted:</strong> ${formatDate(sub.submittedAt)} (${timeAgo(sub.submittedAt)})</p>
+    <p><strong>🔄 Attempt:</strong> #${(sub.resubmissionCount||0)+1}</p><hr style="margin:12px 0;border:none;border-top:1px solid var(--border)">`;
+  if(sub.imageData) html+=`<p><strong>📸 Submitted Image:</strong></p><img src="${sub.imageData}" class="img-full mb-2" onclick="showLightbox('${sub.imageData}')">`;
+  else html+=`<p style="color:var(--text-light)"><em>No image submitted</em></p>`;
+  if(sub.textExplanation) html+=`<p><strong>📝 Explanation:</strong></p><div style="background:var(--bg-main);padding:12px;border-radius:var(--radius-sm);font-size:13px;white-space:pre-wrap;max-height:200px;overflow-y:auto">${escHtml(sub.textExplanation)}</div>`;
+  else html+=`<p style="color:var(--text-light)"><em>No text submitted</em></p>`;
+  if(sub.status==='submitted'){
+    html+=`<hr style="margin:16px 0;border:none;border-top:1px solid var(--border)"><h4 style="margin-bottom:10px">Your Decision:</h4>
+    <div class="form-group"><label>Note for student (optional):</label><textarea id="reviewAcceptNote" rows="2" placeholder="Great work! I loved..."></textarea></div>
+    <button class="btn btn-success btn-full mb-2" onclick="reviewAction('${sub.id}','accepted')"><i class="fas fa-check"></i> ✅ ACCEPT</button>
+    <div style="text-align:center;margin:10px 0;color:var(--text-light)">— OR —</div>
+    <div class="form-group"><label>Rejection reason (required if rejecting):</label><textarea id="reviewRejectReason" rows="2" placeholder="Please redo this because..."></textarea></div>
+    <button class="btn btn-danger btn-full" onclick="reviewAction('${sub.id}','rejected')"><i class="fas fa-times"></i> ❌ REJECT</button>`;
+  } else if(sub.status==='accepted'){
+    html+=`<div class="mt-2" style="background:#D1FAE5;padding:12px;border-radius:var(--radius-sm)"><strong>✅ Accepted</strong>${sub.teacherNote?` — ${escHtml(sub.teacherNote)}`:''}</div>`;
+  } else if(sub.status==='rejected'){
+    html+=`<div class="mt-2" style="background:#FEE2E2;padding:12px;border-radius:var(--radius-sm)"><strong>❌ Rejected</strong> — ${escHtml(sub.rejectionReason||'No reason given')}</div>`;
+  }
+  document.getElementById('reviewModalBody').innerHTML=html;
+  openModal('reviewModal');
+}
+
+function renderTeacherAnnouncements(){
+  const anns=DB.getAnnouncements().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  let html=`<div class="flex-between mb-2"><h2 class="page-title" style="margin:0">📢 Announcements</h2><button class="btn btn-accent no-print" onclick="openAnnForm()"><i class="fas fa-plus"></i> Post New</button></div>`;
+  if(!anns.length) html+=`<div class="empty-state"><i class="fas fa-bullhorn"></i><h3>No announcements yet</h3></div>`;
+  anns.forEach(a=>{
+    const icons={info:'📘',tip:'💡',warning:'⚠️',celebration:'🎉'};
+    html+=`<div class="card ann-card ann-${a.type} mb-2"><div class="flex-between"><div><span style="font-size:18px">${icons[a.type]||'📘'}</span> ${escHtml(a.message)}</div><div class="flex gap-1 no-print"><label class="toggle-switch"><input type="checkbox" ${a.isActive?'checked':''} onchange="toggleAnn('${a.id}')"><span class="slider"></span></label><button class="btn btn-sm btn-ghost" onclick="openAnnForm('${a.id}')"><i class="fas fa-edit"></i></button><button class="btn btn-sm btn-ghost text-danger" onclick="deleteAnn('${a.id}')"><i class="fas fa-trash"></i></button></div></div><p style="font-size:11px;color:var(--text-light);margin-top:6px">${formatDate(a.createdAt)} · ${a.isActive?'Active':'Inactive'}</p></div>`;
+  });
+  return html;
+}
+
+function renderTeacherReports(){
+  const students=DB.getStudents();
+  let html=`<div class="flex-between mb-2"><h2 class="page-title print-target" style="margin:0">📊 Reports</h2><button class="btn btn-outline no-print" onclick="exportPDF()"><i class="fas fa-file-pdf"></i> Export PDF</button></div>`;
+  html+=`<div class="filter-bar no-print"><select id="reportStudentSelect" onchange="updateReport()"><option value="all">All Students</option>${students.map(s=>`<option value="${s.id}">${escHtml(s.username)}</option>`).join('')}</select></div>`;
+  html+=`<div id="reportContent">${generateReportHTML('all')}</div>`;
+  return html;
+}
+function updateReport(){
+  const v=document.getElementById('reportStudentSelect')?.value||'all';
+  const el=document.getElementById('reportContent');
+  if(el) el.innerHTML=generateReportHTML(v);
+}
+function generateReportHTML(studentIdOrAll){
+  const students=DB.getStudents();
+  const subs=DB.getSubmissions();
+  const tasks=DB.getTasks();
+  const saves=DB.getSaves();
+  const attendance=DB.getAttendance();
+  let targetStudents=studentIdOrAll==='all'?students:students.filter(s=>s.id===studentIdOrAll);
+  if(!targetStudents.length) return `<div class="empty-state"><i class="fas fa-chart-bar"></i><h3>No data yet</h3></div>`;
+  let html='';
+  targetStudents.forEach(s=>{
+    const mySubs=subs.filter(sub=>sub.studentId===s.id);
+    const accepted=mySubs.filter(sub=>sub.status==='accepted');
+    const rejected=mySubs.filter(sub=>sub.status==='rejected');
+    const submitted=mySubs.filter(sub=>sub.status==='submitted');
+    const rate=mySubs.length?Math.round(accepted.length/(accepted.length+rejected.length||1)*100):0;
+    const mySaves=saves.filter(sv=>sv.addedBy===s.username);
+    const att=attendance[s.id]||{};
+    const attDays=Object.keys(att).length;
+    html+=`<h3 class="section-title mt-2">${escHtml(s.username)}'s Report</h3>`;
+    html+=`<div class="stats-grid" style="grid-template-columns:repeat(auto-fill,minmax(140px,1fr))">
+      <div class="stat-card"><div class="stat-num">${attDays}</div><div class="stat-label">Days Attended</div></div>
+      <div class="stat-card"><div class="stat-num">${mySubs.length}</div><div class="stat-label">Submitted</div></div>
+      <div class="stat-card"><div class="stat-num">${accepted.length}</div><div class="stat-label">Accepted</div></div>
+      <div class="stat-card"><div class="stat-num">${rejected.length}</div><div class="stat-label">Rejected</div></div>
+      <div class="stat-card"><div class="stat-num">${rate}%</div><div class="stat-label">Acceptance Rate</div></div>
+      <div class="stat-card"><div class="stat-num">${s.streak||0}🔥</div><div class="stat-label">Current Streak</div></div>
+      <div class="stat-card"><div class="stat-num">${s.bestStreak||0}</div><div class="stat-label">Best Streak</div></div>
+      <div class="stat-card"><div class="stat-num">${s.xp||0}</div><div class="stat-label">Total XP</div></div>
+      <div class="stat-card"><div class="stat-num">${getLevel(s.xp||0).icon}</div><div class="stat-label">${s.level||'Beginner'}</div></div>
+      <div class="stat-card"><div class="stat-num">${mySaves.length}</div><div class="stat-label">Items Saved</div></div>
+      <div class="stat-card"><div class="stat-num">${(s.toolsExplored||[]).length}</div><div class="stat-label">Tools Explored</div></div>
+    </div>`;
+    html+=`<div class="card mt-2 mb-2"><div class="section-title">Task Status Breakdown</div><div class="chart-bar-container">
+      <div class="chart-bar"><div class="bar-label">Accepted</div><div class="bar-track"><div class="bar-fill" style="width:${mySubs.length?accepted.length/mySubs.length*100:0}%;background:var(--success)">${accepted.length}</div></div></div>
+      <div class="chart-bar"><div class="bar-label">Rejected</div><div class="bar-track"><div class="bar-fill" style="width:${mySubs.length?rejected.length/mySubs.length*100:0}%;background:var(--danger)">${rejected.length}</div></div></div>
+      <div class="chart-bar"><div class="bar-label">Pending</div><div class="bar-track"><div class="bar-fill" style="width:${mySubs.length?submitted.length/mySubs.length*100:0}%;background:var(--warning)">${submitted.length}</div></div></div>
+    </div></div>`;
+    const cats=['Text AI','Image AI','Productivity','Account Setup','Prompting','Video AI','Music AI','Research AI','Design AI','Other'];
+    html+=`<div class="card mb-2"><div class="section-title">Category Performance</div><div class="chart-bar-container">`;
+    cats.forEach(cat=>{
+      const catTasks=tasks.filter(t=>t.category===cat);
+      const catAccepted=accepted.filter(a=>catTasks.some(t=>t.id===a.taskId));
+      const catTotal=mySubs.filter(sub=>catTasks.some(t=>t.id===sub.taskId));
+      const catRate=catTotal.length?Math.round(catAccepted.length/catTotal.length*100):0;
+      if(catTotal.length) html+=`<div class="chart-bar"><div class="bar-label">${cat}</div><div class="bar-track"><div class="bar-fill" style="width:${catRate}%;background:${catColor(cat)}">${catRate}%</div></div></div>`;
+    });
+    html+=`</div></div>`;
+    html+=`<div class="card mb-2"><div class="section-title">Attendance Calendar</div>${renderCalendar(s.id)}</div>`;
+    html+=renderWeakArea(s);
+  });
+  return html;
+}
+function renderWeakArea(s){
+  const subs=DB.getSubmissions().filter(sub=>sub.studentId===s.id);
+  const tasks=DB.getTasks();
+  const cats=['Text AI','Image AI','Productivity','Account Setup','Prompting','Video AI','Music AI','Research AI','Design AI','Other'];
+  const weak=[],strong=[];
+  cats.forEach(cat=>{
+    const catTasks=tasks.filter(t=>t.category===cat);
+    const catSubs=subs.filter(sub=>catTasks.some(t=>t.id===sub.taskId));
+    const catAccepted=catSubs.filter(sub=>sub.status==='accepted');
+    if(catSubs.length===0 && catTasks.length>0) weak.push({cat,msg:'Not started yet'});
+    else if(catSubs.length>0){
+      const rate=Math.round(catAccepted.length/catSubs.length*100);
+      if(rate<60) weak.push({cat,msg:rate+'% acceptance rate'});
+      else strong.push({cat,msg:rate+'% acceptance rate'});
+    }
+  });
+  let html=`<div class="card weak-area-card mb-2"><div class="section-title">🔍 Weak Area Analysis</div>`;
+  if(weak.length){html+=`<p><strong class="text-danger">❌ Needs Improvement:</strong></p><ul style="margin:6px 0 12px 20px;font-size:13px">${weak.map(w=>`<li>${w.cat} — ${w.msg}</li>`).join('')}</ul>`}
+  if(strong.length){html+=`<p><strong class="text-success">✅ Strong Areas:</strong></p><ul style="margin:6px 0 12px 20px;font-size:13px">${strong.map(st=>`<li>${st.cat} — ${st.msg}</li>`).join('')}</ul>`}
+  if(weak.length){
+    html+=`<p style="background:#DBEAFE;padding:10px;border-radius:var(--radius-sm);font-size:13px">💡 <strong>Recommendation:</strong> Focus more on ${weak[0].cat} tasks to improve skills in that area.</p>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+function renderCalendar(studentId){
+  const att=DB.getAttendance()[studentId]||{};
+  const now=new Date();
+  const year=now.getFullYear(), month=now.getMonth();
+  const firstDay=new Date(year,month,1).getDay();
+  const daysInMonth=new Date(year,month+1,0).getDate();
+  const monthName=now.toLocaleDateString('en-US',{month:'long',year:'numeric'});
+  let html=`<p style="font-weight:600;margin-bottom:8px">${monthName}</p><div class="calendar-grid">`;
+  ['Su','Mo','Tu','We','Th','Fr','Sa'].forEach(d=>html+=`<div class="cal-day cal-header">${d}</div>`);
+  for(let i=0;i<firstDay;i++) html+=`<div class="cal-day"></div>`;
+  for(let d=1;d<=daysInMonth;d++){
+    const dateStr=`${year}-${String(month+1).padStart(2,'0')}-${String(d).padStart(2,'0')}`;
+    const isToday=dateStr===todayStr();
+    const attended=att[dateStr];
+    html+=`<div class="cal-day${attended?' attended':''}${isToday?' today':''}">${d}</div>`;
+  }
+  html+=`</div>`;
+  return html;
+}
+
+// ═══════════════════════════
+// 19. RENDER — STUDENT VIEWS
+// ═══════════════════════════
+function renderStudentView(sub){
+  const el=document.getElementById('studentMainContent');
+  updateStudentSidebar();
+  if(sub==='dashboard') el.innerHTML=renderStudentDashboard();
+  else if(sub==='tasks') el.innerHTML=renderStudentTasks();
+  else if(sub==='saves') el.innerHTML=renderSaveArea(false);
+  else if(sub==='tools') el.innerHTML=renderToolsHub(false);
+  else if(sub==='reports') el.innerHTML=renderStudentReports();
+  else if(sub==='badges') el.innerHTML=renderBadgeWall();
+  else if(sub==='leaderboard') el.innerHTML=renderLeaderboard();
+}
+
+function renderStudentDashboard(){
+  const s=getCurrentStudent();if(!s) return '';
+  const subs=DB.getSubmissions().filter(sub=>sub.studentId===s.id);
+  const accepted=subs.filter(sub=>sub.status==='accepted');
+  const lvl=getLevel(s.xp||0), nextLvl=getNextLevel(s.xp||0);
+  const activeAnns=DB.getAnnouncements().filter(a=>a.isActive);
+  const quote=getDailyQuote();
+  const checkedIn=isCheckedInToday(s.id);
+  let html=`<div class="print-header"><h1>Learn AI - with Mateen</h1><p>${escHtml(s.username)}'s Report · ${formatDate(new Date())}</p></div>`;
+  html+=`<h2 class="page-title" style="font-size:22px">Hey ${escHtml(s.username)}! 👋</h2>`;
+  html+=`<p style="color:var(--text-mid);margin-bottom:8px">${formatDate(new Date())} <span class="badge ${diffBadgeClass(s.level==='Beginner'?'Beginner':s.level==='AI Pro'?'Challenge':'Medium')}">${lvl.icon} ${lvl.name}</span> · ${s.xp||0} XP</p>`;
+  if(activeAnns.length){
+    const a=activeAnns[0];
+    const icons={info:'📘',tip:'💡',warning:'⚠️',celebration:'🎉'};
+    html+=`<div class="ann-banner ann-${a.type}">${icons[a.type]||'📘'} ${escHtml(a.message)}</div>`;
+  }
+  html+=`<div class="card mb-3" style="border-left:4px solid var(--accent)"><p style="font-style:italic;color:var(--text-mid)"><i class="fas fa-quote-left" style="color:var(--accent-light);margin-right:6px"></i>${escHtml(quote.text)}</p><p style="font-size:12px;color:var(--text-light);margin-top:4px">— ${escHtml(quote.author)}</p></div>`;
+  html+=`<div class="stats-grid">
+    <div class="stat-card"><div class="stat-icon" style="background:var(--success)"><i class="fas fa-check"></i></div><div class="stat-num">${accepted.length}</div><div class="stat-label">Tasks Done</div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--danger)"><i class="fas fa-fire"></i></div><div class="stat-num">${s.streak||0}</div><div class="stat-label">Day Streak 🔥</div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--accent)"><i class="fas fa-star"></i></div><div class="stat-num">${s.xp||0}</div><div class="stat-label">XP Points</div></div>
+    <div class="stat-card"><div class="stat-icon" style="background:var(--warning)"><i class="fas fa-trophy"></i></div><div class="stat-num">${(s.badges||[]).length}</div><div class="stat-label">Badges</div></div>
+  </div>`;
+  html+=`<div class="card mb-3">`;
+  if(!checkedIn){
+    html+=`<div style="text-align:center"><p style="font-size:14px;color:var(--text-mid);margin-bottom:10px">📅 ${formatDate(new Date())} — Don't break your streak!</p><button class="btn btn-success" onclick="doCheckIn()"><i class="fas fa-check-circle"></i> ✅ Mark Present Today</button></div>`;
+  } else {
+    html+=`<div style="text-align:center"><p style="font-size:18px;color:var(--success)"><i class="fas fa-check-circle"></i> ✓ Present Today!</p><p style="font-size:14px;color:var(--text-mid)">🔥 ${s.streak||0} Day Streak! Best: ${s.bestStreak||0} days</p></div>`;
+  }
+  html+=`</div>`;
+  // Export data button
+  html+=`<div class="quick-actions no-print"><button class="btn btn-outline" onclick="exportStudentData()"><i class="fas fa-download"></i> Export My Data</button></div>`;
+  const tasks=DB.getTasks().filter(t=>t.type==='assigned').sort((a,b)=>(a.order||0)-(b.order||0));
+  const pendingTasks=tasks.filter(t=>{
+    const sub=subs.find(sub=>sub.taskId===t.id);
+    return !sub || sub.status==='rejected';
+  }).slice(0,3);
+  if(pendingTasks.length){
+    html+=`<div class="section-title">📋 Your Next Tasks</div><div class="task-grid mb-3">`;
+    pendingTasks.forEach(t=>{
+      const sub=subs.find(sub=>sub.taskId===t.id);
+      const status=sub?sub.status:'pending';
+      html+=`<div class="card task-card"><div class="task-header"><span class="task-order">#${t.order}</span><span class="badge ${diffBadgeClass(t.difficulty)}">${t.difficulty}</span></div><div class="task-title">${escHtml(t.title)}</div><span class="badge ${statusBadgeClass(status)}">${status}</span><button class="btn btn-sm btn-accent mt-1 no-print" onclick="openStudentTaskDetail('${t.id}')">View & Submit →</button></div>`;
+    });
+    html+=`</div><p class="no-print"><a href="#" onclick="studentNav('tasks');return false">View All Tasks →</a></p>`;
+  }
+  html+=`<div class="card mb-3"><div class="section-title">${lvl.icon} Level Progress</div><p>${lvl.name} → ${nextLvl?nextLvl.name:'Max Level!'}</p><div class="xp-progress" style="height:14px"><div class="xp-fill" style="width:${getLevelProgress(s.xp||0)}%"></div></div><p style="font-size:12px;color:var(--text-mid);margin-top:4px">${nextLvl?(nextLvl.min-(s.xp||0))+' more XP to '+nextLvl.name:'You reached the top! 🌟'}</p></div>`;
+  html+=`<div class="card"><div class="section-title">Recent Activity</div>`;
+  const recentSubs=subs.sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt)).slice(0,5);
+  if(recentSubs.length){
+    recentSubs.forEach(sub=>{
+      const task=DB.getTasks().find(t=>t.id===sub.taskId);
+      const tName=task?task.title:'Unknown';
+      let icon,color,text;
+      if(sub.status==='submitted'){icon='fa-paper-plane';color='var(--primary-light)';text=`You submitted "${tName}"`}
+      else if(sub.status==='accepted'){icon='fa-check-circle';color='var(--success)';text=`"${tName}" was accepted! +30 XP`}
+      else{icon='fa-times-circle';color='var(--danger)';text=`"${tName}" was rejected`}
+      html+=`<div class="activity-item"><div class="act-icon" style="background:${color}22;color:${color}"><i class="fas ${icon}"></i></div><div><div class="act-text">${escHtml(text)}</div><div class="act-time">${timeAgo(sub.submittedAt)}</div></div></div>`;
+    });
+  } else html+=`<p style="color:var(--text-light);font-size:13px">No activity yet. Start your first task!</p>`;
+  html+=`</div>`;
+  return html;
+}
+function doCheckIn(){
+  const s=getCurrentStudent();if(!s) return;
+  if(checkIn(s.id)){
+    showToast('Checked in! +5 XP 🎉','success');
+    renderStudentView('dashboard');
+  } else showToast('Already checked in today!','info');
+}
+
+function renderStudentTasks(){
+  const s=getCurrentStudent();if(!s) return '';
+  const subs=DB.getSubmissions().filter(sub=>sub.studentId===s.id);
+  const accepted=subs.filter(sub=>sub.status==='accepted').length;
+  const pending=subs.filter(sub=>sub.status==='submitted').length;
+  const rejected=subs.filter(sub=>sub.status==='rejected').length;
+  let html=`<h2 class="page-title">📋 My Tasks</h2>`;
+  html+=`<div class="flex gap-2 mb-2" style="flex-wrap:wrap"><span class="badge badge-accepted">✅ ${accepted} Done</span><span class="badge badge-submitted">📤 ${pending} Pending</span><span class="badge badge-rejected">❌ ${rejected} Rejected</span></div>`;
+  html+=`<div class="tab-bar no-print" id="stuTaskTabBar"><button class="active" onclick="filterStuTasks('assigned',this)">📋 Assigned Tasks</button><button onclick="filterStuTasks('daily',this)">🔄 Daily Tasks</button></div>`;
+  html+=`<div class="filter-bar no-print"><input type="text" placeholder="🔍 Search..." oninput="filterStuTaskSearch(this.value)"><select onchange="filterStuTaskStatus(this.value)"><option value="">All Status</option><option value="pending">Pending</option><option value="submitted">Submitted</option><option value="accepted">Accepted</option><option value="rejected">Rejected</option></select><select onchange="filterStuTaskCat(this.value)"><option value="">All Categories</option><option>Text AI</option><option>Image AI</option><option>Productivity</option><option>Account Setup</option><option>Prompting</option><option>Video AI</option><option>Music AI</option><option>Research AI</option><option>Design AI</option><option>Other</option></select></div>`;
+  html+=`<div class="task-grid" id="stuTaskGrid">${renderStudentTaskCards('assigned')}</div>`;
+  return html;
+}
+window._stuTaskType='assigned';window._stuTaskSearch='';window._stuTaskStatus='';window._stuTaskCat='';
+function filterStuTasks(type,btn){window._stuTaskType=type;document.querySelectorAll('#stuTaskTabBar button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');applyStuTaskFilters()}
+function filterStuTaskSearch(v){window._stuTaskSearch=v.toLowerCase();applyStuTaskFilters()}
+function filterStuTaskStatus(v){window._stuTaskStatus=v;applyStuTaskFilters()}
+function filterStuTaskCat(v){window._stuTaskCat=v;applyStuTaskFilters()}
+function applyStuTaskFilters(){document.getElementById('stuTaskGrid').innerHTML=renderStudentTaskCards(window._stuTaskType)}
+function renderStudentTaskCards(type){
+  const s=getCurrentStudent();if(!s) return '';
+  const subs=DB.getSubmissions().filter(sub=>sub.studentId===s.id);
+  let tasks=DB.getTasks().filter(t=>t.type===type).sort((a,b)=>(a.order||0)-(b.order||0));
+  if(window._stuTaskSearch) tasks=tasks.filter(t=>t.title.toLowerCase().includes(window._stuTaskSearch));
+  if(window._stuTaskCat) tasks=tasks.filter(t=>t.category===window._stuTaskCat);
+  if(!tasks.length) return `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-clipboard-list"></i><h3>No tasks found</h3></div>`;
+  return tasks.filter(t=>{
+    if(!window._stuTaskStatus) return true;
+    const sub=subs.filter(sub=>sub.taskId===t.id).sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt))[0];
+    const status=sub?sub.status:'pending';
+    return status===window._stuTaskStatus;
+  }).map(t=>{
+    const taskSubs=subs.filter(sub=>sub.taskId===t.id).sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt));
+    const latestSub=taskSubs[0];
+    const status=latestSub?latestSub.status:'pending';
+    let statusHtml=`<span class="badge ${statusBadgeClass(status)}">${status==='pending'?'🟡 Pending':status==='submitted'?'📤 Submitted':status==='accepted'?'✅ Accepted':'❌ Rejected'}</span>`;
+    return `<div class="card task-card"><div class="task-header"><span class="task-order">#${t.order||'?'}</span><span class="badge ${diffBadgeClass(t.difficulty)}">${t.difficulty}</span></div><div class="task-title">${escHtml(t.title)}</div><div class="task-tags"><span class="badge" style="background:${catColor(t.category)}22;color:${catColor(t.category)}">${t.category}</span>${t.aiTool?`<span class="badge badge-info">${escHtml(t.aiTool)}</span>`:''}</div><div class="task-desc">${escHtml(t.description)}</div>${t.dueDate?`<p style="font-size:12px;color:${new Date(t.dueDate)<new Date()?'var(--danger)':'var(--text-mid)'}">📅 ${formatDate(t.dueDate)}</p>`:''}${statusHtml}${status==='rejected'?`<p style="font-size:12px;color:var(--danger);margin-top:4px">❌ Rejected — See Reason</p>`:''}
+    <button class="btn btn-sm btn-accent mt-1 no-print" onclick="openStudentTaskDetail('${t.id}')">View & Submit →</button></div>`;
+  }).join('')||`<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-check-circle"></i><h3>No matching tasks</h3></div>`;
+}
+function openStudentTaskDetail(taskId){
+  const s=getCurrentStudent();if(!s) return;
+  const task=DB.getTasks().find(t=>t.id===taskId);if(!task) return;
+  const subs=DB.getSubmissions().filter(sub=>sub.taskId===taskId && sub.studentId===s.id).sort((a,b)=>new Date(b.submittedAt)-new Date(a.submittedAt));
+  const latestSub=subs[0];
+  const status=latestSub?latestSub.status:'pending';
+  document.getElementById('taskDetailTitle').textContent=task.title;
+  let html=`<div class="task-tags mb-2"><span class="badge ${diffBadgeClass(task.difficulty)}">${task.difficulty}</span><span class="badge" style="background:${catColor(task.category)}22;color:${catColor(task.category)}">${task.category}</span>${task.aiTool?`<span class="badge badge-info">${escHtml(task.aiTool)}</span>`:''}</div>`;
+  html+=`<p style="margin-bottom:12px;white-space:pre-wrap">${escHtml(task.description)}</p>`;
+  if(task.dueDate) html+=`<p style="font-size:13px;color:var(--text-mid);margin-bottom:12px">📅 Due: ${formatDate(task.dueDate)}</p>`;
+  html+=`<span class="badge ${statusBadgeClass(status)} mb-2">${status==='pending'?'🟡 Not yet submitted':status==='submitted'?'📤 Submitted — Awaiting Review':status==='accepted'?'✅ Accepted':'❌ Rejected'}</span>`;
+  if(status==='accepted'){
+    html+=`<div style="background:#D1FAE5;padding:14px;border-radius:var(--radius-sm);margin-top:12px"><strong>✅ Task Accepted! +30 XP earned</strong>${latestSub.teacherNote?`<p style="margin-top:6px">${escHtml(latestSub.teacherNote)}</p>`:''}</div>`;
+    if(latestSub.imageData) html+=`<img src="${latestSub.imageData}" class="img-full mt-2" onclick="showLightbox('${latestSub.imageData}')">`;
+    if(latestSub.textExplanation) html+=`<div style="background:var(--bg-main);padding:12px;border-radius:var(--radius-sm);margin-top:8px;font-size:13px;white-space:pre-wrap">${escHtml(latestSub.textExplanation)}</div>`;
+  } else if(status==='submitted'){
+    html+=`<div style="background:#DBEAFE;padding:14px;border-radius:var(--radius-sm);margin-top:12px"><strong>⏳ Submitted — Awaiting Teacher Review</strong></div>`;
+    if(latestSub.imageData) html+=`<img src="${latestSub.imageData}" class="img-full mt-2" onclick="showLightbox('${latestSub.imageData}')">`;
+    if(latestSub.textExplanation) html+=`<div style="background:var(--bg-main);padding:12px;border-radius:var(--radius-sm);margin-top:8px;font-size:13px;white-space:pre-wrap">${escHtml(latestSub.textExplanation)}</div>`;
+  } else {
+    if(status==='rejected' && latestSub){
+      html+=`<div style="background:#FEE2E2;padding:14px;border-radius:var(--radius-sm);margin:12px 0"><strong>❌ Rejected</strong><p style="margin-top:4px">Reason: ${escHtml(latestSub.rejectionReason||'No reason given')}</p></div>`;
+    }
+    html+=`<div style="margin-top:16px;padding:16px;background:var(--bg-main);border-radius:var(--radius-md)">
+      <h4 style="margin-bottom:12px">📤 ${status==='rejected'?'Re-Submit':'Submit'} Your Work</h4>
+      <div class="form-group"><label>Upload Screenshot/Image:</label>
+      <div class="upload-area" onclick="document.getElementById('taskImageFile').click()"><i class="fas fa-cloud-upload-alt"></i><p>Click to upload (JPG, PNG, GIF, WebP)</p><input type="file" id="taskImageFile" accept="image/*" style="display:none" onchange="handleImageUpload(event)"><img class="upload-preview" id="uploadPreview" style="display:none"></div></div>
+      <div class="form-group"><label>Your Explanation:</label><textarea id="submissionText" rows="4" placeholder="Describe what you did, what you learned, and any challenges you faced..."></textarea></div>
+      <p style="font-size:12px;color:var(--text-light);margin-bottom:12px">You can submit image only, text only, or both. At least one is required.</p>
+      <button class="btn btn-accent btn-full" onclick="submitStudentTask('${taskId}')"><i class="fas fa-check"></i> ${status==='rejected'?'Re-Submit Task':'Submit Task ✓'}</button>
+    </div>`;
+  }
+  document.getElementById('taskDetailBody').innerHTML=html;
+  pendingImageData=null;
+  openModal('taskDetailModal');
+}
+
+function renderStudentReports(){
+  const s=getCurrentStudent();if(!s) return '';
+  let html=`<div class="flex-between mb-2"><h2 class="page-title print-target" style="margin:0">📊 My Report</h2><button class="btn btn-outline no-print" onclick="exportPDF()"><i class="fas fa-file-pdf"></i> Export PDF</button></div>`;
+  html+=generateReportHTML(s.id);
+  return html;
+}
+
+function renderBadgeWall(){
+  const s=getCurrentStudent();if(!s) return '';
+  const earned=(s.badges||[]).length;
+  const lvl=getLevel(s.xp||0), nextLvl=getNextLevel(s.xp||0);
+  let html=`<h2 class="page-title">🏆 My Achievements</h2>`;
+  html+=`<div class="card mb-3" style="text-align:center"><p style="font-size:32px">${lvl.icon}</p><p style="font-size:20px;font-weight:700">${lvl.name}</p><p style="color:var(--text-mid)">${s.xp||0} XP</p><div class="xp-progress mt-1" style="max-width:300px;margin:8px auto"><div class="xp-fill" style="width:${getLevelProgress(s.xp||0)}%"></div></div><p style="font-size:12px;color:var(--text-light)">${nextLvl?(nextLvl.min-(s.xp||0))+' XP to '+nextLvl.name:'Max Level Reached!'}</p><p style="margin-top:8px">${earned} of ${BADGES.length} badges earned</p></div>`;
+  html+=`<div class="badge-grid">`;
+  BADGES.forEach(badge=>{
+    const isEarned=(s.badges||[]).includes(badge.id);
+    html+=`<div class="card badge-card ${isEarned?'earned':'locked'}"><span class="badge-emoji">${badge.icon}${!isEarned?'<i class="fas fa-lock" style="position:absolute;font-size:20px;color:var(--text-light)"></i>':''}</span><div class="badge-name">${badge.name}</div><div class="badge-desc">${badge.description}</div><div class="badge-how">${badge.condition}</div>${isEarned?'<div class="badge-earned-date">✅ Earned!</div>':''}</div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+
+// ═══════════════════════════
+// 20. SHARED RENDERS
+// ═══════════════════════════
+function renderSaveArea(isTeacher){
+  const saves=DB.getSaves().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  const who=isTeacher?'teacher':(AppState.currentUser?AppState.currentUser.username:'');
+  let html=`<div class="flex-between mb-2"><h2 class="page-title" style="margin:0">💾 Save Area</h2><button class="btn btn-primary no-print" onclick="openSaveForm()"><i class="fas fa-plus"></i> Add New</button></div>`;
+  html+=`<div class="tab-bar no-print" id="saveTabBar"><button class="active" onclick="filterSaveTab('All',this)">All</button><button onclick="filterSaveTab('Links',this)">🔗 Links</button><button onclick="filterSaveTab('Notes',this)">📝 Notes</button><button onclick="filterSaveTab('Screenshots',this)">🖼️ Screenshots</button><button onclick="filterSaveTab('Tips',this)">💡 Tips</button><button onclick="filterSaveTab('Tool Reviews',this)">🤖 Reviews</button></div>`;
+  html+=`<div class="filter-bar no-print"><input type="text" placeholder="🔍 Search saves..." oninput="filterSaveSearch(this.value)"></div>`;
+  html+=`<div class="save-grid" id="saveGrid">${renderSaveCards(saves,who,isTeacher)}</div>`;
+  return html;
+}
+window._saveTabFilter='All';window._saveSearchFilter='';
+function filterSaveTab(cat,btn){window._saveTabFilter=cat;document.querySelectorAll('#saveTabBar button').forEach(b=>b.classList.remove('active'));if(btn)btn.classList.add('active');applySaveFilters()}
+function filterSaveSearch(v){window._saveSearchFilter=v.toLowerCase();applySaveFilters()}
+function applySaveFilters(){
+  const who=AppState.isTeacher?'teacher':(AppState.currentUser?AppState.currentUser.username:'');
+  let saves=DB.getSaves().sort((a,b)=>new Date(b.createdAt)-new Date(a.createdAt));
+  if(window._saveTabFilter!=='All') saves=saves.filter(s=>s.category===window._saveTabFilter);
+  if(window._saveSearchFilter) saves=saves.filter(s=>s.title.toLowerCase().includes(window._saveSearchFilter)||s.content.toLowerCase().includes(window._saveSearchFilter));
+  document.getElementById('saveGrid').innerHTML=renderSaveCards(saves,who,AppState.isTeacher);
+}
+function renderSaveCards(saves,who,isTeacher){
+  if(!saves.length) return `<div class="empty-state" style="grid-column:1/-1"><i class="fas fa-bookmark"></i><h3>Nothing saved yet</h3><p>Start saving links, notes, and tips!</p></div>`;
+  const typeIcons={link:'🔗',note:'📝',image:'🖼️',tip:'💡','tool-review':'🤖'};
+  return saves.map(s=>{
+    const canDelete=isTeacher || s.addedBy===who;
+    return `<div class="card save-card"><div class="save-type" style="color:${catColor(s.category||'Other')}">${typeIcons[s.type]||'📌'} ${(s.category||s.type).toUpperCase()}</div><div class="save-title">${escHtml(s.title)}</div>${s.imageData?`<img src="${s.imageData}" style="width:100%;max-height:120px;object-fit:cover;border-radius:var(--radius-sm);margin:6px 0">`:''}<div class="save-content">${escHtml(s.content)}</div>${s.rating?`<p style="color:var(--warning)">${'★'.repeat(s.rating)}${'☆'.repeat(5-s.rating)}</p>`:''}<div class="save-meta">Added by: ${escHtml(s.addedBy)} · ${formatDate(s.createdAt)}</div><div class="task-actions mt-1 no-print"><button class="btn btn-sm btn-outline" onclick="viewSaveDetail('${s.id}')"><i class="fas fa-eye"></i></button>${s.type==='link'?`<button class="btn btn-sm btn-outline" onclick="window.open('${s.content.split('\\n')[0]}','_blank')"><i class="fas fa-external-link-alt"></i></button>`:''}${canDelete?`<button class="btn btn-sm btn-outline text-danger" onclick="deleteSave('${s.id}')"><i class="fas fa-trash"></i></button>`:''}</div></div>`;
+  }).join('');
+}
+
+function renderToolsHub(isTeacher){
+  const tools=DB.getTools().filter(t=>t.isVisible!==false);
+  let html=`<div class="flex-between mb-2"><h2 class="page-title" style="margin:0">🤖 AI Tools Hub</h2>`;
+  if(isTeacher){
+    html+=`<div class="flex gap-1 no-print"><button class="btn btn-outline" onclick="restoreDefaultTools()"><i class="fas fa-rotate-left"></i> Restore Defaults</button><button class="btn btn-accent" onclick="openModal('toolFormModal')"><i class="fas fa-plus"></i> Add Custom Tool</button></div>`;
+  }
+  html+=`</div><p style="color:var(--text-mid);margin-bottom:20px">Click any tool to open it in a new tab</p>`;
+  html+=`<div class="tool-grid">`;
+  tools.forEach(t=>{
+    html+=`<div class="card tool-card" onclick="openTool('${t.url}','${escHtml(t.name)}')">
+      ${isTeacher?`<button class="tool-remove-btn" onclick="event.stopPropagation();removeTool('${t.id}','${escHtml(t.name)}')"><i class="fas fa-trash"></i></button>`:''}
+      <div class="tool-icon" style="background:${t.color}"><i class="fas ${t.icon}"></i></div>
+      <div class="tool-name">${escHtml(t.name)} ${t.isCustom?'<span class="badge badge-info">Custom</span>':''}</div>
+      <div class="tool-desc">${escHtml(t.description)}</div>
+      <button class="btn btn-sm btn-outline">Open Tool →</button>
+    </div>`;
+  });
+  html+=`</div>`;
+  return html;
+}
+
+function renderLeaderboard(){
+  const students=DB.getStudents().sort((a,b)=>(b.xp||0)-(a.xp||0));
+  const subs=DB.getSubmissions();
+  const currentName=AppState.currentUser?AppState.currentUser.username:null;
+  let html=`<h2 class="page-title">🏆 Leaderboard</h2><p style="color:var(--text-mid);margin-bottom:24px">Top AI Learners</p>`;
+  if(students.length>=1){
+    html+=`<div class="podium">`;
+    if(students[1]){const s=students[1];html+=`<div class="pod pod-2"><div class="pod-avatar">${getAvatarInner(s.username)}</div><div style="font-size:24px">🥈</div><div class="pod-name">${escHtml(s.username)}</div><div class="pod-xp">${s.xp||0} XP</div></div>`}
+    if(students[0]){const s=students[0];html+=`<div class="pod pod-1"><div style="font-size:28px">👑</div><div class="pod-avatar">${getAvatarInner(s.username)}</div><div class="pod-name">${escHtml(s.username)}</div><div class="pod-xp">${s.xp||0} XP</div></div>`}
+    if(students[2]){const s=students[2];html+=`<div class="pod pod-3"><div class="pod-avatar">${getAvatarInner(s.username)}</div><div style="font-size:24px">🥉</div><div class="pod-name">${escHtml(s.username)}</div><div class="pod-xp">${s.xp||0} XP</div></div>`}
+    html+=`</div>`;
+  }
+  if(students.length){
+    html+=`<div class="table-wrap"><table class="data-table"><thead><tr><th>#</th><th>Student</th><th>Level</th><th>XP</th><th>Tasks</th><th>Streak</th><th>Badges</th></tr></thead><tbody>`;
+    students.forEach((s,i)=>{
+      const done=subs.filter(sub=>sub.studentId===s.id&&sub.status==='accepted').length;
+      const isMe=s.username===currentName;
+      html+=`<tr style="${isMe?'background:rgba(124,58,237,.08)':''}"><td><strong>${i+1}</strong></td><td><div class="flex-center gap-1">${getAvatarHTML(s.username,28)}${escHtml(s.username)}${isMe?' ⭐':''}</div></td><td>${getLevel(s.xp||0).icon} ${s.level}</td><td><strong>${s.xp||0}</strong></td><td>${done}</td><td>${s.streak||0} 🔥</td><td>${(s.badges||[]).length}</td></tr>`;
+    });
+    html+=`</tbody></table></div>`;
+  } else html+=`<div class="empty-state"><i class="fas fa-trophy"></i><h3>No students yet</h3></div>`;
+  return html;
+}
+
+function getAvatarInner(username){
+  const key = 'learnaiwm_avatar_' + username;
+  const saved = localStorage.getItem(key);
+  if(saved) return `<img src="${saved}" style="width:100%;height:100%;object-fit:cover">`;
+  return getInitials(username);
+}
+
+// ═══════════════════════════════════
+// JSONBIN.IO CLOUD SYNC SYSTEM
+// ═══════════════════════════════════
+
+const JSONBIN_BASE = 'https://api.jsonbin.io/v3';
+
+const SyncManager = {
+  getApiKey() { return localStorage.getItem('learnaiwm_jsonbin_key') || ''; },
+  getBinId() { return localStorage.getItem('learnaiwm_bin_id') || ''; },
+  isConnected() { return !!(this.getApiKey() && this.getBinId()); },
+
+  collectLocalData() {
+    return {
+      lastUpdated: new Date().toISOString(),
+      updatedBy: localStorage.getItem('learnaiwm_teacher_logged_in') ? 'teacher' : localStorage.getItem('learnaiwm_current_student') || 'unknown',
+      students: JSON.parse(localStorage.getItem('learnaiwm_students') || '[]'),
+      tasks: JSON.parse(localStorage.getItem('learnaiwm_tasks') || '[]'),
+      submissions: JSON.parse(localStorage.getItem('learnaiwm_submissions') || '[]'),
+      saves: JSON.parse(localStorage.getItem('learnaiwm_saves') || '[]'),
+      tools: JSON.parse(localStorage.getItem('learnaiwm_tools') || '[]'),
+      announcements: JSON.parse(localStorage.getItem('learnaiwm_announcements') || '[]'),
+      attendance: JSON.parse(localStorage.getItem('learnaiwm_attendance') || '{}')
+    };
+  },
+
+  applyRemoteData(remoteData) {
+    if (!remoteData) return;
+    const mergeArray = (localKey, remoteItems) => {
+      if (!Array.isArray(remoteItems)) return;
+      const local = JSON.parse(localStorage.getItem(localKey) || '[]');
+      const localIds = new Set(local.map(i => i.id));
+      const toAdd = remoteItems.filter(i => !localIds.has(i.id));
+      const updated = local.map(item => {
+        const remoteVersion = remoteItems.find(r => r.id === item.id);
+        if (remoteVersion && remoteVersion.updatedAt > (item.updatedAt || '')) return remoteVersion;
+        return item;
+      });
+      localStorage.setItem(localKey, JSON.stringify([...updated, ...toAdd]));
+    };
+    mergeArray('learnaiwm_students', remoteData.students);
+    mergeArray('learnaiwm_tasks', remoteData.tasks);
+    mergeArray('learnaiwm_submissions', remoteData.submissions);
+    mergeArray('learnaiwm_saves', remoteData.saves);
+    mergeArray('learnaiwm_tools', remoteData.tools);
+    mergeArray('learnaiwm_announcements', remoteData.announcements);
+    if (remoteData.attendance) {
+      const localAtt = JSON.parse(localStorage.getItem('learnaiwm_attendance') || '{}');
+      const merged = Object.assign({}, remoteData.attendance, localAtt);
+      localStorage.setItem('learnaiwm_attendance', JSON.stringify(merged));
+    }
+  },
+
+  async createBin(apiKey) {
+    this.updateSyncUI('syncing', 'Creating bin...');
+    try {
+      const response = await fetch(`${JSONBIN_BASE}/b`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey, 'X-Bin-Name': 'LearnAI-withMateen', 'X-Bin-Private': 'false' },
+        body: JSON.stringify(this.collectLocalData())
+      });
+      if (!response.ok) { const err = await response.json(); throw new Error(err.message || 'Failed to create bin. Check your API key.'); }
+      const data = await response.json();
+      const binId = data.metadata.id;
+      localStorage.setItem('learnaiwm_jsonbin_key', apiKey);
+      localStorage.setItem('learnaiwm_bin_id', binId);
+      this.updateSyncUI('connected', 'Connected');
+      this.showConnectedUI(binId);
+      this.updateLastSyncTime();
+      showToast('☁️ Cloud sync connected! Share Bin ID with students.', 'success');
+      return binId;
+    } catch(err) {
+      this.updateSyncUI('error', 'Connection failed');
+      showToast('Connection failed: ' + err.message, 'error');
+      throw err;
+    }
+  },
+
+  async pushData() {
+    if (!this.isConnected()) return;
+    this.updateSyncUI('syncing', 'Syncing...');
+    try {
+      const response = await fetch(`${JSONBIN_BASE}/b/${this.getBinId()}`, {
+        method: 'PUT',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': this.getApiKey() },
+        body: JSON.stringify(this.collectLocalData())
+      });
+      if (!response.ok) throw new Error('Push failed: ' + response.status);
+      this.updateSyncUI('connected', 'Connected');
+      this.updateLastSyncTime();
+    } catch(err) {
+      this.updateSyncUI('error', 'Sync error');
+      console.error('Push error:', err);
+    }
+  },
+
+  async pullData() {
+    if (!this.isConnected()) return;
+    this.updateSyncUI('syncing', 'Fetching...');
+    try {
+      const response = await fetch(`${JSONBIN_BASE}/b/${this.getBinId()}/latest`, {
+        headers: { 'X-Master-Key': this.getApiKey(), 'X-Bin-Meta': 'false' }
+      });
+      if (!response.ok) throw new Error('Pull failed: ' + response.status);
+      const remoteData = await response.json();
+      this.applyRemoteData(remoteData);
+      this.updateSyncUI('connected', 'Connected');
+      this.updateLastSyncTime();
+      return remoteData;
+    } catch(err) {
+      this.updateSyncUI('error', 'Fetch error');
+      console.error('Pull error:', err);
+    }
+  },
+
+  async connectAsStudent(binId) {
+    const statusEl = document.getElementById('studentSyncStatus');
+    if (statusEl) { statusEl.style.display = 'block'; statusEl.innerHTML = '<small>🔄 Connecting...</small>'; }
+    try {
+      let response = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, { headers: { 'X-Bin-Meta': 'false' } });
+      if (!response.ok) {
+        const savedKey = localStorage.getItem('learnaiwm_jsonbin_key');
+        if (savedKey) {
+          response = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, { headers: { 'X-Master-Key': savedKey, 'X-Bin-Meta': 'false' } });
+          if (!response.ok) throw new Error('Invalid Bin ID. Check with your teacher.');
+        } else {
+          throw new Error('Invalid Bin ID or bin is private. Ask teacher to share access.');
+        }
+      }
+      const data = await response.json();
+      this.applyRemoteData(data);
+      localStorage.setItem('learnaiwm_bin_id', binId);
+      if (statusEl) statusEl.innerHTML = '<small style="color:#10B981">✅ Connected to class!</small>';
+      showToast('✅ Connected to teacher\'s class!', 'success');
+    } catch(err) {
+      if (statusEl) statusEl.innerHTML = `<small style="color:#EF4444">❌ ${err.message}</small>`;
+      showToast(err.message, 'error');
+    }
+  },
+
+  startAutoSync(intervalMs = 30000) {
+    if (!this.isConnected()) return;
+    if (window._syncInterval) clearInterval(window._syncInterval);
+    window._syncInterval = setInterval(async () => { await this.pullData(); await this.pushData(); }, intervalMs);
+    console.log('Auto-sync started: every ' + (intervalMs/1000) + 's');
+  },
+
+  stopAutoSync() {
+    if (window._syncInterval) { clearInterval(window._syncInterval); window._syncInterval = null; }
+  },
+
+  syncOnChange() {
+    if (!this.isConnected()) return;
+    if (window._syncTimeout) clearTimeout(window._syncTimeout);
+    window._syncTimeout = setTimeout(() => this.pushData(), 2000);
+  },
+
+  updateSyncUI(status, text) {
+    const dot = document.getElementById('syncStatusDot');
+    const txt = document.getElementById('syncStatusText');
+    if (dot) dot.className = 'sync-status-dot ' + status;
+    if (txt) txt.textContent = text;
+  },
+
+  showConnectedUI(binId) {
+    const setup = document.getElementById('syncSetupSection');
+    const connected = document.getElementById('syncConnectedSection');
+    const display = document.getElementById('binIdDisplay');
+    if (setup) setup.style.display = 'none';
+    if (connected) connected.style.display = 'block';
+    if (display) display.textContent = binId;
+  },
+
+  updateLastSyncTime() {
+    const el = document.getElementById('lastSyncTime');
+    if (el) el.textContent = 'Last synced: ' + new Date().toLocaleTimeString();
+  },
+
+  disconnect() {
+    if (!confirm('Disconnect cloud sync?\n\nYour local data will remain safe. You can reconnect anytime.')) return;
+    localStorage.removeItem('learnaiwm_jsonbin_key');
+    localStorage.removeItem('learnaiwm_bin_id');
+    this.stopAutoSync();
+    this.updateSyncUI('', 'Not Connected');
+    const connected = document.getElementById('syncConnectedSection');
+    if (connected) connected.style.display = 'none';
+    const setup = document.getElementById('syncSetupSection');
+    if (setup) setup.style.display = 'block';
+    showToast('Cloud sync disconnected.', 'info');
+  },
+
+  init() {
+    if (this.isConnected()) {
+      this.updateSyncUI('connected', 'Connected');
+      this.showConnectedUI(this.getBinId());
+      this.pullData();
+      this.startAutoSync();
+    }
+    // Sync header toggle
+    document.getElementById('syncHeaderToggle')?.addEventListener('click', () => {
+      const body = document.getElementById('syncBody');
+      const chevron = document.getElementById('syncChevron');
+      if (body) {
+        const isHidden = body.style.display === 'none';
+        body.style.display = isHidden ? 'block' : 'none';
+        if (chevron) chevron.style.transform = isHidden ? 'rotate(180deg)' : 'rotate(0deg)';
+      }
+    });
+    // Connect button (teacher)
+    document.getElementById('connectJsonbin')?.addEventListener('click', async () => {
+      const keyInput = document.getElementById('jsonbinApiKey');
+      const key = keyInput?.value.trim();
+      if (!key) { showToast('Please enter your API key', 'error'); return; }
+      if (!key.startsWith('$2a$')) { showToast('Invalid key format. JSONBin keys start with $2a$', 'error'); return; }
+      const btn = document.getElementById('connectJsonbin');
+      btn.disabled = true; btn.textContent = 'Connecting...';
+      try { await SyncManager.createBin(key); SyncManager.startAutoSync(); }
+      finally { btn.disabled = false; btn.innerHTML = '<i class="fas fa-plug"></i> Connect'; }
+    });
+    // Copy Bin ID button
+    document.getElementById('copyBinId')?.addEventListener('click', () => {
+      const binId = this.getBinId();
+      navigator.clipboard.writeText(binId).then(() => showToast('Bin ID copied! Share it with your students 📋', 'success'));
+    });
+    // Sync Now button
+    document.getElementById('syncNowBtn')?.addEventListener('click', async () => {
+      const btn = document.getElementById('syncNowBtn');
+      btn.disabled = true;
+      await SyncManager.pullData();
+      await SyncManager.pushData();
+      btn.disabled = false;
+      showToast('Sync complete! ✅', 'success');
+      if(AppState.isTeacher) renderTeacherView(AppState.teacherSubView);
+      else if(AppState.currentUser) renderStudentView(AppState.studentSubView);
+    });
+    // Disconnect button
+    document.getElementById('disconnectSync')?.addEventListener('click', () => { SyncManager.disconnect(); });
+    // Student connect button
+    document.getElementById('connectStudentSync')?.addEventListener('click', () => {
+      const binIdInput = document.getElementById('studentBinId');
+      const binId = binIdInput?.value.trim();
+      if (!binId) { showToast('Please enter the Bin ID from your teacher', 'error'); return; }
+      SyncManager.connectAsStudent(binId);
+    });
+  }
+};
+
+// ═══════════════════════════
+// 21. PDF EXPORT
+// ═══════════════════════════
+function exportPDF(){
+  const views=document.querySelectorAll('.view');
+  views.forEach(v=>{v.classList.remove('print-target')});
+  if(AppState.isTeacher) document.getElementById('view-teacher-dash').classList.add('print-target');
+  else document.getElementById('view-student-dash').classList.add('print-target');
+  window.print();
+}
+
+// ═══════════════════════════
+// 22. INITIALIZATION
+// ═══════════════════════════
+function initApp(){
+  // Init tasks
+  if(!DB.getTasks().length){
+    const tasks=PRELOADED_TASKS.map((t,i)=>({...t,id:'task_'+(Date.now()+i),createdAt:new Date().toISOString(),isPreloaded:true,dueDate:null}));
+    DB.set(KEYS.tasks, tasks);
+  }
+  // Init tools
+  if(!DB.getTools().length){
+    const tools=DEFAULT_TOOLS.map((t,i)=>({...t,id:'tool_'+(Date.now()+i),addedBy:'teacher'}));
+    DB.set(KEYS.tools, tools);
+  }
+  // Init other stores
+  if(!DB.get(KEYS.submissions)) DB.set(KEYS.submissions,[]);
+  if(!DB.get(KEYS.saves)) DB.set(KEYS.saves,[]);
+  if(!DB.get(KEYS.announcements)) DB.set(KEYS.announcements,[]);
+  if(!DB.get(KEYS.attendance)) DB.set(KEYS.attendance,{});
+  if(!DB.get(KEYS.students)) DB.set(KEYS.students,[]);
+
+  // Check login state
+  if(DB.get(KEYS.teacherLoggedIn)){
+    AppState.isTeacher=true;
+    showView('view-teacher-dash');
+    loadTeacherAvatar();
+    teacherNav('dashboard');
+  } else {
+    const studentName=DB.get(KEYS.currentStudent);
+    if(studentName){
+      const student=DB.getStudents().find(s=>s.username===studentName);
+      if(student){
+        AppState.currentUser=student;
+        updateStreak(student.id);
+        showView('view-student-dash');
+        updateStudentSidebar();
+        loadStudentAvatar(student.username);
+        studentNav('dashboard');
+      } else {
+        showView('view-landing');
+      }
+    } else {
+      showView('view-landing');
+    }
+  }
+  renderExistingStudents();
+  createParticles();
+  
+  // Event listeners
+  document.getElementById('teacherPwInput').addEventListener('keydown',e=>{if(e.key==='Enter') teacherLogin()});
+  document.getElementById('studentNameInput').addEventListener('keydown',e=>{if(e.key==='Enter') studentLogin()});
+  
+  // Teacher avatar upload
+  document.getElementById('teacherImageInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      localStorage.setItem(KEYS.teacherAvatar, ev.target.result);
+      loadTeacherAvatar();
+      showToast('Profile photo updated! 📸', 'success');
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  // Student avatar upload
+  document.getElementById('studentImageInput').addEventListener('change', (e) => {
+    const file = e.target.files[0];
+    if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => {
+      const currentStudent = localStorage.getItem(KEYS.currentStudent);
+      if(currentStudent){
+        localStorage.setItem('learnaiwm_avatar_' + currentStudent, ev.target.result);
+        loadStudentAvatar(currentStudent);
+        showToast('Profile photo updated! 📸', 'success');
+      }
+    };
+    reader.readAsDataURL(file);
+  });
+  
+  // Import data listener
+  document.getElementById('importDataInput').addEventListener('change', (e) => {
+    if(e.target.files[0]) importData(e.target.files[0]);
+    e.target.value = '';
+  });
+  
+  // Keyboard shortcut for AI assistant
+  document.addEventListener('keydown', (e) => {
+    if(e.key === 'Enter' && !e.shiftKey && document.activeElement?.id === 'assistantInput'){
+      e.preventDefault();
+      sendToAssistant();
+    }
+  });
+  
+  // Initialize Cloud Sync
+  SyncManager.init();
+}
+
+function createParticles(){
+  const bg=document.getElementById('landingBg');
+  for(let i=0;i<12;i++){
+    const p=document.createElement('div');
+    p.className='particle';
+    const size=Math.random()*60+20;
+    p.style.width=size+'px';p.style.height=size+'px';
+    p.style.left=Math.random()*100+'%';p.style.top=Math.random()*100+'%';
+    p.style.animationDelay=(Math.random()*4)+'s';
+    p.style.animationDuration=(4+Math.random()*4)+'s';
+    bg.appendChild(p);
+  }
+}
+
+document.addEventListener('DOMContentLoaded', initApp);
+</script>
+</body>
+</html>

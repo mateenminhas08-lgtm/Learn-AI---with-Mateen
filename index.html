@@ -1382,7 +1382,7 @@ function teacherLogin(){
     AppState.isTeacher=true;
     // Check if this device already has sync credentials
     const hasKey=localStorage.getItem('learnaiwm_jsonbin_key');
-    const hasBin=localStorage.getItem('learnaiwm_bin_id');
+    const hasBin=localStorage.getItem('learnaiwm_teacher_bin_id')||localStorage.getItem('learnaiwm_bin_id');
     if(hasKey && hasBin){
       // Returning device — go straight to dashboard, sync in background
       showView('view-teacher-dash');
@@ -1425,7 +1425,11 @@ async function teacherConnectAndLoad(){
     SyncManager.applyRemoteData(remoteData);
     // Save credentials
     localStorage.setItem('learnaiwm_jsonbin_key',key);
-    localStorage.setItem('learnaiwm_bin_id',binId);
+    localStorage.setItem('learnaiwm_teacher_bin_id',binId);
+    // Student bin from remote data
+    if(remoteData.studentBinId) localStorage.setItem('learnaiwm_student_bin_id',remoteData.studentBinId);
+    // Remove old generic key
+    localStorage.removeItem('learnaiwm_bin_id');
     // Also copy over groq key if present in remote data
     if(remoteData.groqKey) localStorage.setItem('learnaiwm_groq_key',remoteData.groqKey);
     // Navigate to dashboard
@@ -1517,7 +1521,8 @@ function completeStudentSignup(){
   let students=DB.getStudents();
   students.push(pendingNewStudent);
   DB.set(KEYS.students, students);
-  SyncManager.syncOnChange();
+  // Push immediately if connected (not debounced — this is critical)
+  if(SyncManager.isConnected()){ SyncManager.pushData(); }
   showStudentStatusScreen(pendingNewStudent);
   pendingNewStudent=null;
 }
@@ -1600,6 +1605,9 @@ function studentReturnLogin(){
     DB.set(KEYS.currentStudent, student.username);
     AppState.currentUser=student;
     AppState.isTeacher=false;
+    // Pull latest data before entering dashboard
+    if(SyncManager.isConnected()) SyncManager.pullData().then(()=>{ if(AppState.currentUser) renderStudentView(AppState.studentSubView); });
+    if(SyncManager.isConnected()) SyncManager.startAutoSync();
     showView('view-student-dash');
     updateStudentSidebar();
     loadStudentAvatar(student.username);
@@ -1617,7 +1625,6 @@ function studentLogout(){
   DB.set(KEYS.currentStudent, '');
   AppState.currentUser=null;
   showView('view-student-entry');
-  renderExistingStudents();
 }
 function renderExistingStudents(){/* no longer used with ID system */}
 
@@ -2563,8 +2570,8 @@ function handleSyncConnect(){
   });
 }
 function handleSyncCopyBinId(){
-  const binId = SyncManager.getBinId();
-  navigator.clipboard.writeText(binId).then(()=>showToast('Bin ID copied! Share it with your students 📋','success'));
+  const binId = SyncManager.getStudentBinId() || SyncManager.getTeacherBinId();
+  navigator.clipboard.writeText(binId).then(()=>showToast('Student Bin ID copied! Share with students 📋','success'));
 }
 function handleSyncNow(){
   const btn = document.getElementById('syncNowBtn');
@@ -2578,7 +2585,8 @@ function handleSyncNow(){
 
 function renderSyncPanel(){
   const isConnected = SyncManager.isConnected();
-  const binId = SyncManager.getBinId();
+  const sBin = SyncManager.getStudentBinId();
+  const tBin = SyncManager.getTeacherBinId();
   return `
   <div class="sync-settings-card" id="syncSettingsCard">
     <div class="sync-header" id="syncHeaderToggle" onclick="toggleSyncPanel()">
@@ -2599,7 +2607,7 @@ function renderSyncPanel(){
             <li>Go to <a href="https://jsonbin.io" target="_blank">jsonbin.io</a> → Sign up free</li>
             <li>Click "API Keys" → copy your Master Key</li>
             <li>Paste it below → Click "Connect"</li>
-            <li>Share the Bin ID shown with students</li>
+            <li>Share the Student Bin ID with students</li>
           </ol>
         </div>
         <div class="sync-input-group">
@@ -2611,15 +2619,23 @@ function renderSyncPanel(){
         </div>
       </div>
       <div id="syncConnectedSection" style="${isConnected?'':'display:none'}">
-        <div class="bin-id-display">
-          <label>Your Bin ID (Share with students):</label>
+        ${sBin?`<div class="bin-id-display" style="border-left:3px solid var(--success)">
+          <label style="color:var(--success);font-weight:600">🔗 Student Bin ID — Share with students</label>
           <div class="bin-id-row">
-            <code id="binIdDisplay">${binId||''}</code>
-            <button onclick="event.stopPropagation();handleSyncCopyBinId()"><i class="fas fa-copy"></i> Copy</button>
+            <code id="binIdDisplay" style="color:var(--success)">${sBin}</code>
+            <button onclick="event.stopPropagation();navigator.clipboard.writeText('${sBin}').then(()=>showToast('Student Bin ID copied! Share with students 📋','success'))"><i class="fas fa-copy"></i> Copy</button>
           </div>
-          <p class="bin-id-hint">Students enter this ID on their device to connect to your class data.</p>
-        </div>
-        <div class="sync-actions">
+          <p class="bin-id-hint">Students enter this ID on their device to connect to your class.</p>
+        </div>`:''}
+        ${tBin?`<div class="bin-id-display" style="border-left:3px solid var(--danger);margin-top:10px">
+          <label style="color:var(--danger);font-weight:600">🔒 Teacher Bin ID — PRIVATE</label>
+          <div class="bin-id-row">
+            <code style="color:var(--danger)">${tBin}</code>
+            <button onclick="event.stopPropagation();navigator.clipboard.writeText('${tBin}').then(()=>showToast('Teacher Bin ID copied!','success'))"><i class="fas fa-copy"></i> Copy</button>
+          </div>
+          <p class="bin-id-hint">Use to connect your teacher account on another device. Never share with students.</p>
+        </div>`:''}
+        <div class="sync-actions" style="margin-top:14px">
           <button id="syncNowBtn" class="sync-btn-primary" onclick="event.stopPropagation();handleSyncNow()"><i class="fas fa-rotate"></i> Sync Now</button>
           <button class="sync-btn-danger" onclick="event.stopPropagation();SyncManager.disconnect()"><i class="fas fa-unlink"></i> Disconnect</button>
         </div>
@@ -2684,14 +2700,16 @@ function renderTeacherDashboard(){
   // Use on Another Device section
   if(SyncManager.isConnected()){
     const apiKey=SyncManager.getApiKey();
-    const binId=SyncManager.getBinId();
+    const tBin=SyncManager.getTeacherBinId();
+    const sBin=SyncManager.getStudentBinId();
     const maskedKey=apiKey.slice(0,8)+'•'.repeat(Math.max(0,apiKey.length-12))+apiKey.slice(-4);
     html+=`<div class="device-creds-card no-print">
       <h4><i class="fas fa-laptop"></i> Use on Another Device</h4>
-      <p style="font-size:13px;color:var(--text-mid);margin-bottom:14px">Copy these two values and enter them on any new device after logging in with your teacher password.</p>
+      <p style="font-size:13px;color:var(--text-mid);margin-bottom:14px">Copy your API Key and Teacher Bin ID to connect on a new device.</p>
       <div class="cred-row"><label>API Key</label><code id="credApiKeyDisplay">${escHtml(maskedKey)}</code><button class="cred-reveal-btn" onclick="toggleCredReveal()" title="Show/Hide"><i class="fas fa-eye"></i></button><button class="cred-copy-btn" onclick="navigator.clipboard.writeText('${escHtml(apiKey)}').then(()=>showToast('API Key copied!','success'))" title="Copy"><i class="fas fa-copy"></i></button></div>
-      <div class="cred-row"><label>Bin ID</label><code>${escHtml(binId)}</code><button class="cred-copy-btn" onclick="navigator.clipboard.writeText('${escHtml(binId)}').then(()=>showToast('Bin ID copied!','success'))" title="Copy"><i class="fas fa-copy"></i></button></div>
-      <p style="font-size:11px;color:var(--text-light);margin-top:8px">⚠️ Keep these private. Never share your teacher Bin ID with students — only share the student Bin ID.</p>
+      ${tBin?`<div class="cred-row" style="border-color:rgba(239,68,68,.2)"><label style="color:var(--danger)">Teacher</label><code style="color:var(--danger)">${escHtml(tBin)}</code><button class="cred-copy-btn" onclick="navigator.clipboard.writeText('${escHtml(tBin)}').then(()=>showToast('Teacher Bin ID copied!','success'))"><i class="fas fa-copy"></i></button></div>`:''}
+      ${sBin?`<div class="cred-row" style="border-color:rgba(16,185,129,.2)"><label style="color:var(--success)">Student</label><code style="color:var(--success)">${escHtml(sBin)}</code><button class="cred-copy-btn" onclick="navigator.clipboard.writeText('${escHtml(sBin)}').then(()=>showToast('Student Bin ID copied — share with students!','success'))"><i class="fas fa-copy"></i></button></div>`:''}
+      <p style="font-size:11px;color:var(--text-light);margin-top:8px">🔒 Teacher Bin = for your other devices only. 🔗 Student Bin = share with students.</p>
     </div>`;
   }
   if(pending.length){
@@ -3890,12 +3908,13 @@ body{width:297mm;height:210mm;margin:0 auto;background:#fff;font-family:'Inter',
 
 function renderTeacherSettings(){
   const apiKey=localStorage.getItem('learnaiwm_jsonbin_key')||'';
-  const binId=localStorage.getItem('learnaiwm_bin_id')||'';
+  const teacherBinId=localStorage.getItem('learnaiwm_teacher_bin_id')||'';
+  const studentBinId=localStorage.getItem('learnaiwm_student_bin_id')||'';
   const groqKey=localStorage.getItem('learnaiwm_groq_key')||'';
   const certEnabled=isCertificateEnabled();
   const leaderboardEnabled=localStorage.getItem('learnaiwm_leaderboard_enabled')!=='false';
   const chatEnabled=localStorage.getItem('learnaiwm_chat_enabled')!=='false';
-  const syncConnected=!!(apiKey&&binId);
+  const syncConnected=!!(apiKey&&(teacherBinId||studentBinId));
   const pw=localStorage.getItem('learnaiwm_teacher_pw')||'mateen2024';
   // Storage size
   let storageKB=0; for(let k in localStorage) if(localStorage.hasOwnProperty(k)) storageKB+=(localStorage[k].length*2);
@@ -3916,8 +3935,9 @@ function renderTeacherSettings(){
   html+=`<div class="card settings-section"><div class="settings-section-title"><i class="fas fa-cloud"></i> Cloud Sync</div>
     <div style="margin-bottom:12px"><span class="settings-status-pill ${syncConnected?'green':'red'}">${syncConnected?'● Connected':'● Not Connected'}</span></div>
     <div class="settings-field"><label>Master API Key</label><div class="field-row"><input type="password" id="settingsApiKey" value="${escHtml(apiKey)}" placeholder="$2a$10$..."><button class="btn btn-sm btn-outline" onclick="const i=document.getElementById('settingsApiKey');i.type=i.type==='password'?'text':'password'"><i class="fas fa-eye"></i></button><button class="btn btn-sm btn-primary" onclick="saveSettingsApiKey()">Save</button></div><p style="font-size:11px;color:var(--text-light);margin-top:4px">Get free key at <a href="https://jsonbin.io" target="_blank">jsonbin.io</a></p></div>
-    ${binId?`<div class="settings-field"><label>Teacher Bin ID</label><div class="cred-row"><code style="flex:1">${escHtml(binId)}</code><button class="cred-copy-btn" onclick="navigator.clipboard.writeText('${escHtml(binId)}').then(()=>showToast('Copied!','success'))"><i class="fas fa-copy"></i></button></div><p style="font-size:11px;color:var(--text-light)">⚠️ Keep private — never share with students. Use to connect on another device.</p></div>`:''}
-    ${!binId&&apiKey?`<button class="btn btn-primary" onclick="handleSyncConnect()"><i class="fas fa-plus-circle"></i> Create My Bin</button>`:''}
+    ${teacherBinId?`<div class="settings-field"><label style="color:var(--danger);font-weight:600">🔒 Teacher Bin ID — PRIVATE — Never share this</label><div class="cred-row" style="border-color:rgba(239,68,68,.3)"><code style="flex:1;color:var(--danger)">${escHtml(teacherBinId)}</code><button class="cred-copy-btn" onclick="navigator.clipboard.writeText('${escHtml(teacherBinId)}').then(()=>showToast('Teacher Bin ID copied!','success'))"><i class="fas fa-copy"></i></button></div><p style="font-size:11px;color:var(--text-light)">⚠️ Use this to connect your teacher account on another device. Never share with students.</p></div>`:''}
+    ${studentBinId?`<div class="settings-field"><label style="color:var(--success);font-weight:600">🔗 Student Bin ID — Share this with your students</label><div class="cred-row" style="border-color:rgba(16,185,129,.3)"><code style="flex:1;color:var(--success)">${escHtml(studentBinId)}</code><button class="cred-copy-btn" onclick="navigator.clipboard.writeText('${escHtml(studentBinId)}').then(()=>showToast('Student Bin ID copied! Share with students.','success'))"><i class="fas fa-copy"></i></button></div><p style="font-size:11px;color:var(--text-light)">Students enter this ID on their device to connect to your class data.</p></div>`:''}
+    ${!teacherBinId&&apiKey?`<button class="btn btn-primary" onclick="handleSyncConnect()"><i class="fas fa-plus-circle"></i> Create My Bins</button>`:''}
     ${syncConnected?`<button class="btn btn-outline mt-1" onclick="handleSyncNow()"><i class="fas fa-rotate"></i> Sync Now</button>`:''}
   </div>`;
 
@@ -3954,7 +3974,7 @@ function renderStudentSettings(){
   const s=getCurrentStudent();if(!s) return '';
   const lvl=getLevel(s.xp||0);
   const accepted=DB.getSubmissions().filter(sub=>sub.studentId===s.id&&sub.status==='accepted').length;
-  const binId=localStorage.getItem('learnaiwm_bin_id')||'';
+  const binId=localStorage.getItem('learnaiwm_student_bin_id')||localStorage.getItem('learnaiwm_bin_id')||'';
   let html=`<h2 class="page-title"><i class="fas fa-cog"></i> Settings</h2>`;
 
   // Profile
@@ -4118,7 +4138,9 @@ const JSONBIN_BASE = 'https://api.jsonbin.io/v3';
 
 const SyncManager = {
   getApiKey() { return localStorage.getItem('learnaiwm_jsonbin_key') || ''; },
-  getBinId() { return localStorage.getItem('learnaiwm_bin_id') || ''; },
+  getTeacherBinId() { return localStorage.getItem('learnaiwm_teacher_bin_id') || ''; },
+  getStudentBinId() { return localStorage.getItem('learnaiwm_student_bin_id') || ''; },
+  getBinId() { return this.getTeacherBinId() || this.getStudentBinId(); },
   isConnected() { return !!(this.getApiKey() && this.getBinId()); },
 
   collectLocalData() {
@@ -4137,7 +4159,10 @@ const SyncManager = {
       groqKey: localStorage.getItem('learnaiwm_groq_key') || '',
       leaderboardEnabled: localStorage.getItem('learnaiwm_leaderboard_enabled') !== 'false',
       chatEnabled: localStorage.getItem('learnaiwm_chat_enabled') !== 'false',
-      teacherPw: localStorage.getItem('learnaiwm_teacher_pw') || 'mateen2024'
+      teacherPw: localStorage.getItem('learnaiwm_teacher_pw') || 'mateen2024',
+      jsonbinKey: localStorage.getItem('learnaiwm_jsonbin_key') || '',
+      teacherBinId: localStorage.getItem('learnaiwm_teacher_bin_id') || '',
+      studentBinId: localStorage.getItem('learnaiwm_student_bin_id') || ''
     };
   },
 
@@ -4171,6 +4196,9 @@ const SyncManager = {
     if (remoteData.leaderboardEnabled !== undefined) localStorage.setItem('learnaiwm_leaderboard_enabled', remoteData.leaderboardEnabled ? 'true' : 'false');
     if (remoteData.chatEnabled !== undefined) localStorage.setItem('learnaiwm_chat_enabled', remoteData.chatEnabled ? 'true' : 'false');
     if (remoteData.teacherPw) localStorage.setItem('learnaiwm_teacher_pw', remoteData.teacherPw);
+    if (remoteData.jsonbinKey) localStorage.setItem('learnaiwm_jsonbin_key', remoteData.jsonbinKey);
+    if (remoteData.teacherBinId) localStorage.setItem('learnaiwm_teacher_bin_id', remoteData.teacherBinId);
+    if (remoteData.studentBinId) localStorage.setItem('learnaiwm_student_bin_id', remoteData.studentBinId);
     if (remoteData.attendance) {
       const localAtt = JSON.parse(localStorage.getItem('learnaiwm_attendance') || '{}');
       const merged = Object.assign({}, remoteData.attendance, localAtt);
@@ -4179,23 +4207,36 @@ const SyncManager = {
   },
 
   async createBin(apiKey) {
-    this.updateSyncUI('syncing', 'Creating bin...');
+    this.updateSyncUI('syncing', 'Creating bins...');
     try {
-      const response = await fetch(`${JSONBIN_BASE}/b`, {
+      // Create Teacher Bin (private — full data)
+      const resp1 = await fetch(`${JSONBIN_BASE}/b`, {
         method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey, 'X-Bin-Name': 'LearnAI-withMateen', 'X-Bin-Private': 'false' },
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey, 'X-Bin-Name': 'LearnAI-Teacher', 'X-Bin-Private': 'false' },
         body: JSON.stringify(this.collectLocalData())
       });
-      if (!response.ok) { const err = await response.json(); throw new Error(err.message || 'Failed to create bin. Check your API key.'); }
-      const data = await response.json();
-      const binId = data.metadata.id;
+      if (!resp1.ok) { const err = await resp1.json(); throw new Error(err.message || 'Failed to create teacher bin.'); }
+      const d1 = await resp1.json();
+      const teacherBinId = d1.metadata.id;
+      // Create Student Bin (public — shared content)
+      const resp2 = await fetch(`${JSONBIN_BASE}/b`, {
+        method: 'POST',
+        headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey, 'X-Bin-Name': 'LearnAI-Student', 'X-Bin-Private': 'false' },
+        body: JSON.stringify(this.collectLocalData())
+      });
+      if (!resp2.ok) { const err = await resp2.json(); throw new Error(err.message || 'Failed to create student bin.'); }
+      const d2 = await resp2.json();
+      const studentBinId = d2.metadata.id;
+      // Save both
       localStorage.setItem('learnaiwm_jsonbin_key', apiKey);
-      localStorage.setItem('learnaiwm_bin_id', binId);
+      localStorage.setItem('learnaiwm_teacher_bin_id', teacherBinId);
+      localStorage.setItem('learnaiwm_student_bin_id', studentBinId);
+      // Remove old generic key if exists
+      localStorage.removeItem('learnaiwm_bin_id');
       this.updateSyncUI('connected', 'Connected');
-      this.showConnectedUI(binId);
       this.updateLastSyncTime();
-      showToast('☁️ Cloud sync connected! Share Bin ID with students.', 'success');
-      return binId;
+      showToast('☁️ Both bins created! Share the Student Bin ID with students.', 'success');
+      return teacherBinId;
     } catch(err) {
       this.updateSyncUI('error', 'Connection failed');
       showToast('Connection failed: ' + err.message, 'error');
@@ -4206,13 +4247,21 @@ const SyncManager = {
   async pushData() {
     if (!this.isConnected()) return;
     this.updateSyncUI('syncing', 'Syncing...');
+    const payload = JSON.stringify(this.collectLocalData());
+    const headers = { 'Content-Type': 'application/json', 'X-Master-Key': this.getApiKey() };
     try {
-      const response = await fetch(`${JSONBIN_BASE}/b/${this.getBinId()}`, {
-        method: 'PUT',
-        headers: { 'Content-Type': 'application/json', 'X-Master-Key': this.getApiKey() },
-        body: JSON.stringify(this.collectLocalData())
-      });
-      if (!response.ok) throw new Error('Push failed: ' + response.status);
+      // Push to teacher bin
+      const tBin = this.getTeacherBinId();
+      if(tBin){
+        const r1 = await fetch(`${JSONBIN_BASE}/b/${tBin}`, { method: 'PUT', headers, body: payload });
+        if(!r1.ok) console.warn('Teacher bin push failed:', r1.status);
+      }
+      // Push to student bin
+      const sBin = this.getStudentBinId();
+      if(sBin){
+        const r2 = await fetch(`${JSONBIN_BASE}/b/${sBin}`, { method: 'PUT', headers, body: payload });
+        if(!r2.ok) console.warn('Student bin push failed:', r2.status);
+      }
       this.updateSyncUI('connected', 'Connected');
       this.updateLastSyncTime();
     } catch(err) {
@@ -4224,8 +4273,11 @@ const SyncManager = {
   async pullData() {
     if (!this.isConnected()) return;
     this.updateSyncUI('syncing', 'Fetching...');
+    // Pull from teacher bin (primary) or student bin (fallback)
+    const binId = this.getTeacherBinId() || this.getStudentBinId();
+    if(!binId) return;
     try {
-      const response = await fetch(`${JSONBIN_BASE}/b/${this.getBinId()}/latest`, {
+      const response = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, {
         headers: { 'X-Master-Key': this.getApiKey(), 'X-Bin-Meta': 'false' }
       });
       if (!response.ok) throw new Error('Pull failed: ' + response.status);
@@ -4256,7 +4308,16 @@ const SyncManager = {
       }
       const data = await response.json();
       this.applyRemoteData(data);
-      localStorage.setItem('learnaiwm_bin_id', binId);
+      // Save as student bin — this is the bin students connect to
+      localStorage.setItem('learnaiwm_student_bin_id', binId);
+      // Also set teacher bin from remote data if available
+      if(data.teacherBinId) localStorage.setItem('learnaiwm_teacher_bin_id', data.teacherBinId);
+      // Save the API key from bin data so student can push back
+      if(data.jsonbinKey) localStorage.setItem('learnaiwm_jsonbin_key', data.jsonbinKey);
+      // Remove old generic key
+      localStorage.removeItem('learnaiwm_bin_id');
+      // Start auto-sync for student
+      if(this.isConnected()) this.startAutoSync();
       if (statusEl) statusEl.innerHTML = '<small style="color:#10B981">✅ Connected to class!</small>';
       showToast('✅ Connected to teacher\'s class!', 'success');
     } catch(err) {
@@ -4306,6 +4367,8 @@ const SyncManager = {
   disconnect() {
     if (!confirm('Disconnect cloud sync?\n\nYour local data will remain safe. You can reconnect anytime.')) return;
     localStorage.removeItem('learnaiwm_jsonbin_key');
+    localStorage.removeItem('learnaiwm_teacher_bin_id');
+    localStorage.removeItem('learnaiwm_student_bin_id');
     localStorage.removeItem('learnaiwm_bin_id');
     this.stopAutoSync();
     this.updateSyncUI('', 'Not Connected');
@@ -4449,6 +4512,13 @@ function exportPDF(){
 // 22. INITIALIZATION
 // ═══════════════════════════
 function initApp(){
+  // Migrate old single bin key to new two-bin system
+  const oldBinId=localStorage.getItem('learnaiwm_bin_id');
+  if(oldBinId){
+    if(!localStorage.getItem('learnaiwm_teacher_bin_id')) localStorage.setItem('learnaiwm_teacher_bin_id',oldBinId);
+    if(!localStorage.getItem('learnaiwm_student_bin_id')) localStorage.setItem('learnaiwm_student_bin_id',oldBinId);
+    localStorage.removeItem('learnaiwm_bin_id');
+  }
   // Init tasks
   if(!DB.getTasks().length){
     const tasks=PRELOADED_TASKS.map((t,i)=>({...t,id:'task_'+(Date.now()+i),createdAt:new Date().toISOString(),isPreloaded:true,dueDate:null}));
@@ -4484,12 +4554,23 @@ function initApp(){
     if(studentName){
       const student=DB.getStudents().find(s=>s.username===studentName);
       if(student){
-        AppState.currentUser=student;
-        updateStreak(student.id);
-        showView('view-student-dash');
-        updateStudentSidebar();
-        loadStudentAvatar(student.username);
-        studentNav('dashboard');
+        // Check approval status on page refresh
+        const stuStatus=student.accountStatus||'approved';
+        if(stuStatus!=='approved'){
+          showStudentStatusScreen(student);
+        } else {
+          AppState.currentUser=student;
+          updateStreak(student.id);
+          showView('view-student-dash');
+          updateStudentSidebar();
+          loadStudentAvatar(student.username);
+          studentNav('dashboard');
+          // Background sync for returning student
+          if(SyncManager.isConnected()){
+            SyncManager.pullData().then(()=>renderStudentView(AppState.studentSubView));
+            SyncManager.startAutoSync();
+          }
+        }
       } else {
         showView('view-landing');
       }
@@ -4497,12 +4578,13 @@ function initApp(){
       showView('view-landing');
     }
   }
-  renderExistingStudents();
   createParticles();
   
   // Event listeners
   document.getElementById('teacherPwInput').addEventListener('keydown',e=>{if(e.key==='Enter') teacherLogin()});
-  document.getElementById('studentNameInput').addEventListener('keydown',e=>{if(e.key==='Enter') studentLogin()});
+  document.getElementById('studentNameInput').addEventListener('keydown',e=>{if(e.key==='Enter') studentSignup()});
+  document.getElementById('stuReturnId')?.addEventListener('keydown',e=>{if(e.key==='Enter') studentReturnLogin()});
+  document.getElementById('stuReturnName')?.addEventListener('keydown',e=>{if(e.key==='Enter') document.getElementById('stuReturnId')?.focus()});
   
   // Teacher avatar upload
   document.getElementById('teacherImageInput').addEventListener('change', (e) => {

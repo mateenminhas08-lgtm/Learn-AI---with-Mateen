@@ -28,6 +28,9 @@
 <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@400;600;700&family=Inter:wght@400;500&display=swap" rel="stylesheet">
 <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.5.1/css/all.min.css">
 <script src="https://cdnjs.cloudflare.com/ajax/libs/jspdf/2.5.1/jspdf.umd.min.js"></script>
+<!-- Firebase -->
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-app-compat.js"></script>
+<script src="https://www.gstatic.com/firebasejs/10.7.1/firebase-firestore-compat.js"></script>
 <style>
 :root{--primary:#1E3A8A;--primary-light:#3B82F6;--accent:#7C3AED;--accent-light:#A78BFA;--success:#10B981;--danger:#EF4444;--warning:#F59E0B;--bg-main:#F8FAFC;--bg-card:#FFFFFF;--text-dark:#1E293B;--text-mid:#64748B;--text-light:#94A3B8;--border:#E2E8F0;--shadow-sm:0 1px 3px rgba(0,0,0,0.08);--shadow-md:0 4px 16px rgba(0,0,0,0.10);--shadow-lg:0 8px 32px rgba(0,0,0,0.14);--radius-sm:8px;--radius-md:12px;--radius-lg:20px;--radius-full:9999px;--transition:all 0.25s ease}
 *{margin:0;padding:0;box-sizing:border-box}
@@ -740,113 +743,24 @@ body{background:#fff;font-size:12px}
 </div>
 </div>
 
-<!-- ══════════ TEACHER CONNECT (New Device) ══════════ -->
-<div class="view" id="view-teacher-connect">
-<div class="auth-screen">
-<div style="text-align:center">
-<div class="auth-card teacher-connect-card" id="teacherConnectCard">
-<i class="fas fa-cloud-download-alt auth-icon" style="color:var(--primary)"></i>
-<h2>Connect Your Teacher Account</h2>
-<p>Enter your JSONBin credentials to load your class data on this device.</p>
-<div class="connect-steps">
-<p><strong>Where to find these:</strong></p>
-<ol>
-<li>Open the app on your original device</li>
-<li>Go to Dashboard → Cloud Sync panel or "Use on Another Device" section</li>
-<li>Copy your API Key and Teacher Bin ID</li>
-<li>Paste them below</li>
-</ol>
-</div>
-<div class="input-group" style="text-align:left">
-<label>Master API Key</label>
-<input type="password" id="teacherConnectKey" placeholder="$2a$10$...your key...">
-<button class="toggle-pw" onclick="const i=document.getElementById('teacherConnectKey');i.type=i.type==='password'?'text':'password'"><i class="fas fa-eye"></i></button>
-</div>
-<div class="input-group" style="text-align:left">
-<label>Teacher Bin ID</label>
-<input type="text" id="teacherConnectBinId" placeholder="Paste your bin ID here...">
-</div>
-<div class="connect-error" id="teacherConnectError"></div>
-<button class="btn btn-primary btn-full" id="teacherConnectBtn" onclick="teacherConnectAndLoad()"><i class="fas fa-cloud-download-alt"></i> Connect & Load Data</button>
-<div class="connect-divider"><span>or</span></div>
-<button class="btn btn-ghost btn-full" onclick="teacherSkipConnect()" style="font-size:13px"><i class="fas fa-forward"></i> Skip for Now — use offline</button>
-</div>
-</div>
-</div>
-</div>
+<!-- Teacher connect screen removed — Firebase handles sync automatically -->
 
 <!-- ══════════ STUDENT ENTRY ══════════ -->
 <div class="view" id="view-student-entry">
 <div class="auth-screen">
-<div style="text-align:center;max-width:440px;width:100%">
-<div class="auth-card" id="studentEntryCard" style="max-width:440px">
+<div style="text-align:center;max-width:420px;width:100%">
+<div class="auth-card" id="studentEntryCard">
 <i class="fas fa-graduation-cap auth-icon" style="color:var(--accent)"></i>
-<h2>Welcome, Learner!</h2>
-<p>How would you like to continue?</p>
-<!-- Two option cards -->
-<div style="display:flex;gap:10px;margin-bottom:18px" id="stuEntryTabs">
-<div class="stu-entry-tab active" id="stuTabNew" onclick="switchStudentTab('new')" style="flex:1;padding:14px;border:2px solid var(--accent);border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition);background:rgba(124,58,237,.06)">
-<div style="font-size:22px">🌱</div><div style="font-weight:600;font-size:14px">New Student</div><div style="font-size:11px;color:var(--text-mid)">Joining for the first time</div>
+<h2>Join the Class</h2>
+<p>Enter your name to get started</p>
+<div class="input-group" style="text-align:left">
+<label>Your Name</label>
+<input type="text" id="studentNameInput" placeholder="Enter your name...">
 </div>
-<div class="stu-entry-tab" id="stuTabReturn" onclick="switchStudentTab('return')" style="flex:1;padding:14px;border:2px solid var(--border);border-radius:var(--radius-sm);cursor:pointer;transition:var(--transition)">
-<div style="font-size:22px">🔑</div><div style="font-weight:600;font-size:14px">Returning Student</div><div style="font-size:11px;color:var(--text-mid)">I have my ID</div>
-</div>
-</div>
-<!-- New Student Panel -->
-<div id="stuPanelNew">
-<div class="input-group" style="text-align:left"><label>What is your name?</label><input type="text" id="studentNameInput" placeholder="Enter your full name..."></div>
 <div class="error-msg" id="studentEntryError"></div>
-<button class="btn btn-accent btn-full" onclick="studentSignup()"><i class="fas fa-rocket"></i> Join the Class</button>
-</div>
-<!-- Returning Student Panel -->
-<div id="stuPanelReturn" style="display:none">
-<div class="input-group" style="text-align:left"><label>Your Name</label><input type="text" id="stuReturnName" placeholder="Enter your name..."></div>
-<div class="input-group" style="text-align:left"><label>Student ID</label><input type="text" id="stuReturnId" placeholder="STU-XXXXXX" style="font-family:monospace;letter-spacing:1px;text-transform:uppercase"></div>
-<div class="error-msg" id="stuReturnError"></div>
-<button class="btn btn-accent btn-full" onclick="studentReturnLogin()"><i class="fas fa-sign-in-alt"></i> Enter Dashboard</button>
-<p style="margin-top:12px;font-size:12px"><a href="#" onclick="showToast('Ask your teacher — they can look up your Student ID from the teacher dashboard.','info');return false"><i class="fas fa-question-circle"></i> Forgot your ID?</a></p>
-</div>
-<!-- Sync section -->
-<div class="student-sync-section">
-<div class="sync-divider"><span>Optional: Connect to Class</span></div>
-<p class="student-sync-hint">Have a Bin ID from your teacher? Enter it to sync with class data.</p>
-<div class="student-sync-row">
-<input type="text" id="studentBinId" placeholder="Enter Bin ID from teacher...">
-<button id="connectStudentSync"><i class="fas fa-link"></i> Connect</button>
-</div>
-<div id="studentSyncStatus" style="display:none;margin-top:8px;text-align:center"></div>
-</div>
+<button class="btn btn-accent btn-full" onclick="studentJoinClass()"><i class="fas fa-rocket"></i> Join Class</button>
 </div>
 <div class="back-link" onclick="showView('view-landing')"><i class="fas fa-arrow-left"></i> Back to Home</div>
-</div>
-</div>
-</div>
-
-<!-- ══════════ STUDENT ID REVEAL ══════════ -->
-<div class="view" id="view-student-id-reveal">
-<div class="auth-screen">
-<div style="text-align:center;max-width:440px;width:100%">
-<div class="auth-card" style="max-width:440px">
-<div style="font-size:48px;margin-bottom:8px">🎉</div>
-<h2 id="stuRevealWelcome">Welcome to the class!</h2>
-<p style="margin-bottom:16px">Your unique Student ID has been created</p>
-<div style="background:linear-gradient(135deg,rgba(30,58,138,.06),rgba(124,58,237,.06));border:2.5px solid var(--primary);border-radius:var(--radius-md);padding:20px;margin-bottom:16px">
-<div style="font-size:11px;color:var(--text-mid);text-transform:uppercase;letter-spacing:1px;margin-bottom:6px">Your Student ID</div>
-<div id="stuRevealId" style="font-family:monospace;font-size:28px;font-weight:700;color:var(--primary);letter-spacing:3px"></div>
-</div>
-<div style="display:flex;gap:8px;justify-content:center;margin-bottom:16px">
-<button class="btn btn-sm btn-outline" onclick="copyStudentId()"><i class="fas fa-copy"></i> <span id="copyIdLabel">Copy ID</span></button>
-<button class="btn btn-sm btn-outline" onclick="showToast('Take a screenshot now and save it in your gallery! 📱','info')"><i class="fas fa-camera"></i> Screenshot Reminder</button>
-</div>
-<div style="background:#FEF3C7;border:1px solid #F59E0B;border-radius:var(--radius-sm);padding:12px;margin-bottom:16px;text-align:left;font-size:13px;color:#92400E">
-<strong>⚠️ Save this ID now!</strong><br>This ID is your key to your account. Save it in your phone notes, WhatsApp Saved Messages, or take a screenshot. You cannot login without it.
-</div>
-<label style="display:flex;align-items:center;gap:8px;font-size:13px;margin-bottom:14px;cursor:pointer;justify-content:center">
-<input type="checkbox" id="stuSavedCheckbox" onchange="document.getElementById('stuContinueBtn').disabled=!this.checked" style="width:auto">
-I have saved my Student ID safely
-</label>
-<button class="btn btn-accent btn-full" id="stuContinueBtn" disabled onclick="completeStudentSignup()"><i class="fas fa-arrow-right"></i> Continue</button>
-</div>
 </div>
 </div>
 </div>
@@ -1085,6 +999,42 @@ I have saved my Student ID safely
 <input type="file" id="importDataInput" accept=".json" style="display:none">
 
 <script>
+// ═══════════════════════════
+// 0. FIREBASE INITIALIZATION
+// ═══════════════════════════
+const firebaseConfig = {
+  apiKey: "AIzaSyBV-rHalRjqvEXFATelvRSE4Mt8UYfdK5c",
+  authDomain: "learnaiwithmateen.firebaseapp.com",
+  projectId: "learnaiwithmateen",
+  storageBucket: "learnaiwithmateen.firebasestorage.app",
+  messagingSenderId: "427207362577",
+  appId: "1:427207362577:web:720ce2ebe3b1405b2c49b0",
+  measurementId: "G-B22YH3XELX"
+};
+firebase.initializeApp(firebaseConfig);
+const db = firebase.firestore();
+// Enable offline persistence
+db.enablePersistence({synchronizeTabs:true}).catch(e=>console.warn('Firestore persistence:',e.code));
+
+// Hardcoded Groq AI
+const GROQ_API_KEY = "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";
+const GROQ_MODEL = "llama-3.3-70b-versatile";
+const GROQ_URL = "https://api.groq.com/openai/v1/chat/completions";
+
+// Firebase helper functions
+async function fbGet(col,id){const d=await db.collection(col).doc(id).get();return d.exists?{id:d.id,...d.data()}:null}
+async function fbGetAll(col){const s=await db.collection(col).get();return s.docs.map(d=>({id:d.id,...d.data()}))}
+async function fbSet(col,id,data){await db.collection(col).doc(id).set(data,{merge:true})}
+async function fbAdd(col,data){const r=await db.collection(col).add(data);return r.id}
+async function fbDel(col,id){await db.collection(col).doc(id).delete()}
+function fbListen(col,cb){return db.collection(col).onSnapshot(s=>{cb(s.docs.map(d=>({id:d.id,...d.data()})))})}
+function fbListenDoc(col,id,cb){return db.collection(col).doc(id).onSnapshot(d=>{if(d.exists)cb({id:d.id,...d.data()})})}
+
+// Active listener cleanup
+const _listeners = [];
+function addListener(unsub){_listeners.push(unsub)}
+function clearListeners(){_listeners.forEach(u=>{try{u()}catch(e){}});_listeners.length=0}
+
 // ═══════════════════════════
 // 1. CONSTANTS & STATE
 // ═══════════════════════════
@@ -1372,41 +1322,47 @@ function studentNav(sub){
 // ═══════════════════════════
 function togglePw(){
   const i=document.getElementById('teacherPwInput');
-  i.type=i.type==='password'?'text':'password';
+  if(i) i.type=i.type==='password'?'text':'password';
 }
-function teacherLogin(){
+async function teacherLogin(){
   const pw=document.getElementById('teacherPwInput').value;
-  const storedPw=localStorage.getItem('learnaiwm_teacher_pw')||'mateen2024';
-  if(pw===storedPw){
-    DB.set(KEYS.teacherLoggedIn, true);
+  // Check password against Firebase settings
+  let correctPw='mateen2024';
+  try{
+    const settings=await fbGet('settings','app_settings');
+    if(settings && settings.teacherPassword) correctPw=settings.teacherPassword;
+  }catch(e){console.warn('Could not fetch settings, using default password');}
+  if(pw===correctPw){
+    localStorage.setItem('learnaiwm_teacher_session','true');
     AppState.isTeacher=true;
-    // Check if this device already has sync credentials
-    const hasKey=localStorage.getItem('learnaiwm_jsonbin_key');
-    const hasBin=localStorage.getItem('learnaiwm_teacher_bin_id')||localStorage.getItem('learnaiwm_bin_id');
-    if(hasKey && hasBin){
-      // Returning device — go straight to dashboard, sync in background
-      showView('view-teacher-dash');
-      loadTeacherAvatar();
-      teacherNav('dashboard');
-      updatePendingBadge();
-      showToast('Welcome back, Mateen! 👋','success');
-      // Background sync
-      SyncManager.pullData().then(()=>{
-        showToast('Latest data synced ☁️','info');
-        renderTeacherView(AppState.teacherSubView);
-      });
-      SyncManager.startAutoSync();
-    } else {
-      // New device — show connect screen
-      showView('view-teacher-connect');
-    }
+    showView('view-teacher-dash');
+    loadTeacherAvatar();
+    teacherNav('dashboard');
+    updatePendingBadge();
+    startTeacherListeners();
+    showToast('Welcome back, Mateen! 👋','success');
   } else {
     const card=document.getElementById('teacherLoginCard');
-    card.classList.add('shake-it');
-    setTimeout(()=>card.classList.remove('shake-it'),500);
-    document.getElementById('teacherLoginError').style.display='block';
+    if(card){card.classList.add('shake-it');setTimeout(()=>card.classList.remove('shake-it'),500);}
+    const err=document.getElementById('teacherLoginError');
+    if(err) err.style.display='block';
     document.getElementById('teacherPwInput').value='';
   }
+}
+function startTeacherListeners(){
+  clearListeners();
+  // Listen to pending students
+  addListener(db.collection('students').where('accountStatus','==','pending').onSnapshot(s=>{
+    const count=s.size;
+    const badge=document.getElementById('pendingStudentsBadge');
+    if(badge){badge.textContent=count;badge.style.display=count>0?'inline':'none';}
+  }));
+  // Listen to pending submissions
+  addListener(db.collection('submissions').where('status','==','submitted').onSnapshot(s=>{
+    const count=s.size;
+    const badge=document.getElementById('pendingCountBadge');
+    if(badge){badge.textContent=count;badge.style.display=count>0?'inline':'none';}
+  }));
 }
 async function teacherConnectAndLoad(){
   const key=document.getElementById('teacherConnectKey').value.trim();
@@ -1461,8 +1417,9 @@ function toggleCredReveal(){
   el.textContent=el.textContent===apiKey?masked:apiKey;
 }
 function teacherLogout(){
-  DB.set(KEYS.teacherLoggedIn, false);
+  localStorage.removeItem('learnaiwm_teacher_session');
   AppState.isTeacher=false;
+  clearListeners();
   showView('view-landing');
 }
 
@@ -1473,58 +1430,76 @@ function loadTeacherAvatar(){
   if(el){ el.innerHTML = saved ? `<img src="${saved}" alt="Mateen">` : 'M'; }
 }
 
-// Student entry system
-let pendingNewStudent=null;
-function switchStudentTab(tab){
-  document.getElementById('stuTabNew').style.borderColor=tab==='new'?'var(--accent)':'var(--border)';
-  document.getElementById('stuTabNew').style.background=tab==='new'?'rgba(124,58,237,.06)':'transparent';
-  document.getElementById('stuTabReturn').style.borderColor=tab==='return'?'var(--accent)':'var(--border)';
-  document.getElementById('stuTabReturn').style.background=tab==='return'?'rgba(124,58,237,.06)':'transparent';
-  document.getElementById('stuPanelNew').style.display=tab==='new'?'block':'none';
-  document.getElementById('stuPanelReturn').style.display=tab==='return'?'block':'none';
-}
-function generateStudentId(){
-  const chars='ABCDEFGHJKLMNPQRSTUVWXYZ23456789';
-  const students=DB.getStudents();
-  let id;
-  do{ id='STU-'; for(let i=0;i<6;i++) id+=chars[Math.floor(Math.random()*chars.length)]; }
-  while(students.some(s=>s.studentId===id));
-  return id;
-}
-function studentSignup(){
+// Student entry system — Firebase-based simple name login
+async function studentJoinClass(){
   const name=document.getElementById('studentNameInput').value.trim();
   const errEl=document.getElementById('studentEntryError');
-  if(!name||name.length<2){ errEl.textContent='Name must be at least 2 characters'; errEl.style.display='block'; return }
-  if(name.length>30){ errEl.textContent='Name too long (max 30 characters)'; errEl.style.display='block'; return }
-  if(name.toLowerCase()==='teacher'||name.toLowerCase()==='mateen'){ errEl.textContent='This name is reserved'; errEl.style.display='block'; return }
+  if(!name||name.length<2){errEl.textContent='Name must be at least 2 characters';errEl.style.display='block';return}
+  if(name.length>30){errEl.textContent='Name is too long';errEl.style.display='block';return}
+  if(name.toLowerCase()==='teacher'||name.toLowerCase()==='mateen'){errEl.textContent='This name is reserved';errEl.style.display='block';return}
   errEl.style.display='none';
-  const studentId=generateStudentId();
-  pendingNewStudent={id:'student_'+Date.now(),studentId,username:name,joinDate:new Date().toISOString(),xp:0,level:'Seedling',streak:0,bestStreak:0,lastLoginDate:todayStr(),attendanceDates:[],badges:[],toolsExplored:[],xpHistory:[]};
-  document.getElementById('stuRevealWelcome').textContent=`Welcome to the class, ${name}! 🎉`;
-  document.getElementById('stuRevealId').textContent=studentId;
-  document.getElementById('stuSavedCheckbox').checked=false;
-  document.getElementById('stuContinueBtn').disabled=true;
-  showView('view-student-id-reveal');
+  const docId=name.toLowerCase().replace(/\s+/g,'_');
+  try{
+    const existing=await fbGet('students',docId);
+    if(existing){
+      // Student exists — check status
+      if(existing.accountStatus==='approved'||(!existing.accountStatus)){
+        localStorage.setItem('learnaiwm_current_student',existing.name||name);
+        AppState.currentUser=existing;AppState.isTeacher=false;
+        showView('view-student-dash');updateStudentSidebar();loadStudentAvatar(name);studentNav('dashboard');
+        showToast(`Welcome back, ${existing.name||name}!`,'success');
+        // Update lastActive
+        fbSet('students',docId,{lastActive:new Date().toISOString()});
+        startStudentListeners(docId);
+      } else if(existing.accountStatus==='pending'){
+        localStorage.setItem('learnaiwm_current_student',name);
+        showStudentStatusScreen(existing);
+        startWaitingListener(docId);
+      } else if(existing.accountStatus==='rejected'){
+        showStudentStatusScreen(existing);
+      } else if(existing.accountStatus==='suspended'){
+        showStudentStatusScreen(existing);
+      }
+    } else {
+      // New student — create with pending status
+      const newStudent={name:name,nameLower:docId,accountStatus:'pending',rejectionReason:'',joinDate:new Date().toISOString(),lastActive:new Date().toISOString(),xp:0,level:'Seedling',streak:0,bestStreak:0,lastCheckIn:'',attendance:[],badges:[],xpHistory:[],toolsExplored:[],profilePhoto:''};
+      await fbSet('students',docId,newStudent);
+      localStorage.setItem('learnaiwm_current_student',name);
+      newStudent.id=docId;
+      showStudentStatusScreen(newStudent);
+      startWaitingListener(docId);
+      showToast('Request sent! Waiting for teacher approval...','info');
+    }
+  }catch(e){
+    console.error('Student join error:',e);
+    errEl.textContent='Connection error. Please try again.';errEl.style.display='block';
+  }
 }
-function copyStudentId(){
-  const id=document.getElementById('stuRevealId')?.textContent;
-  if(id) navigator.clipboard.writeText(id).then(()=>{
-    const lbl=document.getElementById('copyIdLabel');
-    if(lbl){lbl.textContent='Copied ✓';setTimeout(()=>lbl.textContent='Copy ID',2000);}
-    showToast('Student ID copied!','success');
-  });
+
+function startStudentListeners(docId){
+  clearListeners();
+  // Listen to own document for status changes
+  addListener(fbListenDoc('students',docId,data=>{
+    if(data.accountStatus==='suspended'){showStudentStatusScreen(data);return;}
+    if(data.accountStatus==='rejected'){showStudentStatusScreen(data);return;}
+    if(AppState.currentUser) AppState.currentUser={...AppState.currentUser,...data};
+    updateStudentSidebar();
+  }));
 }
-function completeStudentSignup(){
-  if(!pendingNewStudent) return;
-  pendingNewStudent.accountStatus='pending';
-  pendingNewStudent.rejectionReason='';
-  let students=DB.getStudents();
-  students.push(pendingNewStudent);
-  DB.set(KEYS.students, students);
-  // Push immediately if connected (not debounced — this is critical)
-  if(SyncManager.isConnected()){ SyncManager.pushData(); }
-  showStudentStatusScreen(pendingNewStudent);
-  pendingNewStudent=null;
+
+function startWaitingListener(docId){
+  clearListeners();
+  addListener(fbListenDoc('students',docId,data=>{
+    if(data.accountStatus==='approved'){
+      localStorage.setItem('learnaiwm_current_student',data.name||docId);
+      AppState.currentUser=data;AppState.isTeacher=false;
+      showView('view-student-dash');updateStudentSidebar();loadStudentAvatar(data.name||docId);studentNav('dashboard');
+      startStudentListeners(docId);
+      showToast(`You're approved! Welcome, ${data.name}! 🎉`,'success');
+    } else if(data.accountStatus==='rejected'){
+      showStudentStatusScreen(data);
+    }
+  }));
 }
 function showStudentStatusScreen(student){
   const el=document.getElementById('waitingContent');
@@ -1622,8 +1597,9 @@ function studentReturnLogin(){
   }
 }
 function studentLogout(){
-  DB.set(KEYS.currentStudent, '');
+  localStorage.removeItem('learnaiwm_current_student');
   AppState.currentUser=null;
+  clearListeners();
   showView('view-student-entry');
 }
 function renderExistingStudents(){/* no longer used with ID system */}
@@ -4056,64 +4032,48 @@ function connectStudentBinFromSettings(){
   if(!binId){showToast('Enter a Bin ID','error');return;}
   SyncManager.connectAsStudent(binId);
 }
-// Student approval & management
-function approveStudent(studentId){
-  let students=DB.getStudents();
-  const s=students.find(st=>st.id===studentId);
-  if(!s) return;
-  s.accountStatus='approved';
-  DB.set(KEYS.students, students);
-  SyncManager.syncOnChange();
-  showToast(`${s.username} has been approved! ✅`,'success');
+// Student approval & management — Firebase
+async function approveStudent(studentId){
+  await fbSet('students',studentId,{accountStatus:'approved',approvedAt:new Date().toISOString()});
+  // Also update localStorage
+  let students=DB.getStudents();const s=students.find(st=>st.id===studentId);
+  if(s){s.accountStatus='approved';DB.set(KEYS.students,students);}
+  showToast('Student approved! ✅','success');
   renderTeacherView(AppState.teacherSubView);
 }
 function rejectStudentPrompt(studentId){
   const reason=prompt('Enter rejection reason (required):');
   if(!reason||!reason.trim()){showToast('Rejection reason is required','warning');return;}
-  let students=DB.getStudents();
-  const s=students.find(st=>st.id===studentId);
-  if(!s) return;
-  s.accountStatus='rejected';
-  s.rejectionReason=reason.trim();
-  DB.set(KEYS.students, students);
-  SyncManager.syncOnChange();
-  showToast(`${s.username} has been rejected`,'info');
+  fbSet('students',studentId,{accountStatus:'rejected',rejectionReason:reason.trim(),rejectedAt:new Date().toISOString()});
+  let students=DB.getStudents();const s=students.find(st=>st.id===studentId);
+  if(s){s.accountStatus='rejected';s.rejectionReason=reason.trim();DB.set(KEYS.students,students);}
+  showToast('Student rejected','info');
   renderTeacherView(AppState.teacherSubView);
 }
 function suspendStudent(studentId){
-  showConfirm('Suspend this student? They will not be able to login until unsuspended.',()=>{
-    let students=DB.getStudents();
-    const s=students.find(st=>st.id===studentId);
-    if(!s) return;
-    s.accountStatus='suspended';
-    DB.set(KEYS.students, students);
-    SyncManager.syncOnChange();
-    showToast(`${s.username} suspended`,'info');
+  showConfirm('Suspend this student?',()=>{
+    fbSet('students',studentId,{accountStatus:'suspended'});
+    let students=DB.getStudents();const s=students.find(st=>st.id===studentId);
+    if(s){s.accountStatus='suspended';DB.set(KEYS.students,students);}
+    showToast('Student suspended','info');
     renderTeacherView(AppState.teacherSubView);
   });
 }
 function unsuspendStudent(studentId){
-  let students=DB.getStudents();
-  const s=students.find(st=>st.id===studentId);
-  if(!s) return;
-  s.accountStatus='approved';
-  DB.set(KEYS.students, students);
-  SyncManager.syncOnChange();
-  showToast(`${s.username} restored! ✅`,'success');
+  fbSet('students',studentId,{accountStatus:'approved'});
+  let students=DB.getStudents();const s=students.find(st=>st.id===studentId);
+  if(s){s.accountStatus='approved';DB.set(KEYS.students,students);}
+  showToast('Student restored! ✅','success');
   renderTeacherView(AppState.teacherSubView);
 }
 function deleteStudent(studentId){
   const students=DB.getStudents();
   const s=students.find(st=>st.id===studentId);
   if(!s) return;
-  showConfirm(`Permanently delete ${s.username} and all their data? This cannot be undone.`,()=>{
+  showConfirm(`Permanently delete ${s.username||s.name} and all their data?`,()=>{
+    fbDel('students',studentId);
     DB.set(KEYS.students, students.filter(st=>st.id!==studentId));
-    // Mark their submissions as deleted student
-    let subs=DB.getSubmissions();
-    subs.forEach(sub=>{if(sub.studentId===studentId) sub.studentName='[Deleted Student]';});
-    DB.set(KEYS.submissions, subs);
-    SyncManager.syncOnChange();
-    showToast(`${s.username} has been deleted`,'info');
+    showToast('Student deleted','info');
     renderTeacherView(AppState.teacherSubView);
   });
 }
@@ -4131,267 +4091,32 @@ function generateIdForLegacyStudent(studentId){
 }
 
 // ═══════════════════════════════════
-// JSONBIN.IO CLOUD SYNC SYSTEM
+// FIREBASE SYNC (replaces JSONBin)
 // ═══════════════════════════════════
 
-const JSONBIN_BASE = 'https://api.jsonbin.io/v3';
-
+// Compatibility shim — SyncManager stub (Firebase replaces JSONBin)
 const SyncManager = {
-  getApiKey() { return localStorage.getItem('learnaiwm_jsonbin_key') || ''; },
-  getTeacherBinId() { return localStorage.getItem('learnaiwm_teacher_bin_id') || ''; },
-  getStudentBinId() { return localStorage.getItem('learnaiwm_student_bin_id') || ''; },
-  getBinId() { return this.getTeacherBinId() || this.getStudentBinId(); },
-  isConnected() { return !!(this.getApiKey() && this.getBinId()); },
+  isConnected() { return true; }, // Always connected with Firebase
+  getApiKey() { return ''; },
+  getTeacherBinId() { return ''; },
+  getStudentBinId() { return ''; },
+  getBinId() { return ''; },
 
-  collectLocalData() {
-    return {
-      lastUpdated: new Date().toISOString(),
-      updatedBy: localStorage.getItem('learnaiwm_teacher_logged_in') ? 'teacher' : localStorage.getItem('learnaiwm_current_student') || 'unknown',
-      students: JSON.parse(localStorage.getItem('learnaiwm_students') || '[]'),
-      tasks: JSON.parse(localStorage.getItem('learnaiwm_tasks') || '[]'),
-      submissions: JSON.parse(localStorage.getItem('learnaiwm_submissions') || '[]'),
-      saves: JSON.parse(localStorage.getItem('learnaiwm_saves') || '[]'),
-      tools: JSON.parse(localStorage.getItem('learnaiwm_tools') || '[]'),
-      announcements: JSON.parse(localStorage.getItem('learnaiwm_announcements') || '[]'),
-      attendance: JSON.parse(localStorage.getItem('learnaiwm_attendance') || '{}'),
-      chat: JSON.parse(localStorage.getItem('learnaiwm_chat') || '[]'),
-      certEnabled: localStorage.getItem('learnaiwm_cert_enabled') === 'true',
-      groqKey: localStorage.getItem('learnaiwm_groq_key') || '',
-      leaderboardEnabled: localStorage.getItem('learnaiwm_leaderboard_enabled') !== 'false',
-      chatEnabled: localStorage.getItem('learnaiwm_chat_enabled') !== 'false',
-      teacherPw: localStorage.getItem('learnaiwm_teacher_pw') || 'mateen2024',
-      jsonbinKey: localStorage.getItem('learnaiwm_jsonbin_key') || '',
-      teacherBinId: localStorage.getItem('learnaiwm_teacher_bin_id') || '',
-      studentBinId: localStorage.getItem('learnaiwm_student_bin_id') || ''
-    };
-  },
-
-  applyRemoteData(remoteData) {
-    if (!remoteData) return;
-    const mergeArray = (localKey, remoteItems) => {
-      if (!Array.isArray(remoteItems)) return;
-      const local = JSON.parse(localStorage.getItem(localKey) || '[]');
-      const localIds = new Set(local.map(i => i.id));
-      const toAdd = remoteItems.filter(i => !localIds.has(i.id));
-      const updated = local.map(item => {
-        const remoteVersion = remoteItems.find(r => r.id === item.id);
-        if (remoteVersion && remoteVersion.updatedAt > (item.updatedAt || '')) return remoteVersion;
-        return item;
-      });
-      localStorage.setItem(localKey, JSON.stringify([...updated, ...toAdd]));
-    };
-    mergeArray('learnaiwm_students', remoteData.students);
-    mergeArray('learnaiwm_tasks', remoteData.tasks);
-    mergeArray('learnaiwm_submissions', remoteData.submissions);
-    mergeArray('learnaiwm_saves', remoteData.saves);
-    mergeArray('learnaiwm_tools', remoteData.tools);
-    mergeArray('learnaiwm_announcements', remoteData.announcements);
-    mergeArray('learnaiwm_chat', remoteData.chat);
-    if (remoteData.certEnabled !== undefined) {
-      localStorage.setItem('learnaiwm_cert_enabled', remoteData.certEnabled ? 'true' : 'false');
-    }
-    if (remoteData.groqKey) {
-      localStorage.setItem('learnaiwm_groq_key', remoteData.groqKey);
-    }
-    if (remoteData.leaderboardEnabled !== undefined) localStorage.setItem('learnaiwm_leaderboard_enabled', remoteData.leaderboardEnabled ? 'true' : 'false');
-    if (remoteData.chatEnabled !== undefined) localStorage.setItem('learnaiwm_chat_enabled', remoteData.chatEnabled ? 'true' : 'false');
-    if (remoteData.teacherPw) localStorage.setItem('learnaiwm_teacher_pw', remoteData.teacherPw);
-    if (remoteData.jsonbinKey) localStorage.setItem('learnaiwm_jsonbin_key', remoteData.jsonbinKey);
-    if (remoteData.teacherBinId) localStorage.setItem('learnaiwm_teacher_bin_id', remoteData.teacherBinId);
-    if (remoteData.studentBinId) localStorage.setItem('learnaiwm_student_bin_id', remoteData.studentBinId);
-    if (remoteData.attendance) {
-      const localAtt = JSON.parse(localStorage.getItem('learnaiwm_attendance') || '{}');
-      const merged = Object.assign({}, remoteData.attendance, localAtt);
-      localStorage.setItem('learnaiwm_attendance', JSON.stringify(merged));
-    }
-  },
-
-  async createBin(apiKey) {
-    this.updateSyncUI('syncing', 'Creating bins...');
-    try {
-      // Create Teacher Bin (private — full data)
-      const resp1 = await fetch(`${JSONBIN_BASE}/b`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey, 'X-Bin-Name': 'LearnAI-Teacher', 'X-Bin-Private': 'false' },
-        body: JSON.stringify(this.collectLocalData())
-      });
-      if (!resp1.ok) { const err = await resp1.json(); throw new Error(err.message || 'Failed to create teacher bin.'); }
-      const d1 = await resp1.json();
-      const teacherBinId = d1.metadata.id;
-      // Create Student Bin (public — shared content)
-      const resp2 = await fetch(`${JSONBIN_BASE}/b`, {
-        method: 'POST',
-        headers: { 'Content-Type': 'application/json', 'X-Master-Key': apiKey, 'X-Bin-Name': 'LearnAI-Student', 'X-Bin-Private': 'false' },
-        body: JSON.stringify(this.collectLocalData())
-      });
-      if (!resp2.ok) { const err = await resp2.json(); throw new Error(err.message || 'Failed to create student bin.'); }
-      const d2 = await resp2.json();
-      const studentBinId = d2.metadata.id;
-      // Save both
-      localStorage.setItem('learnaiwm_jsonbin_key', apiKey);
-      localStorage.setItem('learnaiwm_teacher_bin_id', teacherBinId);
-      localStorage.setItem('learnaiwm_student_bin_id', studentBinId);
-      // Remove old generic key if exists
-      localStorage.removeItem('learnaiwm_bin_id');
-      this.updateSyncUI('connected', 'Connected');
-      this.updateLastSyncTime();
-      showToast('☁️ Both bins created! Share the Student Bin ID with students.', 'success');
-      return teacherBinId;
-    } catch(err) {
-      this.updateSyncUI('error', 'Connection failed');
-      showToast('Connection failed: ' + err.message, 'error');
-      throw err;
-    }
-  },
-
-  async pushData() {
-    if (!this.isConnected()) return;
-    this.updateSyncUI('syncing', 'Syncing...');
-    const payload = JSON.stringify(this.collectLocalData());
-    const headers = { 'Content-Type': 'application/json', 'X-Master-Key': this.getApiKey() };
-    try {
-      // Push to teacher bin
-      const tBin = this.getTeacherBinId();
-      if(tBin){
-        const r1 = await fetch(`${JSONBIN_BASE}/b/${tBin}`, { method: 'PUT', headers, body: payload });
-        if(!r1.ok) console.warn('Teacher bin push failed:', r1.status);
-      }
-      // Push to student bin
-      const sBin = this.getStudentBinId();
-      if(sBin){
-        const r2 = await fetch(`${JSONBIN_BASE}/b/${sBin}`, { method: 'PUT', headers, body: payload });
-        if(!r2.ok) console.warn('Student bin push failed:', r2.status);
-      }
-      this.updateSyncUI('connected', 'Connected');
-      this.updateLastSyncTime();
-    } catch(err) {
-      this.updateSyncUI('error', 'Sync error');
-      console.error('Push error:', err);
-    }
-  },
-
-  async pullData() {
-    if (!this.isConnected()) return;
-    this.updateSyncUI('syncing', 'Fetching...');
-    // Pull from teacher bin (primary) or student bin (fallback)
-    const binId = this.getTeacherBinId() || this.getStudentBinId();
-    if(!binId) return;
-    try {
-      const response = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, {
-        headers: { 'X-Master-Key': this.getApiKey(), 'X-Bin-Meta': 'false' }
-      });
-      if (!response.ok) throw new Error('Pull failed: ' + response.status);
-      const remoteData = await response.json();
-      this.applyRemoteData(remoteData);
-      this.updateSyncUI('connected', 'Connected');
-      this.updateLastSyncTime();
-      return remoteData;
-    } catch(err) {
-      this.updateSyncUI('error', 'Fetch error');
-      console.error('Pull error:', err);
-    }
-  },
-
-  async connectAsStudent(binId) {
-    const statusEl = document.getElementById('studentSyncStatus');
-    if (statusEl) { statusEl.style.display = 'block'; statusEl.innerHTML = '<small>🔄 Connecting...</small>'; }
-    try {
-      let response = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, { headers: { 'X-Bin-Meta': 'false' } });
-      if (!response.ok) {
-        const savedKey = localStorage.getItem('learnaiwm_jsonbin_key');
-        if (savedKey) {
-          response = await fetch(`${JSONBIN_BASE}/b/${binId}/latest`, { headers: { 'X-Master-Key': savedKey, 'X-Bin-Meta': 'false' } });
-          if (!response.ok) throw new Error('Invalid Bin ID. Check with your teacher.');
-        } else {
-          throw new Error('Invalid Bin ID or bin is private. Ask teacher to share access.');
-        }
-      }
-      const data = await response.json();
-      this.applyRemoteData(data);
-      // Save as student bin — this is the bin students connect to
-      localStorage.setItem('learnaiwm_student_bin_id', binId);
-      // Also set teacher bin from remote data if available
-      if(data.teacherBinId) localStorage.setItem('learnaiwm_teacher_bin_id', data.teacherBinId);
-      // Save the API key from bin data so student can push back
-      if(data.jsonbinKey) localStorage.setItem('learnaiwm_jsonbin_key', data.jsonbinKey);
-      // Remove old generic key
-      localStorage.removeItem('learnaiwm_bin_id');
-      // Start auto-sync for student
-      if(this.isConnected()) this.startAutoSync();
-      if (statusEl) statusEl.innerHTML = '<small style="color:#10B981">✅ Connected to class!</small>';
-      showToast('✅ Connected to teacher\'s class!', 'success');
-    } catch(err) {
-      if (statusEl) statusEl.innerHTML = `<small style="color:#EF4444">❌ ${err.message}</small>`;
-      showToast(err.message, 'error');
-    }
-  },
-
-  startAutoSync(intervalMs = 30000) {
-    if (!this.isConnected()) return;
-    if (window._syncInterval) clearInterval(window._syncInterval);
-    window._syncInterval = setInterval(async () => { await this.pullData(); await this.pushData(); }, intervalMs);
-    console.log('Auto-sync started: every ' + (intervalMs/1000) + 's');
-  },
-
-  stopAutoSync() {
-    if (window._syncInterval) { clearInterval(window._syncInterval); window._syncInterval = null; }
-  },
-
-  syncOnChange() {
-    if (!this.isConnected()) return;
-    if (window._syncTimeout) clearTimeout(window._syncTimeout);
-    window._syncTimeout = setTimeout(() => this.pushData(), 2000);
-  },
-
-  updateSyncUI(status, text) {
-    const dot = document.getElementById('syncStatusDot');
-    const txt = document.getElementById('syncStatusText');
-    if (dot) dot.className = 'sync-status-dot ' + status;
-    if (txt) txt.textContent = text;
-  },
-
-  showConnectedUI(binId) {
-    const setup = document.getElementById('syncSetupSection');
-    const connected = document.getElementById('syncConnectedSection');
-    const display = document.getElementById('binIdDisplay');
-    if (setup) setup.style.display = 'none';
-    if (connected) connected.style.display = 'block';
-    if (display) display.textContent = binId;
-  },
-
-  updateLastSyncTime() {
-    const el = document.getElementById('lastSyncTime');
-    if (el) el.textContent = 'Last synced: ' + new Date().toLocaleTimeString();
-  },
-
-  disconnect() {
-    if (!confirm('Disconnect cloud sync?\n\nYour local data will remain safe. You can reconnect anytime.')) return;
-    localStorage.removeItem('learnaiwm_jsonbin_key');
-    localStorage.removeItem('learnaiwm_teacher_bin_id');
-    localStorage.removeItem('learnaiwm_student_bin_id');
-    localStorage.removeItem('learnaiwm_bin_id');
-    this.stopAutoSync();
-    this.updateSyncUI('', 'Not Connected');
-    const connected = document.getElementById('syncConnectedSection');
-    if (connected) connected.style.display = 'none';
-    const setup = document.getElementById('syncSetupSection');
-    if (setup) setup.style.display = 'block';
-    showToast('Cloud sync disconnected.', 'info');
-  },
-
-  init() {
-    if (this.isConnected()) {
-      this.pullData();
-      this.startAutoSync();
-    }
-    // Student connect button (this element exists in static HTML)
-    document.getElementById('connectStudentSync')?.addEventListener('click', () => {
-      const binIdInput = document.getElementById('studentBinId');
-      const binId = binIdInput?.value.trim();
-      if (!binId) { showToast('Please enter the Bin ID from your teacher', 'error'); return; }
-      SyncManager.connectAsStudent(binId);
-    });
-  }
+  // All methods are no-ops — Firebase handles sync via real-time listeners
+  collectLocalData() { return {}; },
+  applyRemoteData() {},
+  async createBin() {},
+  async pushData() {},
+  async pullData() {},
+  async connectAsStudent() {},
+  startAutoSync() {},
+  stopAutoSync() {},
+  syncOnChange() {}, // No-op — Firebase writes are instant
+  updateSyncUI() {},
+  showConnectedUI() {},
+  updateLastSyncTime() {},
+  disconnect() {},
+  init() {}
 };
 
 // ═══════════════════════════
@@ -4511,68 +4236,78 @@ function exportPDF(){
 // ═══════════════════════════
 // 22. INITIALIZATION
 // ═══════════════════════════
-function initApp(){
-  // Migrate old single bin key to new two-bin system
-  const oldBinId=localStorage.getItem('learnaiwm_bin_id');
-  if(oldBinId){
-    if(!localStorage.getItem('learnaiwm_teacher_bin_id')) localStorage.setItem('learnaiwm_teacher_bin_id',oldBinId);
-    if(!localStorage.getItem('learnaiwm_student_bin_id')) localStorage.setItem('learnaiwm_student_bin_id',oldBinId);
-    localStorage.removeItem('learnaiwm_bin_id');
-  }
-  // Init tasks
+async function initApp(){
+  // Init local data stores (localStorage fallback for offline)
   if(!DB.getTasks().length){
     const tasks=PRELOADED_TASKS.map((t,i)=>({...t,id:'task_'+(Date.now()+i),createdAt:new Date().toISOString(),isPreloaded:true,dueDate:null}));
     DB.set(KEYS.tasks, tasks);
   }
-  // Init tools
   if(!DB.getTools().length){
     const tools=DEFAULT_TOOLS.map((t,i)=>({...t,id:'tool_'+(Date.now()+i),addedBy:'teacher'}));
     DB.set(KEYS.tools, tools);
   }
-  // Init other stores
   if(!DB.get(KEYS.submissions)) DB.set(KEYS.submissions,[]);
   if(!DB.get(KEYS.saves)) DB.set(KEYS.saves,[]);
   if(!DB.get(KEYS.announcements)) DB.set(KEYS.announcements,[]);
   if(!DB.get(KEYS.attendance)) DB.set(KEYS.attendance,{});
   if(!DB.get(KEYS.students)) DB.set(KEYS.students,[]);
+  // Initialize Firebase settings document if needed
+  try{
+    const settings=await fbGet('settings','app_settings');
+    if(!settings) await fbSet('settings','app_settings',{teacherPassword:'mateen2024',certificatesEnabled:false,leaderboardVisible:true,chatEnabled:true});
+  }catch(e){console.warn('Firebase settings init:',e)}
 
   // Check login state
-  if(DB.get(KEYS.teacherLoggedIn)){
+  if(localStorage.getItem('learnaiwm_teacher_session')==='true'){
     AppState.isTeacher=true;
     showView('view-teacher-dash');
     loadTeacherAvatar();
     teacherNav('dashboard');
-    // Background sync on refresh if connected
-    if(SyncManager.isConnected()){
-      SyncManager.pullData().then(()=>{
-        renderTeacherView(AppState.teacherSubView);
-      });
-      SyncManager.startAutoSync();
-    }
+    startTeacherListeners();
   } else {
-    const studentName=DB.get(KEYS.currentStudent);
+    const studentName=localStorage.getItem('learnaiwm_current_student');
     if(studentName){
-      const student=DB.getStudents().find(s=>s.username===studentName);
-      if(student){
-        // Check approval status on page refresh
-        const stuStatus=student.accountStatus||'approved';
-        if(stuStatus!=='approved'){
-          showStudentStatusScreen(student);
+      const docId=studentName.toLowerCase().replace(/\s+/g,'_');
+      try{
+        const student=await fbGet('students',docId);
+        if(student){
+          const status=student.accountStatus||'approved';
+          if(status==='approved'){
+            AppState.currentUser=student;
+            showView('view-student-dash');
+            updateStudentSidebar();
+            loadStudentAvatar(studentName);
+            studentNav('dashboard');
+            startStudentListeners(docId);
+          } else if(status==='pending'){
+            showStudentStatusScreen(student);
+            startWaitingListener(docId);
+          } else {
+            showStudentStatusScreen(student);
+          }
         } else {
-          AppState.currentUser=student;
-          updateStreak(student.id);
-          showView('view-student-dash');
-          updateStudentSidebar();
-          loadStudentAvatar(student.username);
-          studentNav('dashboard');
-          // Background sync for returning student
-          if(SyncManager.isConnected()){
-            SyncManager.pullData().then(()=>renderStudentView(AppState.studentSubView));
-            SyncManager.startAutoSync();
+          // Student not found in Firebase, check localStorage fallback
+          const localStudent=DB.getStudents().find(s=>s.username===studentName);
+          if(localStudent){
+            AppState.currentUser=localStudent;
+            showView('view-student-dash');
+            updateStudentSidebar();
+            studentNav('dashboard');
+          } else {
+            showView('view-landing');
           }
         }
-      } else {
-        showView('view-landing');
+      }catch(e){
+        // Offline — try localStorage
+        const localStudent=DB.getStudents().find(s=>s.username===studentName);
+        if(localStudent){
+          AppState.currentUser=localStudent;
+          showView('view-student-dash');
+          updateStudentSidebar();
+          studentNav('dashboard');
+        } else {
+          showView('view-landing');
+        }
       }
     } else {
       showView('view-landing');
@@ -4582,9 +4317,7 @@ function initApp(){
   
   // Event listeners
   document.getElementById('teacherPwInput').addEventListener('keydown',e=>{if(e.key==='Enter') teacherLogin()});
-  document.getElementById('studentNameInput').addEventListener('keydown',e=>{if(e.key==='Enter') studentSignup()});
-  document.getElementById('stuReturnId')?.addEventListener('keydown',e=>{if(e.key==='Enter') studentReturnLogin()});
-  document.getElementById('stuReturnName')?.addEventListener('keydown',e=>{if(e.key==='Enter') document.getElementById('stuReturnId')?.focus()});
+  document.getElementById('studentNameInput')?.addEventListener('keydown',e=>{if(e.key==='Enter') studentJoinClass()});
   
   // Teacher avatar upload
   document.getElementById('teacherImageInput').addEventListener('change', (e) => {

@@ -1339,7 +1339,8 @@ async function teacherLogin(){
     loadTeacherAvatar();
     teacherNav('dashboard');
     updatePendingBadge();
-    startTeacherListeners();
+    // Migrate old field names in Firestore
+    migrateStudentFields().then(()=>startTeacherListeners());
     showToast('Welcome back, Mateen! 👋','success');
   } else {
     const card=document.getElementById('teacherLoginCard');
@@ -1352,7 +1353,7 @@ async function teacherLogin(){
 function startTeacherListeners(){
   clearListeners();
   // Listen to pending students
-  addListener(db.collection('students').where('accountStatus','==','pending').onSnapshot(s=>{
+  addListener(db.collection('students').where('status','==','pending').onSnapshot(s=>{
     const count=s.size;
     const badge=document.getElementById('pendingStudentsBadge');
     if(badge){badge.textContent=count;badge.style.display=count>0?'inline':'none';}
@@ -1431,6 +1432,85 @@ function loadTeacherAvatar(){
 }
 
 // Student entry system — Firebase-based simple name login
+// Standardized student document creator — single source of truth
+async function createStudentDocument(studentName){
+  const studentId=studentName.toLowerCase().trim().replace(/\s+/g,'_');
+  const studentData={
+    name:studentName.trim(),
+    nameLower:studentName.toLowerCase().trim(),
+    status:'pending',
+    joinDate:new Date().toISOString(),
+    lastActive:new Date().toISOString(),
+    approvedAt:'',
+    rejectedAt:'',
+    rejectionReason:'',
+    xp:0,
+    level:'🌱 Seedling',
+    streak:0,
+    bestStreak:0,
+    lastCheckIn:'',
+    attendance:[],
+    badges:[],
+    xpHistory:[],
+    toolsExplored:[],
+    profilePhoto:''
+  };
+  await db.collection('students').doc(studentId).set(studentData);
+  console.log('Student created:',studentId,studentData);
+  return {id:studentId,...studentData};
+}
+
+// Migration function — fixes old field names in existing Firestore docs
+async function fixExistingStudents(){
+  try{
+    const snapshot=await db.collection('students').get();
+    if(snapshot.empty) return;
+    const batch=db.batch();
+    let needsFix=false;
+    snapshot.docs.forEach(doc=>{
+      const data=doc.data();
+      const updates={};
+      const deletions={};
+      // Fix accountStatus → status
+      if(data.accountStatus!==undefined && data.status===undefined){
+        updates.status=data.accountStatus;
+        deletions.accountStatus=firebase.firestore.FieldValue.delete();
+      }
+      // Fix Level → level
+      if(data.Level!==undefined && data.level===undefined){
+        updates.level=data.Level;
+        deletions.Level=firebase.firestore.FieldValue.delete();
+      }
+      // Fix Status → status
+      if(data.Status!==undefined && data.status===undefined){
+        updates.status=data.Status;
+        deletions.Status=firebase.firestore.FieldValue.delete();
+      }
+      // Fix Name → name
+      if(data.Name!==undefined && data.name===undefined){
+        updates.name=data.Name;
+        deletions.Name=firebase.firestore.FieldValue.delete();
+      }
+      if(Object.keys(updates).length>0||Object.keys(deletions).length>0){
+        batch.update(doc.ref,{...updates,...deletions});
+        needsFix=true;
+        console.log('Fixing doc:',doc.id,'Updates:',updates);
+      }
+    });
+    if(needsFix){
+      await batch.commit();
+      console.log('All student docs fixed ✅');
+    } else {
+      console.log('No migration needed ✅');
+    }
+  }catch(error){
+    console.error('Migration error:',error);
+  }
+}
+
+// Alias for backward compat
+const migrateStudentFields=fixExistingStudents;
+
 async function studentJoinClass(){
   const name=document.getElementById('studentNameInput').value.trim();
   const errEl=document.getElementById('studentEntryError');
@@ -1442,8 +1522,9 @@ async function studentJoinClass(){
   try{
     const existing=await fbGet('students',docId);
     if(existing){
-      // Student exists — check status
-      if(existing.accountStatus==='approved'||(!existing.accountStatus)){
+      // Student exists — check status (handle old accountStatus field too)
+      const currentStatus=existing.status||existing.accountStatus||'approved';
+      if(currentStatus==='approved'){
         localStorage.setItem('learnaiwm_current_student',existing.name||name);
         AppState.currentUser=existing;AppState.isTeacher=false;
         showView('view-student-dash');updateStudentSidebar();loadStudentAvatar(name);studentNav('dashboard');
@@ -1451,21 +1532,19 @@ async function studentJoinClass(){
         // Update lastActive
         fbSet('students',docId,{lastActive:new Date().toISOString()});
         startStudentListeners(docId);
-      } else if(existing.accountStatus==='pending'){
+      } else if(currentStatus==='pending'){
         localStorage.setItem('learnaiwm_current_student',name);
         showStudentStatusScreen(existing);
         startWaitingListener(docId);
-      } else if(existing.accountStatus==='rejected'){
+      } else if(currentStatus==='rejected'){
         showStudentStatusScreen(existing);
-      } else if(existing.accountStatus==='suspended'){
+      } else if(currentStatus==='suspended'){
         showStudentStatusScreen(existing);
       }
     } else {
-      // New student — create with pending status
-      const newStudent={name:name,nameLower:docId,accountStatus:'pending',rejectionReason:'',joinDate:new Date().toISOString(),lastActive:new Date().toISOString(),xp:0,level:'Seedling',streak:0,bestStreak:0,lastCheckIn:'',attendance:[],badges:[],xpHistory:[],toolsExplored:[],profilePhoto:''};
-      await fbSet('students',docId,newStudent);
+      // New student — create with standardized function
+      const newStudent=await createStudentDocument(name);
       localStorage.setItem('learnaiwm_current_student',name);
-      newStudent.id=docId;
       showStudentStatusScreen(newStudent);
       startWaitingListener(docId);
       showToast('Request sent! Waiting for teacher approval...','info');
@@ -1480,8 +1559,8 @@ function startStudentListeners(docId){
   clearListeners();
   // Listen to own document for status changes
   addListener(fbListenDoc('students',docId,data=>{
-    if(data.accountStatus==='suspended'){showStudentStatusScreen(data);return;}
-    if(data.accountStatus==='rejected'){showStudentStatusScreen(data);return;}
+    if(data.status==='suspended'){showStudentStatusScreen(data);return;}
+    if(data.status==='rejected'){showStudentStatusScreen(data);return;}
     if(AppState.currentUser) AppState.currentUser={...AppState.currentUser,...data};
     updateStudentSidebar();
   }));
@@ -1490,20 +1569,20 @@ function startStudentListeners(docId){
 function startWaitingListener(docId){
   clearListeners();
   addListener(fbListenDoc('students',docId,data=>{
-    if(data.accountStatus==='approved'){
+    if(data.status==='approved'){
       localStorage.setItem('learnaiwm_current_student',data.name||docId);
       AppState.currentUser=data;AppState.isTeacher=false;
       showView('view-student-dash');updateStudentSidebar();loadStudentAvatar(data.name||docId);studentNav('dashboard');
       startStudentListeners(docId);
       showToast(`You're approved! Welcome, ${data.name}! 🎉`,'success');
-    } else if(data.accountStatus==='rejected'){
+    } else if(data.status==='rejected'){
       showStudentStatusScreen(data);
     }
   }));
 }
 function showStudentStatusScreen(student){
   const el=document.getElementById('waitingContent');
-  const status=student.accountStatus||'approved';
+  const status=student.status||student.accountStatus||'approved';
   if(status==='pending'){
     el.innerHTML=`<div style="font-size:48px;margin-bottom:12px">⏳</div>
       <h2>You're on the waiting list!</h2>
@@ -1537,7 +1616,7 @@ function doApprovalCheck(studentId){
   const students=DB.getStudents();
   const s=students.find(st=>st.id===studentId);
   if(!s){showToast('Account not found','error');return;}
-  if(s.accountStatus==='approved'){
+  if(s.status==='approved'){
     DB.set(KEYS.currentStudent, s.username);
     AppState.currentUser=s;
     AppState.isTeacher=false;
@@ -1547,7 +1626,7 @@ function doApprovalCheck(studentId){
     loadStudentAvatar(s.username);
     studentNav('dashboard');
     showToast(`You're approved! Welcome, ${s.username}! 🎉`,'success');
-  } else if(s.accountStatus==='rejected'){
+  } else if(s.status==='rejected'){
     showStudentStatusScreen(s);
     showToast('Not approved yet','warning');
   } else {
@@ -1571,7 +1650,7 @@ function studentReturnLogin(){
   }
   const student=students.find(s=>s.username.toLowerCase()===name.toLowerCase()&&s.studentId===idVal);
   if(student){
-    const status=student.accountStatus||'approved';
+    const status=student.status||'approved';
     if(status==='pending'||status==='rejected'||status==='suspended'){
       showStudentStatusScreen(student);
       return;
@@ -2656,12 +2735,12 @@ function renderTeacherDashboard(){
   html+=`<h2 class="page-title" style="font-size:22px">Good ${greetTime()}, Mateen! 👋</h2>`;
   html+=`<p style="color:var(--text-mid);margin-bottom:24px">${formatDate(new Date())} — Here's your class overview</p>`;
   // Pending approval banner
-  const pendingStudents=students.filter(s=>s.accountStatus==='pending');
+  const pendingStudents=students.filter(s=>(s.status||s.accountStatus)==='pending');
   if(pendingStudents.length){
     html+=`<div class="pending-banner no-print"><div class="pending-count">${pendingStudents.length}</div><div><strong>Student${pendingStudents.length>1?'s':''} waiting for approval</strong><p style="font-size:12px;color:var(--text-mid);margin:0">${pendingStudents.map(s=>s.username).join(', ')}</p></div><button class="btn btn-sm btn-warning" onclick="scrollToStudentMgmt()" style="margin-left:auto;flex-shrink:0"><i class="fas fa-user-check"></i> Review</button></div>`;
   }
   html+=`<div class="stats-grid">
-    <div class="stat-card" style="animation-delay:.05s"><div class="stat-icon" style="background:var(--primary-light)"><i class="fas fa-users"></i></div><div class="stat-num">${students.filter(s=>!s.accountStatus||s.accountStatus==='approved').length}</div><div class="stat-label">Active Students</div></div>
+    <div class="stat-card" style="animation-delay:.05s"><div class="stat-icon" style="background:var(--primary-light)"><i class="fas fa-users"></i></div><div class="stat-num">${students.filter(s=>{const st=s.status||s.accountStatus||'approved';return st==='approved'}).length}</div><div class="stat-label">Active Students</div></div>
     <div class="stat-card" style="animation-delay:.1s"><div class="stat-icon" style="background:var(--warning)"><i class="fas fa-clock"></i></div><div class="stat-num">${pending.length}</div><div class="stat-label">Awaiting Review</div>${pending.length?'<div class="pulse-dot"></div>':''}</div>
     <div class="stat-card" style="animation-delay:.15s"><div class="stat-icon" style="background:var(--accent)"><i class="fas fa-tasks"></i></div><div class="stat-num">${tasks.length}</div><div class="stat-label">Total Tasks</div></div>
     <div class="stat-card" style="animation-delay:.2s"><div class="stat-icon" style="background:var(--success)"><i class="fas fa-check-circle"></i></div><div class="stat-num">${rate}%</div><div class="stat-label">Acceptance Rate</div></div>
@@ -2717,10 +2796,12 @@ function renderTeacherDashboard(){
 }
 function scrollToStudentMgmt(){const el=document.getElementById('studentMgmtSection');if(el) el.scrollIntoView({behavior:'smooth'})}
 function renderStudentManagement(students){
-  const pendingS=students.filter(s=>s.accountStatus==='pending');
-  const approvedS=students.filter(s=>!s.accountStatus||s.accountStatus==='approved');
-  const rejectedS=students.filter(s=>s.accountStatus==='rejected');
-  const suspendedS=students.filter(s=>s.accountStatus==='suspended');
+  // Normalize status field — handle old accountStatus field gracefully
+  const getStatus=s=>(s.status||s.accountStatus||'approved');
+  const pendingS=students.filter(s=>getStatus(s)==='pending');
+  const approvedS=students.filter(s=>getStatus(s)==='approved');
+  const rejectedS=students.filter(s=>getStatus(s)==='rejected');
+  const suspendedS=students.filter(s=>getStatus(s)==='suspended');
   let html=`<div id="studentMgmtSection" class="mt-3 no-print">`;
   // Pending Approvals
   html+=`<div class="section-title">👥 Student Management ${pendingS.length?`<span class="count-badge" style="background:var(--warning)">${pendingS.length} pending</span>`:''}</div>`;
@@ -4034,35 +4115,35 @@ function connectStudentBinFromSettings(){
 }
 // Student approval & management — Firebase
 async function approveStudent(studentId){
-  await fbSet('students',studentId,{accountStatus:'approved',approvedAt:new Date().toISOString()});
+  await fbSet('students',studentId,{status:'approved',approvedAt:new Date().toISOString()});
   // Also update localStorage
   let students=DB.getStudents();const s=students.find(st=>st.id===studentId);
-  if(s){s.accountStatus='approved';DB.set(KEYS.students,students);}
+  if(s){s.status='approved';DB.set(KEYS.students,students);}
   showToast('Student approved! ✅','success');
   renderTeacherView(AppState.teacherSubView);
 }
 function rejectStudentPrompt(studentId){
   const reason=prompt('Enter rejection reason (required):');
   if(!reason||!reason.trim()){showToast('Rejection reason is required','warning');return;}
-  fbSet('students',studentId,{accountStatus:'rejected',rejectionReason:reason.trim(),rejectedAt:new Date().toISOString()});
+  fbSet('students',studentId,{status:'rejected',rejectionReason:reason.trim(),rejectedAt:new Date().toISOString()});
   let students=DB.getStudents();const s=students.find(st=>st.id===studentId);
-  if(s){s.accountStatus='rejected';s.rejectionReason=reason.trim();DB.set(KEYS.students,students);}
+  if(s){s.status='rejected';s.rejectionReason=reason.trim();DB.set(KEYS.students,students);}
   showToast('Student rejected','info');
   renderTeacherView(AppState.teacherSubView);
 }
 function suspendStudent(studentId){
   showConfirm('Suspend this student?',()=>{
-    fbSet('students',studentId,{accountStatus:'suspended'});
+    fbSet('students',studentId,{status:'suspended'});
     let students=DB.getStudents();const s=students.find(st=>st.id===studentId);
-    if(s){s.accountStatus='suspended';DB.set(KEYS.students,students);}
+    if(s){s.status='suspended';DB.set(KEYS.students,students);}
     showToast('Student suspended','info');
     renderTeacherView(AppState.teacherSubView);
   });
 }
 function unsuspendStudent(studentId){
-  fbSet('students',studentId,{accountStatus:'approved'});
+  fbSet('students',studentId,{status:'approved'});
   let students=DB.getStudents();const s=students.find(st=>st.id===studentId);
-  if(s){s.accountStatus='approved';DB.set(KEYS.students,students);}
+  if(s){s.status='approved';DB.set(KEYS.students,students);}
   showToast('Student restored! ✅','success');
   renderTeacherView(AppState.teacherSubView);
 }
@@ -4263,7 +4344,7 @@ async function initApp(){
     showView('view-teacher-dash');
     loadTeacherAvatar();
     teacherNav('dashboard');
-    startTeacherListeners();
+    fixExistingStudents().then(()=>startTeacherListeners()).catch(()=>startTeacherListeners());
   } else {
     const studentName=localStorage.getItem('learnaiwm_current_student');
     if(studentName){
@@ -4271,7 +4352,7 @@ async function initApp(){
       try{
         const student=await fbGet('students',docId);
         if(student){
-          const status=student.accountStatus||'approved';
+          const status=student.status||student.accountStatus||'approved';
           if(status==='approved'){
             AppState.currentUser=student;
             showView('view-student-dash');
